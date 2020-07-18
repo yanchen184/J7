@@ -5,18 +5,27 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import com.example.j7.databinding.ActivityMainBinding;
+import com.example.j7.databinding.User;
 import com.example.j7.game.AtkDecide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
 
 import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import static com.example.j7.LoginActivity.TSUserId;
 
 public class StartActivity extends Activity {
 
@@ -31,19 +40,42 @@ public class StartActivity extends Activity {
     public View buttonAtk1, buttonAtk2, buttonAtk3, buttonAtk4, buttonAtk5, buttonAtk6;
     public TextView HP1, HP2, HP3, HP4, HP5;
     public TextView MP1, MP2, MP3, MP4, MP5;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 //        Toolbar toolbar = findViewById(R.id.toolbar);
-        if(!logon){
-            Intent intent = new Intent(this,LoginActivity.class);
-            startActivityForResult(intent,REQUST_LOGIN);
+        if (!logon) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivityForResult(intent, REQUST_LOGIN);
         }
-        findId();
-        openBtnAtk();
-        atkDrawHPMP();
-        atkDraw();
+
+        //creating binding object
+        ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        final User user = new User();
+        binding.setUser(user);
+
+
+        //reading data from firebase database
+        FirebaseDatabase.getInstance().getReference("users").child("yc").child("password")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        System.out.println("123 :" + dataSnapshot.getValue().toString() );
+//                        user.setName(dataSnapshot.getValue(String.class));
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+        user.setName(TSUserId);
+        /**用於重新登入*/
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +84,12 @@ public class StartActivity extends Activity {
                         .setAction("Action", null).show();
             }
         });
+
+
+        findId();
+        openBtnAtk();
+        atkDrawHPMP();
+        atkDraw();
     }
 
     public void lockBtnAtk() {
@@ -120,7 +158,7 @@ public class StartActivity extends Activity {
     }
 
     public void atk6(View v) {
-        Intent intent = new Intent(this,GameMainActivity.class);
+        Intent intent = new Intent(this, GameMainActivity.class);
         startActivity(intent);
 
     }
@@ -285,7 +323,7 @@ public class StartActivity extends Activity {
         }
     }
 
-    public void findId(){
+    public void findId() {
         line11 = findViewById(R.id.line11);
         line12 = findViewById(R.id.line12);
         line13 = findViewById(R.id.line13);
@@ -354,7 +392,6 @@ public class StartActivity extends Activity {
         MP4 = findViewById(R.id.MP4);
         MP5 = findViewById(R.id.MP5);
     }
-
 
 
     @Override

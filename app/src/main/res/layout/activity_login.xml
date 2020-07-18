@@ -6,14 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
+
     <EditText
         android:id="@+id/ed_userid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="108dp"
+        android:layout_marginTop="216dp"
         android:ems="10"
+        android:gravity="center"
         android:inputType="textPersonName"
         android:text="yc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.499"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,8 +25,9 @@
         android:id="@+id/ed_passwd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
+        android:gravity="center"
         android:inputType="numberPassword"
         android:text="1234"
         app:layout_constraintStart_toStartOf="@+id/ed_userid"
@@ -32,11 +37,31 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="52dp"
         android:onClick="login"
         android:text="登入"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/ed_passwd"
         app:layout_constraintTop_toBottomOf="@+id/ed_passwd" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Yanchen的第一款J7game"
+        android:textSize="40dp"
+        android:typeface="monospace"
+        app:layout_constraintBottom_toTopOf="@+id/ed_userid"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/sign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="註冊"
+        android:onClick="sign"
+        app:layout_constraintEnd_toEndOf="@+id/ed_passwd"
+        app:layout_constraintTop_toTopOf="@+id/button" />
 </androidx.constraintlayout.widget.ConstraintLayout>
