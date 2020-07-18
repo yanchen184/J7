@@ -15,10 +15,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import androidx.annotation.LongDef;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
+import android.util.Log;
 import android.view.View;
 
 import android.view.Menu;
@@ -27,9 +29,10 @@ import android.widget.TextView;
 
 import static com.example.j7.LoginActivity.TSUserId;
 
-public class StartActivity extends Activity {
+public class StartActivity extends AppCompatActivity {
 
     private static final int REQUST_LOGIN = 100;
+    private static final String TAG = StartActivity.class.getSimpleName();
     private boolean logon = false;
     public AtkDecide atkDecide = new AtkDecide();
     public View line11, line12, line13, line14, line15, line16, line17, line18, line19;
@@ -50,22 +53,29 @@ public class StartActivity extends Activity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivityForResult(intent, REQUST_LOGIN);
         }
+    }
 
-        //creating binding object
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //資料綁定
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         final User user = new User();
         binding.setUser(user);
-
-
         //reading data from firebase database
-        FirebaseDatabase.getInstance().getReference("users").child("yc").child("password")
+        FirebaseDatabase.getInstance().getReference("users").child(TSUserId).child("level")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 //                        System.out.println("123 :" + dataSnapshot.getValue().toString() );
 //                        user.setName(dataSnapshot.getValue(String.class));
-
-
+                        if(dataSnapshot.getValue() != null){
+                            /**等級*/
+                            user.setLevel(dataSnapshot.getValue().toString());
+                        }else{
+                            user.setLevel("00");
+                        }
                     }
 
                     @Override
@@ -73,9 +83,11 @@ public class StartActivity extends Activity {
 
                     }
                 });
-
+        /**名字*/
         user.setName(TSUserId);
-        /**用於重新登入*/
+
+
+        /**用於重新登入TODO*/
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +103,7 @@ public class StartActivity extends Activity {
         atkDrawHPMP();
         atkDraw();
     }
+
 
     public void lockBtnAtk() {
         buttonAtk1.setEnabled(false);

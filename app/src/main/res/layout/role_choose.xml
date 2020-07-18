@@ -7,6 +7,9 @@
         <variable
             name="userName"
             type="String" />
+        <variable
+            name="level"
+            type="String" />
     </data>
 
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -96,12 +99,12 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="玩家名稱 : "
         app:layout_constraintStart_toStartOf="parent"
-       />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/userName"
@@ -128,7 +131,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="15"
+        android:text="@{level}"
         app:layout_constraintStart_toEndOf="@+id/textView5"
         app:layout_constraintTop_toTopOf="@+id/textView5" />
 
