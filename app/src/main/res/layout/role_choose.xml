@@ -18,7 +18,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
-    <ImageView
+    <ImageSwitcher
         android:id="@+id/hand"
         android:layout_width="147dp"
         android:layout_height="148dp"

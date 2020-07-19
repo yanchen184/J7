@@ -3,6 +3,7 @@ package com.example.j7;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import com.example.j7.databinding.ActivityMainBinding;
@@ -25,13 +26,20 @@ import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.j7.LoginActivity.TSUserId;
 
 public class StartActivity extends AppCompatActivity {
 
-    private static final int REQUST_LOGIN = 100;
+    private static final int REQUEST_LOGIN = 100;
     private static final String TAG = StartActivity.class.getSimpleName();
     private boolean logon = false;
     public AtkDecide atkDecide = new AtkDecide();
@@ -44,6 +52,13 @@ public class StartActivity extends AppCompatActivity {
     public TextView HP1, HP2, HP3, HP4, HP5;
     public TextView MP1, MP2, MP3, MP4, MP5;
 
+    TextView role;
+    List<Drawable> drawableList = new ArrayList<Drawable>();//存放圖片
+    Button arrowLeftTextView;//左箭頭
+    Button arrowRightTextView;//右箭頭
+    private int index = 0;//角色
+
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,8 +66,14 @@ public class StartActivity extends AppCompatActivity {
 //        Toolbar toolbar = findViewById(R.id.toolbar);
         if (!logon) {
             Intent intent = new Intent(this, LoginActivity.class);
-            startActivityForResult(intent, REQUST_LOGIN);
+            startActivityForResult(intent, REQUEST_LOGIN);
         }
+
+        drawableList.add(getResources().getDrawable(R.drawable.j4));//圖片01
+        drawableList.add(getResources().getDrawable(R.drawable.fs));//圖片02
+        drawableList.add(getResources().getDrawable(R.drawable.player));//圖片03
+        drawableList.add(getResources().getDrawable(R.drawable.b74));//圖片04
+
     }
 
     @Override
@@ -64,16 +85,16 @@ public class StartActivity extends AppCompatActivity {
         final User user = new User();
         binding.setUser(user);
         //reading data from firebase database
-        FirebaseDatabase.getInstance().getReference("users").child(TSUserId).child("level")
+        FirebaseDatabase.getInstance().getReference("users").child(TSUserId)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 //                        System.out.println("123 :" + dataSnapshot.getValue().toString() );
 //                        user.setName(dataSnapshot.getValue(String.class));
-                        if(dataSnapshot.getValue() != null){
+                        if (dataSnapshot.getValue() != null) {
                             /**等級*/
-                            user.setLevel(dataSnapshot.getValue().toString());
-                        }else{
+                            user.setLevel(dataSnapshot.child("level").getValue().toString());
+                        } else {
                             user.setLevel("00");
                         }
                     }
@@ -102,6 +123,50 @@ public class StartActivity extends AppCompatActivity {
         openBtnAtk();
         atkDrawHPMP();
         atkDraw();
+
+
+        final ImageSwitcher imageSwitcher = findViewById(R.id.hand);
+        arrowLeftTextView = findViewById(R.id.rightBtn);
+        arrowRightTextView = findViewById(R.id.leftBtn);
+        role = findViewById(R.id.role);
+
+        //工廠
+        imageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
+            @Override
+            public View makeView() {
+                return new ImageView(StartActivity.this);
+            }
+        });
+
+        imageSwitcher.setImageDrawable(drawableList.get(0));//初始化顯示第一張圖片
+        role.setText("index : " + index);
+        arrowRightTextView.setOnClickListener(new View.OnClickListener() {//左箭頭單擊事件
+            @Override
+            public void onClick(View view) {
+                index = index - 1;
+                if (index < 0)//如果到達了圖片的開始，則直接顯示最後一張圖片
+                {
+                    index = drawableList.size() - 1;
+                }
+                imageSwitcher.setImageDrawable(drawableList.get(index));
+                role.setText("index : " + index);
+            }
+        });
+
+        arrowLeftTextView.setOnClickListener(new View.OnClickListener() {//右箭頭單擊事件
+            @Override
+            public void onClick(View view) {
+                index = index + 1;
+                if (index >= drawableList.size())//如果點選到達圖片的末尾，則回到第一張圖片
+                {
+                    index = 0;
+                }
+                imageSwitcher.setImageDrawable(drawableList.get(index));
+                role.setText("index : " + index);
+            }
+        });
+
+
     }
 
 

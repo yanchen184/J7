@@ -11,10 +11,18 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.j7.game.AtkDecide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class LoginActivity extends Activity {
 
@@ -28,6 +36,7 @@ public class LoginActivity extends Activity {
     public static String TSUserId = "0";
     public static String TSPassWd = "0";
 
+    public AtkDecide atkDecide = new AtkDecide();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,10 +82,68 @@ public class LoginActivity extends Activity {
         passWd = edPasswd.getText().toString();
         inputTS(userId, passWd);
 
-        FirebaseDatabase.getInstance().getReference("users").child(userId).child("users").setValue(userId);
-        FirebaseDatabase.getInstance().getReference("users").child(userId).child("password").setValue(passWd);
-        FirebaseDatabase.getInstance().getReference("users").child(userId).child("level").setValue(1);
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
+        /**新的資料
+         * 1.帳號 users
+         * 2.密碼 password
+         * 3.等級 level
+         * 4.擁有的角色 role
+         * 5.擁有的角色 role
+         * 5.擁有的角色的技能組
+         * 6.擁有的角色的技能組atk
+         * 7.擁有的角色的技能組MP
+         * 8.
+         * */
+        ArrayList<ArrayList<Integer>> fs = new ArrayList<>();
+        for(int i = 0 ; i < atkDecide.fsAtk.length ; i ++) {
+            fs.add(intToList(atkDecide.fsAtk[i]));
+        }
+        ArrayList<ArrayList<Integer>> j4 = new ArrayList<>();
+        for(int i = 0 ; i < atkDecide.j4Atk.length ; i ++) {
+            j4.add(intToList(atkDecide.j4Atk[i]));
+        }
+        ArrayList<ArrayList<Integer>> player = new ArrayList<>();
+        for(int i = 0 ; i < atkDecide.playerAtk.length ; i ++) {
+            player.add(intToList(atkDecide.playerAtk[i]));
+        }
+        ArrayList<ArrayList<Integer>> b74 = new ArrayList<>();
+        for(int i = 0 ; i < atkDecide.b74Atk.length ; i ++) {
+            b74.add(intToList(atkDecide.b74Atk[i]));
+        }
+
+        rootRef.child("users").setValue(userId);
+        rootRef.child("password").setValue(passWd);
+        rootRef.child("level").setValue(1);
+
+        /** fs */
+        rootRef.child("role").child("fs").child("have").setValue(true);
+        rootRef.child("role").child("fs").child("atkR").setValue(fs);
+        rootRef.child("role").child("fs").child("HP").setValue(intToList(atkDecide.fsHP));
+        rootRef.child("role").child("fs").child("MP").setValue(intToList(atkDecide.fsMP));
+
+        /** j4 */
+        rootRef.child("role").child("j4").child("have").setValue(true);
+        rootRef.child("role").child("j4").child("atkR").setValue(j4);
+        rootRef.child("role").child("j4").child("HP").setValue(intToList(atkDecide.j4HP));
+        rootRef.child("role").child("j4").child("MP").setValue(intToList(atkDecide.j4MP));
+
+        /** player */
+        rootRef.child("role").child("player").child("have").setValue(true);
+        rootRef.child("role").child("player").child("atkR").setValue(player);
+        rootRef.child("role").child("player").child("HP").setValue(intToList(atkDecide.playerHP));
+        rootRef.child("role").child("player").child("MP").setValue(intToList(atkDecide.playerMP));
+
+        /** b74 */
+        rootRef.child("role").child("b74").child("have").setValue(false);
+        rootRef.child("role").child("b74").child("atkR").setValue(b74);
+        rootRef.child("role").child("b74").child("HP").setValue(intToList(atkDecide.b74HP));
+        rootRef.child("role").child("b74").child("MP").setValue(intToList(atkDecide.b74MP));
+
+
+
+//        String[] items = {"newItem", "newItem", "newItem"};
+//        rootRef.child("role").child("fs").child("atkR").setValue(Arrays.asList(items));
 
         FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -93,6 +160,16 @@ public class LoginActivity extends Activity {
         });
 
     }
+
+
+    public ArrayList<Integer> intToList(int[] data){
+        ArrayList<Integer> x = new ArrayList<>();
+        for(int i = 0 ; i < data.length ; i ++){
+            x.add(data[i]);
+        }
+        return x;
+    }
+
 
     public void inputTS(String user, String password) {
         getSharedPreferences("users", MODE_PRIVATE)
