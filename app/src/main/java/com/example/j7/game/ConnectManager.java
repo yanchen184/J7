@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.j7.GameMainActivity;
+import com.example.j7.GameActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +28,7 @@ public class ConnectManager extends AppCompatActivity {
 
     private Context context;
     private WebSocket webSocket;
-    private GameMainActivity activity;
+    private GameActivity activity;
     private TextView txtCom;
     private TextView txtWinLose;
     public static String SERVER_PATH = "http://925836ab87fa.ngrok.io";
@@ -43,7 +43,7 @@ public class ConnectManager extends AppCompatActivity {
 
     public ConnectManager(Context context) {
         this.context = context;
-        activity = (GameMainActivity) context;
+        activity = (GameActivity) context;
     }
 
 
@@ -181,8 +181,6 @@ public class ConnectManager extends AppCompatActivity {
 
     private static final int JSON_STRING = 1;
     private MyHandler handler = new MyHandler();
-
-
     class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {

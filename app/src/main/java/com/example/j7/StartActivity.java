@@ -1,48 +1,55 @@
 package com.example.j7;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ViewSwitcher;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import com.example.j7.databinding.ActivityMainBinding;
 import com.example.j7.databinding.User;
+import com.example.j7.fourBtn.FourCardAdd;
+import com.example.j7.fourBtn.FourCardChange;
+import com.example.j7.fourBtn.FourCardUpgrade;
+import com.example.j7.fourBtn.FourRoleAdd;
 import com.example.j7.game.AtkDecide;
+import com.example.j7.tools.Tools;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import androidx.annotation.LongDef;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.databinding.DataBindingUtil;
-
-import android.util.Log;
-import android.view.View;
-
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.ImageSwitcher;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.j7.LoginActivity.TSUserId;
+import static com.example.j7.LoginActivity.userId;
+import static com.example.j7.tools.Name.STATUS_INIT;
+import static com.example.j7.tools.Name.STATUS_JOINED;
+import static com.example.j7.tools.Name.fsNum;
 
 public class StartActivity extends AppCompatActivity {
 
     private static final int REQUEST_LOGIN = 100;
     private static final String TAG = StartActivity.class.getSimpleName();
     private boolean logon = false;
-    public AtkDecide atkDecide = new AtkDecide();
     public View line11, line12, line13, line14, line15, line16, line17, line18, line19;
     public View line21, line22, line23, line24, line25, line26, line27, line28, line29;
     public View line31, line32, line33, line34, line35, line36, line37, line38, line39;
@@ -52,13 +59,38 @@ public class StartActivity extends AppCompatActivity {
     public TextView HP1, HP2, HP3, HP4, HP5;
     public TextView MP1, MP2, MP3, MP4, MP5;
 
-    TextView role;
+    TextView role, introduction;
+
     List<Drawable> drawableList = new ArrayList<Drawable>();//存放圖片
     Button arrowLeftTextView;//左箭頭
     Button arrowRightTextView;//右箭頭
+
+    Tools tools = new Tools();
+    private Boolean[] indexGetBoolean;//角色擁有
+    private List indexGetInt;//角色擁有
+    private String[] indexAll = {"j4", "fs", "player", "b74"};//角色擁有
     private int index = 0;//角色
 
-    
+    DatabaseReference FRoom ;
+    DatabaseReference FUser ;
+
+    ArrayList<Integer> j4HP;
+    ArrayList<Integer> j4MP;
+    ArrayList<ArrayList<Integer>> j4atkR;
+
+    ArrayList<Integer> fsHP;
+    ArrayList<Integer> fsMP;
+    ArrayList<ArrayList<Integer>> fsatkR;
+
+    ArrayList<Integer> playerHP;
+    ArrayList<Integer> playerMP;
+    ArrayList<ArrayList<Integer>> playeratkR;
+
+    ArrayList<Integer> b74HP;
+    ArrayList<Integer> b74MP;
+    ArrayList<ArrayList<Integer>> b74atkR;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,27 +105,84 @@ public class StartActivity extends AppCompatActivity {
         drawableList.add(getResources().getDrawable(R.drawable.fs));//圖片02
         drawableList.add(getResources().getDrawable(R.drawable.player));//圖片03
         drawableList.add(getResources().getDrawable(R.drawable.b74));//圖片04
-
     }
 
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        setRole();
+//        Toast.makeText(this, "onResume", Toast.LENGTH_LONG).show();
+//    }
+
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_LOGIN) {
+            if (resultCode == RESULT_OK) {
+                logon = true;
+
+            } else {
+                finish();
+            }
+        }
+    }
+
+    public StartActivity() {
+    }
+
+    private String roomKey;
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
 
         //資料綁定
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         final User user = new User();
         binding.setUser(user);
         //reading data from firebase database
-        FirebaseDatabase.getInstance().getReference("users").child(TSUserId)
-                .addValueEventListener(new ValueEventListener() {
+
+        FUser = FirebaseDatabase.getInstance().getReference("users").child(TSUserId);
+
+        FUser.addValueEventListener(new ValueEventListener() {
+
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-//                        System.out.println("123 :" + dataSnapshot.getValue().toString() );
-//                        user.setName(dataSnapshot.getValue(String.class));
                         if (dataSnapshot.getValue() != null) {
                             /**等級*/
                             user.setLevel(dataSnapshot.child("level").getValue().toString());
+                            Boolean roleJ4Have = (Boolean) dataSnapshot.child("role").child("j4").child("have").getValue();
+                            Boolean roleFsHave = (Boolean) dataSnapshot.child("role").child("j4").child("have").getValue();
+                            Boolean rolePlayerHave = (Boolean) dataSnapshot.child("role").child("j4").child("have").getValue();
+                            Boolean roleB74Have = (Boolean) dataSnapshot.child("role").child("j4").child("have").getValue();
+                            indexGetBoolean = new Boolean[]{roleJ4Have, roleFsHave, rolePlayerHave, roleB74Have};
+
+                            index = Integer.parseInt(String.valueOf(dataSnapshot.child("record").getValue()));
+
+
+                            j4HP = (ArrayList<Integer>) dataSnapshot.child("role").child("j4").child("HP").getValue();
+                            j4MP = (ArrayList<Integer>) dataSnapshot.child("role").child("j4").child("MP").getValue();
+                            j4atkR = (ArrayList<ArrayList<Integer>>) dataSnapshot.child("role").child("j4").child("atkR").getValue();
+                            fsHP = (ArrayList<Integer>) dataSnapshot.child("role").child("fs").child("HP").getValue();
+                            fsMP = (ArrayList<Integer>) dataSnapshot.child("role").child("fs").child("MP").getValue();
+                            fsatkR = (ArrayList<ArrayList<Integer>>) dataSnapshot.child("role").child("fs").child("atkR").getValue();
+                            playerHP = (ArrayList<Integer>) dataSnapshot.child("role").child("player").child("HP").getValue();
+                            playerMP = (ArrayList<Integer>) dataSnapshot.child("role").child("player").child("MP").getValue();
+                            playeratkR = (ArrayList<ArrayList<Integer>>) dataSnapshot.child("role").child("player").child("atkR").getValue();
+                            b74HP = (ArrayList<Integer>) dataSnapshot.child("role").child("b74").child("HP").getValue();
+                            b74MP = (ArrayList<Integer>) dataSnapshot.child("role").child("b74").child("MP").getValue();
+                            b74atkR = (ArrayList<ArrayList<Integer>>) dataSnapshot.child("role").child("b74").child("atkR").getValue();
+
+
+                            setRole();
+
+
+                            dataSnapshot.child("role").child("j4").child("atkR").getValue();
+                            for (int i = 0; i < indexGetBoolean.length; i++) {
+                                if (indexGetBoolean[i]) {
+//                                    indexGetInt.add(i);
+                                }
+                            }
                         } else {
                             user.setLevel("00");
                         }
@@ -101,9 +190,10 @@ public class StartActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
                     }
                 });
+
+
         /**名字*/
         user.setName(TSUserId);
 
@@ -118,18 +208,15 @@ public class StartActivity extends AppCompatActivity {
             }
         });
 
-
         findId();
         openBtnAtk();
-        atkDrawHPMP();
-        atkDraw();
-
 
         final ImageSwitcher imageSwitcher = findViewById(R.id.hand);
+
         arrowLeftTextView = findViewById(R.id.rightBtn);
         arrowRightTextView = findViewById(R.id.leftBtn);
         role = findViewById(R.id.role);
-
+        introduction = findViewById(R.id.introduction);
         //工廠
         imageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
@@ -138,8 +225,7 @@ public class StartActivity extends AppCompatActivity {
             }
         });
 
-        imageSwitcher.setImageDrawable(drawableList.get(0));//初始化顯示第一張圖片
-        role.setText("index : " + index);
+
         arrowRightTextView.setOnClickListener(new View.OnClickListener() {//左箭頭單擊事件
             @Override
             public void onClick(View view) {
@@ -148,8 +234,8 @@ public class StartActivity extends AppCompatActivity {
                 {
                     index = drawableList.size() - 1;
                 }
-                imageSwitcher.setImageDrawable(drawableList.get(index));
-                role.setText("index : " + index);
+                setRole();
+                FUser.child("record").setValue(index);
             }
         });
 
@@ -161,12 +247,71 @@ public class StartActivity extends AppCompatActivity {
                 {
                     index = 0;
                 }
-                imageSwitcher.setImageDrawable(drawableList.get(index));
-                role.setText("index : " + index);
+                setRole();
+                FUser.child("record").setValue(index);
             }
         });
+        cancelConnect();
+
+    }
 
 
+    public void setRole() {
+        /**
+         * 1. 更改圖片
+         * 2. 更改角色名稱
+         * 3. 更改技能組
+         */
+        atkDrawINVISIBLE();
+        final ImageSwitcher imageSwitcher = findViewById(R.id.hand);
+        imageSwitcher.setImageDrawable(drawableList.get(index));
+        switch (index) {
+            case 0:
+                role.setText("劍士");
+                atkDrawHPMP(j4HP, j4MP);
+                atkDraw(j4atkR);
+                introduction.setText("攻擊範圍較小,傷害極高,回血較快");
+                break;
+            case 1:
+                role.setText("法師");
+                atkDrawHPMP(fsHP, fsMP);
+                atkDraw(fsatkR);
+                introduction.setText("攻擊範圍較大,傷害較低,回魔較快,回合結束會被動回魔");
+                break;
+            case 2:
+                role.setText("一般人");
+                atkDrawHPMP(playerHP, playerMP);
+                atkDraw(playeratkR);
+                introduction.setText("就是普通人");
+                break;
+            case 3:
+                role.setText("騎士");
+                atkDrawHPMP(b74HP, b74MP);
+                atkDraw(b74atkR);
+                introduction.setText("擁有厚實的血量,擁有傷害極高的特殊技能");
+                break;
+        }
+
+    }
+
+    public void roleAdd(View v) {
+        Intent it = new Intent(this, FourRoleAdd.class);
+        startActivity(it);
+    }
+
+    public void cardAdd(View v) {
+        Intent it = new Intent(this, FourCardAdd.class);
+        startActivity(it);
+    }
+
+    public void cardUpgrade(View v) {
+        Intent it = new Intent(this, FourCardUpgrade.class);
+        startActivity(it);
+    }
+
+    public void cardChange(View v) {
+        Intent it = new Intent(this, FourCardChange.class);
+        startActivity(it);
     }
 
 
@@ -202,17 +347,17 @@ public class StartActivity extends AppCompatActivity {
     }
 
 
-    public void atkDrawHPMP() {
-        HP1.setText(atkDecide.HP[0] + "");
-        HP2.setText(atkDecide.HP[1] + "");
-        HP3.setText(atkDecide.HP[2] + "");
-        HP4.setText(atkDecide.HP[3] + "");
-        HP5.setText(atkDecide.HP[4] + "");
-        MP1.setText(atkDecide.MP[0] + "");
-        MP2.setText(atkDecide.MP[1] + "");
-        MP3.setText(atkDecide.MP[2] + "");
-        MP4.setText(atkDecide.MP[3] + "");
-        MP5.setText(atkDecide.MP[4] + "");
+    public void atkDrawHPMP(ArrayList<Integer> HP, ArrayList<Integer> MP) {
+        HP1.setText(HP.get(0) + "");
+        HP2.setText(HP.get(1) + "");
+        HP3.setText(HP.get(2) + "");
+        HP4.setText(HP.get(3) + "");
+        HP5.setText(HP.get(4) + "");
+        MP1.setText(MP.get(0) + "");
+        MP2.setText(MP.get(1) + "");
+        MP3.setText(MP.get(2) + "");
+        MP4.setText(MP.get(3) + "");
+        MP5.setText(MP.get(4) + "");
 
     }
 
@@ -236,15 +381,66 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void atk6(View v) {
-        Intent intent = new Intent(this, GameMainActivity.class);
-        startActivity(intent);
+        showConnect();
+        Button cancelC = findViewById(R.id.cancelC);
+        cancelC.setVisibility(View.VISIBLE);
 
     }
 
+    public void atkDrawINVISIBLE() {
+        line11.setVisibility(View.INVISIBLE);
+        line12.setVisibility(View.INVISIBLE);
+        line13.setVisibility(View.INVISIBLE);
+        line14.setVisibility(View.INVISIBLE);
+        line15.setVisibility(View.INVISIBLE);
+        line16.setVisibility(View.INVISIBLE);
+        line17.setVisibility(View.INVISIBLE);
+        line18.setVisibility(View.INVISIBLE);
+        line19.setVisibility(View.INVISIBLE);
+        line21.setVisibility(View.INVISIBLE);
+        line22.setVisibility(View.INVISIBLE);
+        line23.setVisibility(View.INVISIBLE);
+        line24.setVisibility(View.INVISIBLE);
+        line25.setVisibility(View.INVISIBLE);
+        line26.setVisibility(View.INVISIBLE);
+        line27.setVisibility(View.INVISIBLE);
+        line28.setVisibility(View.INVISIBLE);
+        line29.setVisibility(View.INVISIBLE);
+        line31.setVisibility(View.INVISIBLE);
+        line32.setVisibility(View.INVISIBLE);
+        line33.setVisibility(View.INVISIBLE);
+        line34.setVisibility(View.INVISIBLE);
+        line35.setVisibility(View.INVISIBLE);
+        line36.setVisibility(View.INVISIBLE);
+        line37.setVisibility(View.INVISIBLE);
+        line38.setVisibility(View.INVISIBLE);
+        line39.setVisibility(View.INVISIBLE);
+        line41.setVisibility(View.INVISIBLE);
+        line42.setVisibility(View.INVISIBLE);
+        line43.setVisibility(View.INVISIBLE);
+        line44.setVisibility(View.INVISIBLE);
+        line45.setVisibility(View.INVISIBLE);
+        line46.setVisibility(View.INVISIBLE);
+        line47.setVisibility(View.INVISIBLE);
+        line48.setVisibility(View.INVISIBLE);
+        line49.setVisibility(View.INVISIBLE);
+        line51.setVisibility(View.INVISIBLE);
+        line52.setVisibility(View.INVISIBLE);
+        line53.setVisibility(View.INVISIBLE);
+        line54.setVisibility(View.INVISIBLE);
+        line55.setVisibility(View.INVISIBLE);
+        line56.setVisibility(View.INVISIBLE);
+        line57.setVisibility(View.INVISIBLE);
+        line58.setVisibility(View.INVISIBLE);
+        line59.setVisibility(View.INVISIBLE);
 
-    public void atkDraw() {
-        for (int i = 0; i < atkDecide.atk0[0].length; i++) {
-            switch (atkDecide.atk0[0][i]) {
+
+    }
+
+    public void atkDraw(ArrayList<ArrayList<Integer>> atk) {
+        for (int i = 0; i < atk.get(0).size(); i++) {
+            int yc = Integer.parseInt(String.valueOf(atk.get(0).get(i)));
+            switch (yc) {
                 case 1:
                     line11.setVisibility(View.VISIBLE);
                     break;
@@ -274,9 +470,9 @@ public class StartActivity extends AppCompatActivity {
                     break;
             }
         }
-
-        for (int i = 0; i < atkDecide.atk0[1].length; i++) {
-            switch (atkDecide.atk0[1][i]) {
+        for (int i = 0; i < atk.get(1).size(); i++) {
+            int yc = Integer.parseInt(String.valueOf(atk.get(1).get(i)));
+            switch (yc) {
                 case 1:
                     line21.setVisibility(View.VISIBLE);
                     break;
@@ -306,8 +502,9 @@ public class StartActivity extends AppCompatActivity {
                     break;
             }
         }
-        for (int i = 0; i < atkDecide.atk0[2].length; i++) {
-            switch (atkDecide.atk0[2][i]) {
+        for (int i = 0; i < atk.get(2).size(); i++) {
+            int yc = Integer.parseInt(String.valueOf(atk.get(2).get(i)));
+            switch (yc) {
                 case 1:
                     line31.setVisibility(View.VISIBLE);
                     break;
@@ -337,8 +534,9 @@ public class StartActivity extends AppCompatActivity {
                     break;
             }
         }
-        for (int i = 0; i < atkDecide.atk0[3].length; i++) {
-            switch (atkDecide.atk0[3][i]) {
+        for (int i = 0; i < atk.get(3).size(); i++) {
+            int yc = Integer.parseInt(String.valueOf(atk.get(3).get(i)));
+            switch (yc) {
                 case 1:
                     line41.setVisibility(View.VISIBLE);
                     break;
@@ -368,8 +566,9 @@ public class StartActivity extends AppCompatActivity {
                     break;
             }
         }
-        for (int i = 0; i < atkDecide.atk0[4].length; i++) {
-            switch (atkDecide.atk0[4][i]) {
+        for (int i = 0; i < atk.get(4).size(); i++) {
+            int yc = Integer.parseInt(String.valueOf(atk.get(4).get(i)));
+            switch (yc) {
                 case 1:
                     line51.setVisibility(View.VISIBLE);
                     break;
@@ -402,6 +601,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void findId() {
+
         line11 = findViewById(R.id.line11);
         line12 = findViewById(R.id.line12);
         line13 = findViewById(R.id.line13);
@@ -469,6 +669,9 @@ public class StartActivity extends AppCompatActivity {
         MP3 = findViewById(R.id.MP3);
         MP4 = findViewById(R.id.MP4);
         MP5 = findViewById(R.id.MP5);
+
+        EditText roomEditText = findViewById(R.id.roomEditText);
+        roomEditText.setHint("----");
     }
 
 
@@ -481,16 +684,205 @@ public class StartActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
+
+
+    public void cancelConnect() {
+        View layout_pair = findViewById(R.id.layout_pair);
+        View layout_pair_bk = findViewById(R.id.layout_pair_bk);
+        View layout_pair2 = findViewById(R.id.layout_pair2);
+        layout_pair.setVisibility(View.INVISIBLE);
+        layout_pair_bk.setVisibility(View.INVISIBLE);
+        layout_pair2.setVisibility(View.INVISIBLE);
+    }
+
+    public void showConnect() {
+        View layout_pair = findViewById(R.id.layout_pair);
+        View layout_pair_bk = findViewById(R.id.layout_pair_bk);
+        View layout_pair2 = findViewById(R.id.layout_pair2);
+        layout_pair.setVisibility(View.INVISIBLE);
+        layout_pair_bk.setVisibility(View.VISIBLE);
+        layout_pair2.setVisibility(View.VISIBLE);
+    }
+
+    public void onFriend(View v) {
+        View layout_pair = findViewById(R.id.layout_pair);
+        View layout_pair2 = findViewById(R.id.layout_pair2);
+        layout_pair.setVisibility(View.VISIBLE);
+        layout_pair2.setVisibility(View.INVISIBLE);
+    }
+
+    public void onRandom(View v) {
+        Toast.makeText(this, "不要逼ㄛ 我還沒寫", Toast.LENGTH_LONG).show();
+    }
+
+    String player;
+
+    public void checkRepeat() {
+        roomKey = tools.random4Number();
+        System.out.println("checkRepeat :" + roomKey);
+        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                if (snapshot.getValue() == null) {
+                    /**
+                     * 1.增加房間player1名稱
+                     * 2.狀態設為 0
+                     * 3.告訴前端四位數密碼
+                     * 4.監聽狀態
+                     * 5.增加房間自己的血量跟魔量
+                     * */
+
+                    FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child("player1").child("name").setValue(userId);
+                    player = "player1";
+                    FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child("status").setValue(STATUS_INIT);
+
+                    TextView create1234 = findViewById(R.id.create1234);
+                    create1234.setText(roomKey);
+
+                    FirebaseDatabase.getInstance().getReference("rooms")
+                            .child(roomKey)
+                            .child("status")
+                            .addValueEventListener(statusListener);
+
+                    FUser.child("role").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            addHPMP(snapshot, "player1");
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
+
+                } else {
+                    System.out.println("運氣不錯喔  :" + roomKey);
+                    checkRepeat();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void onHTTPCreate(View v) {
+        checkRepeat(); //roomKey
+    }
+
+    public void onHTTPJoin(View v) {
+
+        EditText roomEditText = findViewById(R.id.roomEditText);
+        String roomNum = roomEditText.getText().toString();
+
+        if (roomNum.length() < 4) {
+            Toast.makeText(this, "請輸入完整的房間號...",
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            roomKey = roomNum;
+            Toast.makeText(this, "檢查是否有此房號....",
+                    Toast.LENGTH_SHORT).show();
+
+            FirebaseDatabase.getInstance().getReference("rooms").child(roomNum).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.getValue() == null) {
+                        Toast.makeText(StartActivity.this, "查無此房間....", Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        /**
+                         * 1.增加房間player2名稱
+                         * 2.狀態設為 1
+                         * 4.監聽狀態
+                         * 5.增加房間自己的血量跟魔量
+                         * */
+
+                        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child("player2").child("name").setValue(TSUserId);
+                        player ="player2";
+                        FUser.child("role").addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                addHPMP(snapshot, "player2");
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                            }
+                        });
+                        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child("status").setValue(1);
+                        FirebaseDatabase.getInstance().getReference("rooms")
+                                .child(roomKey)
+                                .child("status")
+                                .addValueEventListener(statusListener);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+        }
+    }
+
+    public void cancelC(View v) {
+        Button cancelC = findViewById(R.id.cancelC);
+        cancelC.setVisibility(View.INVISIBLE);
+        cancelConnect();
+    }
+
+
+    private ValueEventListener statusListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            if (snapshot.getValue() == null)
+                return;
+            long status = (long) snapshot.getValue();
+            switch ((int) status) {
+                case 0:
+                    System.out.println("等待對手進入遊戲室");
+                    break;
+                case 1:
+                    System.out.println("對手加入了！");
+                    Intent it = new Intent(StartActivity.this, GameActivity.class);
+                    it.putExtra("player", player);
+                    it.putExtra("roomKey", roomKey);
+                    startActivity(it);
+                    break;
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+
+        }
+    };
+
+
+
+    private void addHPMP(@NonNull DataSnapshot snapshot, String player) {
+
+        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("Index").setValue(index);
+        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("HP").setValue(snapshot.child(tools.roleChange(index)).child("SHP").getValue());
+        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("MP").setValue(snapshot.child(tools.roleChange(index)).child("SMP").getValue());
+        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("HPUP").setValue(0);
+        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("MPUP").setValue(0);
+        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("X").setValue(0);
+        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("Y").setValue(1);
+        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("locationXSelf").setValue(0);
+        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("locationYSelf").setValue(0);
+        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child("fourStatus").setValue(0);
+    }
+
+
 }

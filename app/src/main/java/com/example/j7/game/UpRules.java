@@ -2,15 +2,15 @@ package com.example.j7.game;
 
 import android.content.Context;
 
-import com.example.j7.GameMainActivity;
+import com.example.j7.GameActivity;
 
 public class UpRules {
-    private GameMainActivity activity;
+    private GameActivity activity;
     private Context context;
 
     public UpRules(Context context) {
         this.context = context;
-        this.activity = (GameMainActivity) context;
+        this.activity = (GameActivity) context;
 
     }
 

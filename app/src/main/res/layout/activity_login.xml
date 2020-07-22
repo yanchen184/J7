@@ -6,6 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:baselineAligned="false">
+
+        <fragment
+            android:id="@+id/fragment1"
+            android:name="com.example.j7.Fragment.Fragment1"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <fragment
+            android:id="@+id/fragment2"
+            android:name="com.example.j7.Fragment.Fragment2"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
 
     <EditText
         android:id="@+id/ed_userid"
@@ -64,4 +86,9 @@
         android:onClick="sign"
         app:layout_constraintEnd_toEndOf="@+id/ed_passwd"
         app:layout_constraintTop_toTopOf="@+id/button" />
+
+
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

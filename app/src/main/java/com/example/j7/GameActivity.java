@@ -1,30 +1,52 @@
 package com.example.j7;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import com.example.j7.R;
+import com.example.j7.databinding.ActivityMainBinding;
+import com.example.j7.databinding.User;
 import com.example.j7.game.AtkDecide;
 import com.example.j7.game.AtkRules;
 import com.example.j7.game.ConnectManager;
 import com.example.j7.game.MoveRules;
 import com.example.j7.game.UpRules;
+import com.example.j7.tools.Tools;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import okhttp3.WebSocket;
 
-public class GameMainActivity extends AppCompatActivity {
+import static com.example.j7.LoginActivity.TSUserId;
+import static com.example.j7.LoginActivity.userId;
+import static com.example.j7.tools.Name.STATUS_INIT;
+
+public class GameActivity extends AppCompatActivity {
     /**0626讓冠宇看懂的連線版本 */
     /**
      * 0627 :
@@ -32,18 +54,17 @@ public class GameMainActivity extends AppCompatActivity {
      * 0704 :
      * 1.分類
      */
-    private TextView txt_self_name;
+    private TextView txt_self_name, txt_com_name;
     private Button btnInitStart, btnInitConnect;
     public ImageView imagePlayer, imageCom;
     private EditText roomEditText;
     public int step;
-    WebSocket webSocket;
     ConnectManager connectManager = new ConnectManager(this);
     public MoveRules moveRules = new MoveRules(this);
     public AtkRules atkRules = new AtkRules(this);
     public UpRules upRules = new UpRules(this);
     public AtkDecide atkDecide = new AtkDecide();
-
+    Tools tools = new Tools();
     /**
      * 命名用途 只有不同名字的人才可以連線成功　TODO
      */
@@ -74,42 +95,134 @@ public class GameMainActivity extends AppCompatActivity {
     public View line31, line32, line33, line34, line35, line36, line37, line38, line39;
     public View line41, line42, line43, line44, line45, line46, line47, line48, line49;
     public View line51, line52, line53, line54, line55, line56, line57, line58, line59;
-    public View line61, line62, line63, line64, line65, line66, line67, line68, line69;
     public TextView HP1, HP2, HP3, HP4, HP5, HP6;
     public TextView MP1, MP2, MP3, MP4, MP5, MP6;
-
+    String roomKey;
+    String player;
+    String otherPlayer;
+    DatabaseReference fullRoom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("---------重新啟動---------");
-//        FirebaseApp.initializeApp(this);
-//        FirebaseDatabase.getInstance().getReference("users").child("bob").child("password")
-//                .addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        String s = (String) snapshot.getValue();
-//                        System.out.println(s);
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {
-//
-//                    }
-//                });
+        System.out.println("---------遊戲開始---------");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity_main);
+
         connectManager.initiateSocketConnection();//連線
-        findView();
+        findView(); //findView()
+        intent(); //從上一頁告知我 roomKey player otherPlayer
+
+        fullRoom = FirebaseDatabase.getInstance().getReference("rooms").child(roomKey);
+
         locationX = new View[]{lineX0, lineX1, lineX2, lineX3, lineX4};
         locationY = new View[]{lineY0, lineY1, lineY2};
-        roomEditText.setText(userName);
-        step = 0;
+
+
+        fullRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //告訴我兩個人選的角色
+                long x1 = (long) snapshot.child(player).child("Index").getValue();
+                long x2 = (long) snapshot.child(otherPlayer).child("Index").getValue();
+                //告訴我兩個人選的角色的圖片
+                int role1 = tools.roleChangePicture((int) x1);
+                int role2 = tools.roleChangePicture((int) x2);
+                //換圖
+                imagePlayer.setImageResource(role1);
+                imageCom.setImageResource(role2);
+                imageCom.setScaleX(-1);
+
+                //告訴我兩個人的名字
+                txt_self_name.setText(snapshot.child(player).child("name").getValue().toString());
+                txt_com_name.setText(snapshot.child(otherPlayer).child("name").getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+
         atkRules.atkDraw();
         atkRules.atkDrawHPMP();
+
         openBtnAtk();
-        getSharedPreferences();
-        imagePlayer.layout(locationX[locationXSelf].getLeft() + 30, locationY[locationYSelf].getTop() - 200, locationX[locationXSelf].getLeft() + 100 + 30, locationY[locationYSelf].getBottom());
-        imageCom.layout(locationX[locationXCom].getLeft() + 30, locationY[locationYCom].getTop() - 200, locationX[locationXCom].getLeft() + 100 + 30, locationY[locationYCom].getBottom());
+
+        //繪製圖片
+//        imagePlayer.layout(locationX[locationXSelf].getLeft() + 30, locationY[locationYSelf].getTop() - 200, locationX[locationXSelf].getLeft() + 100 + 30, locationY[locationYSelf].getBottom());
+//        imageCom.layout(locationX[locationXCom].getLeft() + 30, locationY[locationYCom].getTop() - 200, locationX[locationXCom].getLeft() + 100 + 30, locationY[locationYCom].getBottom());
+    }
+
+
+    private ValueEventListener upListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            if (snapshot.getValue() == null)
+                return;
+            txt_self_hp.setText(snapshot.child(player).child("HP").getValue().toString());
+            txt_self_mp.setText(snapshot.child(player).child("MP").getValue().toString());
+            txt_com_hp.setText(snapshot.child(otherPlayer).child("HP").getValue().toString());
+            txt_com_mp.setText(snapshot.child(otherPlayer).child("MP").getValue().toString());
+            long x1 = (long) snapshot.child(player).child("X").getValue();
+            long y1 = (long) snapshot.child(player).child("Y").getValue();
+            long x2 = (long) snapshot.child(otherPlayer).child("X").getValue();
+            long y2 = (long) snapshot.child(otherPlayer).child("Y").getValue();
+
+            moveRules.moveJudgmentSelf((int) x1, (int) y1);
+            moveRules.moveJudgmentCom((int) x2, (int) y2);
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+        }
+    };
+
+
+
+
+    private ValueEventListener statusListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            if (snapshot.getValue() == null)
+                return;
+            long x = (long) snapshot.getValue();
+            if ((int) x == 2) {
+                fullRoom.child("fourStatus").setValue(0);
+                receiveMessage();
+            }
+        }
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+        }
+    };
+
+
+
+
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        fullRoom.addValueEventListener(upListener);//監聽
+        fullRoom.child("fourStatus").addValueEventListener(statusListener);//監聽
+    }
+
+
+    private void intent() {
+        Intent it = getIntent();
+        roomKey = it.getStringExtra("roomKey");
+        player = it.getStringExtra("player");
+        switch (player) {
+            case "player1":
+                otherPlayer = "player2";
+                break;
+            case "player2":
+                otherPlayer = "player1";
+                break;
+        }
     }
 
     private void findView() {
@@ -118,9 +231,8 @@ public class GameMainActivity extends AppCompatActivity {
         btnInitStart = findViewById(R.id.initStart);
         btnInitConnect = findViewById(R.id.initConnect);
         imageCom = findViewById(R.id.image_com);
-        imageCom.setImageResource(R.drawable.com);
         imagePlayer = findViewById(R.id.image_player);
-        imagePlayer.setImageResource(R.drawable.player);
+
         lineX0 = findViewById(R.id.lineX0);
         lineX1 = findViewById(R.id.lineX1);
         lineX2 = findViewById(R.id.lineX2);
@@ -143,7 +255,7 @@ public class GameMainActivity extends AppCompatActivity {
         buttonAtk6 = findViewById(R.id.buttonAtk6);
 
         txt_self_name = findViewById(R.id.txt_self_name);
-        txt_self_name.setText(userName);
+        txt_com_name = findViewById(R.id.txt_com_name);
         txt_self_hp = findViewById(R.id.txt_self_hp);
         txt_self_mp = findViewById(R.id.txt_self_mp);
         txt_com_hp = findViewById(R.id.txt_com_hp);
@@ -245,13 +357,6 @@ public class GameMainActivity extends AppCompatActivity {
 
     }
 
-    public void getSharedPreferences() {
-        EditText editText = findViewById(R.id.ip);
-        String userId = getSharedPreferences("ip", MODE_PRIVATE)
-                .getString("ip", "");
-        ip = userId;
-        editText.setText(ip);
-    }
 
     public void includeMoveInvisible() {
         includeMove.setVisibility(View.INVISIBLE);
@@ -354,69 +459,20 @@ public class GameMainActivity extends AppCompatActivity {
     }
 
 
-    public void edit(View view) {
-        /** 使用者名稱 : 有人名稱就記錄下來*/
-        EditText name = findViewById(R.id.roomEditText);
-        name.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                userName = s.toString();
-                System.out.println("userName : " + userName);
-                /** 將使用者名稱紀錄進手機內存*/
-            }
-        });
-    }
-
-
-    public void editIP(View view) {
-        /** 使用者名稱 : 有人名稱就記錄下來*/
-        System.out.println("123123123121");
-        EditText editText = findViewById(R.id.ip);
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                ip = s.toString();
-                /** 將使用者名稱紀錄進手機內存*/
-                SharedPreferences pref = getSharedPreferences("ip", MODE_PRIVATE);
-                pref.edit()
-                        .putString("ip", ip)
-                        .commit();
-                System.out.println(ip);
-            }
-        });
-
-    }
-
     public void moveRight(View view) {
-        moveRules.moveCommon(1, 0, "向右");
+        moveRules.moveCommon(1, 0);
     }
 
     public void moveLeft(View view) {
-        moveRules.moveCommon(-1, 0, "向左");
+        moveRules.moveCommon(-1, 0);
     }
 
     public void moveTop(View view) {
-        moveRules.moveCommon(0, 1, "向上");
+        moveRules.moveCommon(0, 1);
     }
 
     public void moveDown(View view) {
-        moveRules.moveCommon(0, -1, "向下");
+        moveRules.moveCommon(0, -1);
     }
 
     public void tool1(View view) {
@@ -450,11 +506,20 @@ public class GameMainActivity extends AppCompatActivity {
     }
 
 
-//    public void confirmPlace() {
-//        /**重新繪製位置*/
-//        imagePlayer.layout(locationX[locationXSelf].getLeft() + 30, locationY[locationYSelf].getTop() - 200, locationX[locationXSelf].getLeft() + 100 + 30, locationY[locationYSelf].getBottom());
-//        imageCom.layout(locationX[locationXCom].getLeft() + 30, locationY[locationYCom].getTop() - 200, locationX[locationXCom].getLeft() + 100 + 30, locationY[locationYCom].getBottom());
-//    }
+    public void statusUp() {
+        fullRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long x = (long) snapshot.child("fourStatus").getValue();
+                fullRoom.child("fourStatus").setValue((int) x + 1);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
 
     /**
@@ -514,17 +579,24 @@ public class GameMainActivity extends AppCompatActivity {
 
 
     public void sendMessageMove() {
+//        includeMoveInvisible();
+        statusUp();
         Toast.makeText(this, "移動", Toast.LENGTH_SHORT).show();
-        connectManager.sendMessage(0, locationXSelf, locationYSelf, "move");
+        fullRoom.child(player).child("locationXSelf").setValue(locationXSelf);
+        fullRoom.child(player).child("locationYSelf").setValue(locationYSelf);
+//        connectManager.sendMessage(0, locationXSelf, locationYSelf, "move");
+
     }
 
     public void sendMessageUp(String pp, int l) {
         includeMoveInvisible();
+        statusUp();
         Toast.makeText(this, "回復", Toast.LENGTH_SHORT).show();
         connectManager.sendMessage(l, pp, "up");
     }
 
     public void sendMessageMoveAtk(int[] atk, int hp, int mp) {
+        statusUp();
         Toast.makeText(this, "攻擊", Toast.LENGTH_SHORT).show();
         connectManager.sendMessage(atk, hp, mp, "atk");
     }
@@ -564,4 +636,73 @@ public class GameMainActivity extends AppCompatActivity {
         lockBtnAtk();
         sendMessageMoveAtk(null, 0, 0);
     }
+
+
+    private void receiveMessage() {
+
+        visibility();//收到後 地板火焰先取消
+
+        for (int i = 0; i < 2; i++) {
+            Message msg = new Message();
+            Bundle bundle = new Bundle();
+            bundle.putInt("NUM", i);
+            msg.setData(bundle);
+            msg.what = 0;
+            handler.sendMessageDelayed(msg, 1000 * (i + 1));
+        }
+    }
+
+
+    private MyHandler handler = new MyHandler();
+
+    class MyHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            int start = msg.getData().getInt("NUM");
+            System.out.println("開始動作 : " + start);
+            switch (start) {
+                case 0:
+                    fullRoom.child(player).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            long xl = (long) snapshot.child("locationXSelf").getValue();
+                            long yl = (long) snapshot.child("locationYSelf").getValue();
+                            fullRoom.child(player).child("X").setValue((int) xl);
+                            fullRoom.child(player).child("Y").setValue((int) yl);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
+                    break;
+                case 1:
+                    fullRoom.child(otherPlayer).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            long xl = (long) snapshot.child("locationXSelf").getValue();
+                            long yl = (long) snapshot.child("locationYSelf").getValue();
+                            fullRoom.child(otherPlayer).child("X").setValue((int) xl);
+                            fullRoom.child(otherPlayer).child("Y").setValue((int) yl);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
+                    System.out.println("歸零");
+                    fullRoom.child("fourStatus").setValue(0);
+                    break;
+                case 2:
+                    fullRoom.child("fourStatus").setValue(0);
+                    break;
+                case 3:
+                    fullRoom.child("fourStatus").setValue(0);
+                    break;
+            }
+        }
+    }
+
+
 }

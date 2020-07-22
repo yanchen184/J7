@@ -7,19 +7,19 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.j7.GameMainActivity;
+import com.example.j7.GameActivity;
 import com.example.j7.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AtkRules {
-    private GameMainActivity activity;
+    private GameActivity activity;
     private Context context;
 
     public AtkRules(Context context) {
         this.context = context;
-        this.activity = (GameMainActivity) context;
+        this.activity = (GameActivity) context;
     }
 
     public int[][] atkRangeSelf; // 自己的攻擊範圍(根據座標重繪後的)

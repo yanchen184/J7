@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@layout/game_picture_layout_button_background"
     android:orientation="vertical"
-    tools:context=".GameMainActivity">
+    tools:context=".GameActivity">
 
 
     <!--    <View-->

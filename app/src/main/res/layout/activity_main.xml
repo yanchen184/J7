@@ -32,6 +32,24 @@
             android:alpha="0.3"
             app:srcCompat="@android:drawable/ic_dialog_email" />
 
+
+
+        <include
+            android:id="@+id/layout_pair_bk"
+            layout="@layout/layout_pair_bk_number"
+            android:visibility="visible" />
+
+        <include
+            android:id="@+id/layout_pair"
+            layout="@layout/layout_pair_number_2"
+            android:visibility="invisible" />
+
+        <include
+            android:id="@+id/layout_pair2"
+            layout="@layout/layout_pair_number_1"
+            android:visibility="visible" />
+
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

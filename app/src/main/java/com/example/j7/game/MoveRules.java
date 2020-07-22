@@ -2,21 +2,21 @@ package com.example.j7.game;
 
 import android.content.Context;
 
-import com.example.j7.GameMainActivity;
+import com.example.j7.GameActivity;
 
 public class MoveRules {
 
-    private GameMainActivity activity;
+    private GameActivity activity;
     private Context context;
 
     public MoveRules(Context context) {
         this.context = context;
-        this.activity = (GameMainActivity) context;
+        this.activity = (GameActivity) context;
 
     }
 
 
-    public void moveCommon(int x, int y, String txt) {
+    public void moveCommon(int x, int y) {
         /**邊界限制*/
         if (activity.locationXSelf + x < 0) {
             activity.locationXSelf = 0;
@@ -32,9 +32,8 @@ public class MoveRules {
         } else {
             activity.locationYSelf = activity.locationYSelf + y;
         }
-
         activity.sendMessageMove();
-        activity.includeMoveInvisible();
+
     }
 
 

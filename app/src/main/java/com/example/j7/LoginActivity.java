@@ -5,7 +5,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -24,7 +27,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class LoginActivity extends Activity {
+import static com.example.j7.tools.Name.fsNum;
+import static com.example.j7.tools.Name.j4Num;
+
+public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
     private EditText edUserid;
@@ -44,6 +50,11 @@ public class LoginActivity extends Activity {
         edUserid = findViewById(R.id.ed_userid);
         edPasswd = findViewById(R.id.ed_passwd);
     }
+
+    public LoginActivity() {
+    }
+
+
 
     public void login(View view) {
         userId = edUserid.getText().toString();
@@ -82,6 +93,47 @@ public class LoginActivity extends Activity {
         passWd = edPasswd.getText().toString();
         inputTS(userId, passWd);
 
+
+
+
+//        String[] items = {"newItem", "newItem", "newItem"};
+//        rootRef.child("role").child("fs").child("atkR").setValue(Arrays.asList(items));
+
+        FirebaseDatabase.getInstance().getReference("users").child(edUserid.getText().toString()).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.getValue() == null) {
+                    newSign();
+                    new AlertDialog.Builder(LoginActivity.this)
+                            .setTitle("註冊結果")
+                            .setMessage("註冊成功")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    successDialog();
+                                    setResult(RESULT_OK);
+                                    finish();
+                                }
+                            })
+                            .show();
+                }else{
+                    new AlertDialog.Builder(LoginActivity.this)
+                            .setTitle("註冊結果")
+                            .setMessage("帳號已擁有")
+                            .setPositiveButton("OK",null)
+                            .show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void newSign() {
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
         /**新的資料
@@ -118,46 +170,37 @@ public class LoginActivity extends Activity {
 
         /** fs */
         rootRef.child("role").child("fs").child("have").setValue(true);
+        rootRef.child("role").child("fs").child("SHP").setValue(8);
+        rootRef.child("role").child("fs").child("SMP").setValue(15);
         rootRef.child("role").child("fs").child("atkR").setValue(fs);
         rootRef.child("role").child("fs").child("HP").setValue(intToList(atkDecide.fsHP));
         rootRef.child("role").child("fs").child("MP").setValue(intToList(atkDecide.fsMP));
 
         /** j4 */
         rootRef.child("role").child("j4").child("have").setValue(true);
+        rootRef.child("role").child("j4").child("SHP").setValue(12);
+        rootRef.child("role").child("j4").child("SMP").setValue(9);
         rootRef.child("role").child("j4").child("atkR").setValue(j4);
         rootRef.child("role").child("j4").child("HP").setValue(intToList(atkDecide.j4HP));
         rootRef.child("role").child("j4").child("MP").setValue(intToList(atkDecide.j4MP));
 
         /** player */
         rootRef.child("role").child("player").child("have").setValue(true);
+        rootRef.child("role").child("player").child("SHP").setValue(11);
+        rootRef.child("role").child("player").child("SMP").setValue(11);
         rootRef.child("role").child("player").child("atkR").setValue(player);
         rootRef.child("role").child("player").child("HP").setValue(intToList(atkDecide.playerHP));
         rootRef.child("role").child("player").child("MP").setValue(intToList(atkDecide.playerMP));
 
         /** b74 */
         rootRef.child("role").child("b74").child("have").setValue(false);
+        rootRef.child("role").child("b74").child("SHP").setValue(20);
+        rootRef.child("role").child("b74").child("SMP").setValue(10);
         rootRef.child("role").child("b74").child("atkR").setValue(b74);
         rootRef.child("role").child("b74").child("HP").setValue(intToList(atkDecide.b74HP));
         rootRef.child("role").child("b74").child("MP").setValue(intToList(atkDecide.b74MP));
 
-
-
-//        String[] items = {"newItem", "newItem", "newItem"};
-//        rootRef.child("role").child("fs").child("atkR").setValue(Arrays.asList(items));
-
-        FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String pw = snapshot.getValue().toString();
-                System.out.println("pw");
-                System.out.println(pw);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        rootRef.child("record").setValue(j4Num);
 
     }
 
