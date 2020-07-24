@@ -8,7 +8,6 @@
 
 
 
-
     <TableLayout
         android:id="@+id/twobtn"
         android:layout_width="wrap_content"
@@ -19,74 +18,77 @@
 
         <TableRow android:layout_height="40dp">
 
-            <Button
+            <ImageButton
                 android:id="@+id/button"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:scaleType="fitEnd"
-                android:background="@drawable/move_down"
+                android:background="#00000000"
+                android:src="@drawable/move_left"
                 android:onClick="moveDown"
+                android:scaleType="fitXY"
+                android:rotation="270"
                 android:layout_marginRight="10dp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline"
                 app:layout_constraintStart_toEndOf="@+id/button2"
                 app:layout_constraintTop_toTopOf="parent"
                 />
 
-            <Button
+            <ImageButton
                 android:id="@+id/button2"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:background="@drawable/move_top"
+                android:src="@drawable/move_left"
+                android:rotation="90"
+                android:background="#00000000"
                 android:onClick="moveTop"
+                android:scaleType="fitXY"
                 android:layout_marginRight="10dp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/button3"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:background="@drawable/move_left"
+                android:background="#00000000"
+                android:src="@drawable/move_left"
                 android:onClick="moveLeft"
+                android:scaleType="fitXY"
                 android:layout_marginRight="10dp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/button4"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:background="@drawable/move_right"
+                android:rotation="180"
+                android:background="#00000000"
+                android:src="@drawable/move_left"
                 android:onClick="moveRight"
+                android:scaleType="fitXY"
                 android:layout_marginRight="10dp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
+            <include
                 android:id="@+id/button5"
+                layout="@layout/hp_layout"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:background="@drawable/hpup"
-                android:onClick="tool1"
                 android:layout_marginRight="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                />
 
-            <Button
+            <include
                 android:id="@+id/button6"
+                layout="@layout/mp_layout"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:background="@drawable/mpup"
-                android:onClick="tool2"
-                app:layout_constraintBottom_toTopOf="@+id/guideline"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.814"
-                app:layout_constraintStart_toEndOf="@+id/button"
-                app:layout_constraintTop_toTopOf="parent" />
+                />
+
         </TableRow>
     </TableLayout>
 

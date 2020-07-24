@@ -170,31 +170,31 @@ public class LoginActivity extends AppCompatActivity {
 
         /** fs */
         rootRef.child("role").child("fs").child("have").setValue(true);
-        rootRef.child("role").child("fs").child("SHP").setValue(8);
-        rootRef.child("role").child("fs").child("SMP").setValue(15);
+        rootRef.child("role").child("fs").child("SHP").setValue(10);
+        rootRef.child("role").child("fs").child("SMP").setValue(10);
         rootRef.child("role").child("fs").child("atkR").setValue(fs);
         rootRef.child("role").child("fs").child("HP").setValue(intToList(atkDecide.fsHP));
         rootRef.child("role").child("fs").child("MP").setValue(intToList(atkDecide.fsMP));
 
         /** j4 */
         rootRef.child("role").child("j4").child("have").setValue(true);
-        rootRef.child("role").child("j4").child("SHP").setValue(12);
-        rootRef.child("role").child("j4").child("SMP").setValue(9);
+        rootRef.child("role").child("j4").child("SHP").setValue(10);
+        rootRef.child("role").child("j4").child("SMP").setValue(10);
         rootRef.child("role").child("j4").child("atkR").setValue(j4);
         rootRef.child("role").child("j4").child("HP").setValue(intToList(atkDecide.j4HP));
         rootRef.child("role").child("j4").child("MP").setValue(intToList(atkDecide.j4MP));
 
         /** player */
         rootRef.child("role").child("player").child("have").setValue(true);
-        rootRef.child("role").child("player").child("SHP").setValue(11);
-        rootRef.child("role").child("player").child("SMP").setValue(11);
+        rootRef.child("role").child("player").child("SHP").setValue(10);
+        rootRef.child("role").child("player").child("SMP").setValue(10);
         rootRef.child("role").child("player").child("atkR").setValue(player);
         rootRef.child("role").child("player").child("HP").setValue(intToList(atkDecide.playerHP));
         rootRef.child("role").child("player").child("MP").setValue(intToList(atkDecide.playerMP));
 
         /** b74 */
         rootRef.child("role").child("b74").child("have").setValue(false);
-        rootRef.child("role").child("b74").child("SHP").setValue(20);
+        rootRef.child("role").child("b74").child("SHP").setValue(10);
         rootRef.child("role").child("b74").child("SMP").setValue(10);
         rootRef.child("role").child("b74").child("atkR").setValue(b74);
         rootRef.child("role").child("b74").child("HP").setValue(intToList(atkDecide.b74HP));

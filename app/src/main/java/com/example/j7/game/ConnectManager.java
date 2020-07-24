@@ -132,7 +132,7 @@ public class ConnectManager extends AppCompatActivity {
      */
     private void receiveMessage(JSONArray jsonArray) {
 //        isReceiving = true;
-        activity.visibility();//收到
+        activity.fireVisibile();//收到
 //        int totalTime = 4;
 //        new Handler().postDelayed(() -> {
 //            rm(0, 1, jsonArray);
@@ -162,7 +162,7 @@ public class ConnectManager extends AppCompatActivity {
             JSONObject jsonObject = (JSONObject) jsonArray.get(0);//如果收到的第一筆資料 -> restart
             String kind = jsonObject.getString("kind");
             if (kind == "restart") {
-                activity.initGame1();
+//                activity.initGame1();
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -259,14 +259,14 @@ public class ConnectManager extends AppCompatActivity {
                         int mp = jsonObject.getInt("mp");
 
                         if (sender.equals(activity.userName)) {
-                            activity.atkRules.atkJudgmentSelf(atkx, hp, mp);
+//                            activity.atkRules.atkJudgmentSelf(atkx, hp, mp);
                         } else {
-                            activity.atkRules.atkJudgmentCom(atkx, hp, mp);
+//                            activity.atkRules.atkJudgmentCom(atkx, hp, mp);
                         }
                         break;
                 }
             }
-            activity.includeMoveVisible();
+            activity.moveVisible();
             if (jsonArray.length() == end) {
                 activity.init();
             }

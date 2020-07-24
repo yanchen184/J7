@@ -1,28 +1,20 @@
 package com.example.j7;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 
-import com.example.j7.R;
-import com.example.j7.databinding.ActivityMainBinding;
-import com.example.j7.databinding.User;
 import com.example.j7.game.AtkDecide;
 import com.example.j7.game.AtkRules;
 import com.example.j7.game.ConnectManager;
@@ -36,15 +28,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import okhttp3.WebSocket;
-
-import static com.example.j7.LoginActivity.TSUserId;
-import static com.example.j7.LoginActivity.userId;
-import static com.example.j7.tools.Name.STATUS_INIT;
+import java.sql.SQLOutput;
+import java.util.ArrayList;
 
 public class GameActivity extends AppCompatActivity {
     /**0626讓冠宇看懂的連線版本 */
@@ -65,6 +50,7 @@ public class GameActivity extends AppCompatActivity {
     public UpRules upRules = new UpRules(this);
     public AtkDecide atkDecide = new AtkDecide();
     Tools tools = new Tools();
+    public StartActivity startActivity = new StartActivity();
     /**
      * 命名用途 只有不同名字的人才可以連線成功　TODO
      */
@@ -81,10 +67,10 @@ public class GameActivity extends AppCompatActivity {
     public View atkKJ01, atkKJ11, atkKJ21, atkKJ31, atkKJ41;
     public View atkKJ02, atkKJ12, atkKJ22, atkKJ32, atkKJ42;
     public Button initGame;
-    public TextView txt_self_hp, txt_self_mp, txt_com_hp, txt_com_mp;
+    public TextView txt_self_hp, txt_self_mp, txt_com_hp, txt_com_mp, upHP, upMP;
     public View button, button2, button3, button4, button5, button6;
-    public View buttonAtk1, buttonAtk2, buttonAtk3, buttonAtk4, buttonAtk5, buttonAtk6;
-    public String ip;
+    public Button buttonAtk1, buttonAtk2, buttonAtk3, buttonAtk4, buttonAtk5, buttonAtk6;
+    public Button buttonTools1, buttonTools2;
 
     public View[] locationX;
     public View[] locationY;
@@ -97,15 +83,22 @@ public class GameActivity extends AppCompatActivity {
     public View line51, line52, line53, line54, line55, line56, line57, line58, line59;
     public TextView HP1, HP2, HP3, HP4, HP5, HP6;
     public TextView MP1, MP2, MP3, MP4, MP5, MP6;
-    String roomKey;
+    public String roomKey;
     String player;
     String otherPlayer;
-    DatabaseReference fullRoom;
+    public DatabaseReference fullRoom;
+    int upHPInt;
+    int upMPInt;
+    ArrayList<Integer> finalHP = null;
+    ArrayList<Integer> finalMP = null;
+    ArrayList<ArrayList<Integer>> finalAtlR = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("---------遊戲開始---------");
 
+        System.out.println(startActivity.fsatkR);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity_main);
 
@@ -113,11 +106,11 @@ public class GameActivity extends AppCompatActivity {
         findView(); //findView()
         intent(); //從上一頁告知我 roomKey player otherPlayer
 
-        fullRoom = FirebaseDatabase.getInstance().getReference("rooms").child(roomKey);
-
+        fullRoom = FirebaseDatabase.getInstance().getReference("rooms").child(roomKey);//FirebaseDatabase
         locationX = new View[]{lineX0, lineX1, lineX2, lineX3, lineX4};
         locationY = new View[]{lineY0, lineY1, lineY2};
 
+        upText();
 
         fullRoom.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -131,8 +124,8 @@ public class GameActivity extends AppCompatActivity {
                 //換圖
                 imagePlayer.setImageResource(role1);
                 imageCom.setImageResource(role2);
+                //翻轉高雄
                 imageCom.setScaleX(-1);
-
                 //告訴我兩個人的名字
                 txt_self_name.setText(snapshot.child(player).child("name").getValue().toString());
                 txt_com_name.setText(snapshot.child(otherPlayer).child("name").getValue().toString());
@@ -144,16 +137,75 @@ public class GameActivity extends AppCompatActivity {
         });
 
 
-        atkRules.atkDraw();
-        atkRules.atkDrawHPMP();
+        atkRules.atkDraw(finalAtlR);
+        atkRules.atkDrawHPMP(finalHP, finalMP);
 
-        openBtnAtk();
 
         //繪製圖片
 //        imagePlayer.layout(locationX[locationXSelf].getLeft() + 30, locationY[locationYSelf].getTop() - 200, locationX[locationXSelf].getLeft() + 100 + 30, locationY[locationYSelf].getBottom());
 //        imageCom.layout(locationX[locationXCom].getLeft() + 30, locationY[locationYCom].getTop() - 200, locationX[locationXCom].getLeft() + 100 + 30, locationY[locationYCom].getBottom());
     }
 
+
+    public void MPUse() {
+        fullRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long MP1 = (long) snapshot.child("player1").child("MP").getValue();
+                long MPUse1 = (long) snapshot.child("player1").child("Next").child("atkMP").getValue();
+
+                long MP2 = (long) snapshot.child("player2").child("MP").getValue();
+                long MPUse2 = (long) snapshot.child("player2").child("Next").child("atkMP").getValue();
+
+//                System.out.println("player1" + " 魔力 " + MP1 + " - " + MPUse1 + " = " + ((int) MP1 - (int) MPUse1));
+//                System.out.println("player2" + " 魔力 " + MP2 + " - " + MPUse2 + " = " + ((int) MP2 - (int) MPUse2));
+                fullRoom.child("player1").child("MP").setValue((int) MP1 - (int) MPUse1);
+                fullRoom.child("player2").child("MP").setValue((int) MP2 - (int) MPUse2);
+                fullRoom.child("player1").child("Next").child("atkMP").setValue(0);
+                fullRoom.child("player2").child("Next").child("atkMP").setValue(0);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+
+    public void upText() {
+        upHP = findViewById(R.id.upHP);
+        upMP = findViewById(R.id.upMP);
+        /**回血回魔的量*/
+
+        fullRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long index = (long) snapshot.child(player).child("Index").getValue();
+                if (tools.roleChange((int) index).equals("b74")) { // b74
+                    upHP.setText("4");
+                    upHPInt = 4;
+                } else {
+                    upHP.setText("2");
+                    upHPInt = 2;
+                }
+
+                if (tools.roleChange((int) index).equals("fs")) {
+                    upMP.setText("6");
+                    upMPInt = 6;
+                } else {
+                    upMP.setText("4");
+                    upMPInt = 4;
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+    }
 
     private ValueEventListener upListener = new ValueEventListener() {
         @Override
@@ -168,10 +220,19 @@ public class GameActivity extends AppCompatActivity {
             long y1 = (long) snapshot.child(player).child("Y").getValue();
             long x2 = (long) snapshot.child(otherPlayer).child("X").getValue();
             long y2 = (long) snapshot.child(otherPlayer).child("Y").getValue();
-
             moveRules.moveJudgmentSelf((int) x1, (int) y1);
             moveRules.moveJudgmentCom((int) x2, (int) y2);
 
+
+            int selfMP = Integer.parseInt(String.valueOf(snapshot.child(player).child("MP").getValue()));
+            int selfHP = Integer.parseInt(String.valueOf(snapshot.child(player).child("HP").getValue()));
+            int comHP = Integer.parseInt(String.valueOf(snapshot.child(otherPlayer).child("HP").getValue()));
+            MPLimit(selfMP, Integer.parseInt(String.valueOf(finalMP.get(0))), buttonAtk1);
+            MPLimit(selfMP, Integer.parseInt(String.valueOf(finalMP.get(1))), buttonAtk2);
+            MPLimit(selfMP, Integer.parseInt(String.valueOf(finalMP.get(2))), buttonAtk3);
+            MPLimit(selfMP, Integer.parseInt(String.valueOf(finalMP.get(3))), buttonAtk4);
+            MPLimit(selfMP, Integer.parseInt(String.valueOf(finalMP.get(4))), buttonAtk5);
+            gameEnd(selfHP, comHP);
         }
 
         @Override
@@ -179,7 +240,15 @@ public class GameActivity extends AppCompatActivity {
         }
     };
 
-
+    public void MPLimit(int selfMP, int atkKindNum, View buttonX) {
+        if (selfMP < atkKindNum) {
+            buttonX.setBackgroundColor(Color.parseColor("#e0000000"));
+            buttonX.setEnabled(false);
+        } else {
+            buttonX.setBackgroundColor(Color.parseColor("#00000000"));
+            buttonX.setEnabled(true);
+        }
+    }
 
 
     private ValueEventListener statusListener = new ValueEventListener() {
@@ -188,24 +257,85 @@ public class GameActivity extends AppCompatActivity {
             if (snapshot.getValue() == null)
                 return;
             long x = (long) snapshot.getValue();
-            if ((int) x == 2) {
+            if ((int) x == turn) {
                 fullRoom.child("fourStatus").setValue(0);
                 receiveMessage();
             }
         }
+
         @Override
         public void onCancelled(@NonNull DatabaseError error) {
         }
     };
 
+    public void gameEnd(int selfHP, int comHP) {
+        if (selfHP <= 0) {
+            initGame.setVisibility(View.VISIBLE);
+            initGame.setText("獲得勝利！");
+            lockBtn();
+        }
+        if (comHP <= 0) {
+            initGame.setVisibility(View.VISIBLE);
+            initGame.setText("對手太強..");
+            lockBtn();
+        }
+        if (selfHP <= 0 && comHP <= 0) {
+            initGame.setVisibility(View.VISIBLE);
+            initGame.setText("平手");
+            lockBtn();
+        }
+        if (selfHP > 0 && comHP > 0) {
+            initGame.setVisibility(View.INVISIBLE);
+//            openBtn();
+        }
+    }
 
 
-
-
+    public void gameEnd() {
+        if (Integer.parseInt(txt_self_hp.getText().toString()) <= 0 || Integer.parseInt(txt_com_hp.getText().toString()) <= 0) {
+            initGame.setVisibility(View.VISIBLE);
+//            Toast.makeText(this, "遊戲結束", Toast.LENGTH_LONG).show();
+            lockBtn();
+        }
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
+        buttonAtk6.setText("站著");
+        openBtnAtk();
+
+        fullRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long x = (long) snapshot.child(player).child("Index").getValue();
+                int index = Integer.parseInt(String.valueOf(x));
+
+                switch (tools.roleChange(index)) {
+                    case "j4":
+                        buttonAtk5.setText("續力");
+                        break;
+                    case "fs":
+                        buttonAtk5.setText("末日");
+                        break;
+                    case "player":
+                        buttonAtk5.setText("尚未開發");
+                        break;
+                    case "b74":
+                        buttonAtk5.setText("隔檔");
+                        break;
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
         fullRoom.addValueEventListener(upListener);//監聽
         fullRoom.child("fourStatus").addValueEventListener(statusListener);//監聽
     }
@@ -213,6 +343,9 @@ public class GameActivity extends AppCompatActivity {
 
     private void intent() {
         Intent it = getIntent();
+        finalHP = new ArrayList<>(it.getIntegerArrayListExtra("finalHP"));
+        finalMP = new ArrayList<>(it.getIntegerArrayListExtra("finalMP"));
+        finalAtlR = new ArrayList<>((ArrayList<ArrayList<Integer>>) getIntent().getExtras().getSerializable("list"));
         roomKey = it.getStringExtra("roomKey");
         player = it.getStringExtra("player");
         switch (player) {
@@ -228,10 +361,13 @@ public class GameActivity extends AppCompatActivity {
     private void findView() {
 
         roomEditText = findViewById(R.id.roomEditText);
-        btnInitStart = findViewById(R.id.initStart);
-        btnInitConnect = findViewById(R.id.initConnect);
         imageCom = findViewById(R.id.image_com);
         imagePlayer = findViewById(R.id.image_player);
+
+
+        buttonTools1 = findViewById(R.id.buttonTools1);
+        buttonTools2 = findViewById(R.id.buttonTools2);
+
 
         lineX0 = findViewById(R.id.lineX0);
         lineX1 = findViewById(R.id.lineX1);
@@ -278,7 +414,7 @@ public class GameActivity extends AppCompatActivity {
         initGame = findViewById(R.id.initGame);
         initGame.setVisibility(View.INVISIBLE);
 
-        visibility();//創建遊戲
+        fireVisibile();//創建遊戲
 
         includeMove = findViewById(R.id.includeMove);
         includeAtk = findViewById(R.id.includeAtk);
@@ -332,15 +468,15 @@ public class GameActivity extends AppCompatActivity {
         line48 = findViewById(R.id.line48);
         line49 = findViewById(R.id.line49);
 
-        line51 = findViewById(R.id.line51);
-        line52 = findViewById(R.id.line52);
-        line53 = findViewById(R.id.line53);
-        line54 = findViewById(R.id.line54);
-        line55 = findViewById(R.id.line55);
-        line56 = findViewById(R.id.line56);
-        line57 = findViewById(R.id.line57);
-        line58 = findViewById(R.id.line58);
-        line59 = findViewById(R.id.line59);
+//        line51 = findViewById(R.id.line51);
+//        line52 = findViewById(R.id.line52);
+//        line53 = findViewById(R.id.line53);
+//        line54 = findViewById(R.id.line54);
+//        line55 = findViewById(R.id.line55);
+//        line56 = findViewById(R.id.line56);
+//        line57 = findViewById(R.id.line57);
+//        line58 = findViewById(R.id.line58);
+//        line59 = findViewById(R.id.line59);
 
         HP1 = findViewById(R.id.HP1);
         HP2 = findViewById(R.id.HP2);
@@ -358,17 +494,17 @@ public class GameActivity extends AppCompatActivity {
     }
 
 
-    public void includeMoveInvisible() {
+    public void atkVisible() {
         includeMove.setVisibility(View.INVISIBLE);
         includeAtk.setVisibility(View.VISIBLE);
     }
 
-    public void includeMoveVisible() {
+    public void moveVisible() {
         includeMove.setVisibility(View.VISIBLE);
         includeAtk.setVisibility(View.INVISIBLE);
     }
 
-    public void visibility() {
+    public void fireVisibile() {
         atkKJ00.setVisibility(View.INVISIBLE);
         atkKJ10.setVisibility(View.INVISIBLE);
         atkKJ20.setVisibility(View.INVISIBLE);
@@ -398,18 +534,45 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void lockBtn() {
+        System.out.println("鎖住lockBtn");
         button.setEnabled(false);
         button2.setEnabled(false);
         button3.setEnabled(false);
         button4.setEnabled(false);
         button5.setEnabled(false);
         button6.setEnabled(false);
-        button.setAlpha(0.2f);
-        button2.setAlpha(0.2f);
-        button3.setAlpha(0.2f);
-        button4.setAlpha(0.2f);
-        button5.setAlpha(0.2f);
-        button6.setAlpha(0.2f);
+        buttonTools1.setEnabled(false);
+        buttonTools2.setEnabled(false);
+        button.setBackgroundColor(Color.parseColor("#e0000000"));
+        button2.setBackgroundColor(Color.parseColor("#e0000000"));
+        button3.setBackgroundColor(Color.parseColor("#e0000000"));
+        button4.setBackgroundColor(Color.parseColor("#e0000000"));
+        button5.setBackgroundColor(Color.parseColor("#e0000000"));
+        button6.setBackgroundColor(Color.parseColor("#e0000000"));
+//        button.setAlpha(0.2f);
+//        button2.setAlpha(0.2f);
+//        button3.setAlpha(0.2f);
+//        button4.setAlpha(0.2f);
+//        button5.setAlpha(0.2f);
+//        button6.setAlpha(0.2f);
+    }
+
+    public void openBtn() {
+        System.out.println("openBtn");
+        button.setEnabled(true);
+        button2.setEnabled(true);
+        button3.setEnabled(true);
+        button4.setEnabled(true);
+        button5.setEnabled(true);
+        button6.setEnabled(true);
+        buttonTools1.setEnabled(true);
+        buttonTools2.setEnabled(true);
+        button.setBackgroundColor(Color.parseColor("#00000000"));
+        button2.setBackgroundColor(Color.parseColor("#00000000"));
+        button3.setBackgroundColor(Color.parseColor("#00000000"));
+        button4.setBackgroundColor(Color.parseColor("#00000000"));
+        button5.setBackgroundColor(Color.parseColor("#00000000"));
+        button6.setBackgroundColor(Color.parseColor("#00000000"));
     }
 
     public void lockBtnAtk() {
@@ -419,6 +582,7 @@ public class GameActivity extends AppCompatActivity {
         buttonAtk4.setEnabled(false);
         buttonAtk5.setEnabled(false);
         buttonAtk5.setEnabled(false);
+        buttonAtk6.setEnabled(false);
         buttonAtk1.setBackgroundColor(Color.parseColor("#e0000000"));
         buttonAtk2.setBackgroundColor(Color.parseColor("#e0000000"));
         buttonAtk3.setBackgroundColor(Color.parseColor("#e0000000"));
@@ -443,21 +607,6 @@ public class GameActivity extends AppCompatActivity {
         buttonAtk6.setBackgroundColor(Color.parseColor("#00000000"));
     }
 
-    public void openBtn() {
-        button.setEnabled(true);
-        button2.setEnabled(true);
-        button3.setEnabled(true);
-        button4.setEnabled(true);
-        button5.setEnabled(true);
-        button6.setEnabled(true);
-        button.setAlpha(1.0f);
-        button2.setAlpha(1.0f);
-        button3.setAlpha(1.0f);
-        button4.setAlpha(1.0f);
-        button5.setAlpha(1.0f);
-        button6.setAlpha(1.0f);
-    }
-
 
     public void moveRight(View view) {
         moveRules.moveCommon(1, 0);
@@ -476,11 +625,11 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void tool1(View view) {
-        sendMessageUp("hp", 2);
+        sendMessageUp("hp", upHPInt);
     }
 
     public void tool2(View view) {
-        sendMessageUp("mp", 4);
+        sendMessageUp("mp", upMPInt);
     }
 
     public void controlMPHP(TextView PP, int add) {
@@ -490,19 +639,6 @@ public class GameActivity extends AppCompatActivity {
         if (MpAfter >= 10) {
             PP.setText(10 + "");
         }
-    }
-
-    public void initConnect(View view) {
-        connectManager.SERVER_PATH = ip;
-        connectManager.initiateSocketConnection();
-        initGame1();
-        Toast.makeText(this, "重新連線", Toast.LENGTH_SHORT).show();
-    }
-
-    public void initStart(View view) {
-        initGame1();
-        sendMessageRestart();
-        Toast.makeText(this, "重新開始", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -532,123 +668,157 @@ public class GameActivity extends AppCompatActivity {
     public void init() {
         openBtn();
         openBtnAtk();
-        atkRules.MPLimit(atkDecide.MP[0], buttonAtk1);
-        atkRules.MPLimit(atkDecide.MP[1], buttonAtk2);
-        atkRules.MPLimit(atkDecide.MP[2], buttonAtk3);
-        atkRules.MPLimit(atkDecide.MP[3], buttonAtk4);
-        atkRules.MPLimit(atkDecide.MP[4], buttonAtk5);
         gameEnd();
         atkRules.initAtkRange();
     }
 
 
-    public void gameEnd() {
-        if (Integer.parseInt(txt_self_hp.getText().toString()) <= 0 || Integer.parseInt(txt_com_hp.getText().toString()) <= 0) {
-            initGame.setVisibility(View.VISIBLE);
-//            Toast.makeText(this, "遊戲結束", Toast.LENGTH_LONG).show();
-            lockBtn();
-        }
-    }
-
-    public void initGame1() {
-        initGame.setVisibility(View.INVISIBLE);
-        txt_self_hp.setText("10");
-        txt_com_hp.setText("10");
-        txt_self_mp.setText("10");
-        txt_com_mp.setText("10");
-        locationXSelf = 0;
-        locationYSelf = 1;
-        locationXCom = 4;
-        locationYCom = 1;
-        includeMoveVisible();
-        visibility();//重開新局 消滅地圖火焰
-
-        openBtn();
-        openBtnAtk();
-        imagePlayer.layout(locationX[locationXSelf].getLeft() + 30, locationY[locationYSelf].getTop() - 200, locationX[locationXSelf].getLeft() + 100 + 30, locationY[locationYSelf].getBottom());
-        imageCom.layout(locationX[locationXCom].getLeft() + 30, locationY[locationYCom].getTop() - 200, locationX[locationXCom].getLeft() + 100 + 30, locationY[locationYCom].getBottom());
-
-    }
+//    public void initGame1() {
+//        initGame.setVisibility(View.INVISIBLE);
+//        txt_self_hp.setText("10");
+//        txt_com_hp.setText("10");
+//        txt_self_mp.setText("10");
+//        txt_com_mp.setText("10");
+//        locationXSelf = 0;
+//        locationYSelf = 1;
+//        locationXCom = 4;
+//        locationYCom = 1;
+//        moveVisible();
+//        fireVisibile();//重開新局 消滅地圖火焰
+//
+//        openBtn();
+//        openBtnAtk();
+//        imagePlayer.layout(locationX[locationXSelf].getLeft() + 30, locationY[locationYSelf].getTop() - 200, locationX[locationXSelf].getLeft() + 100 + 30, locationY[locationYSelf].getBottom());
+//        imageCom.layout(locationX[locationXCom].getLeft() + 30, locationY[locationYCom].getTop() - 200, locationX[locationXCom].getLeft() + 100 + 30, locationY[locationYCom].getBottom());
+//
+//    }
 
     /**
      * 重新開始 初始化遊戲
      */
     public void initGame(View v) {
-        initGame1();
+//        initGame1();
+        Intent it = new Intent(this, StartActivity.class);
+        startActivity(it);
     }
 
 
     public void sendMessageMove() {
-//        includeMoveInvisible();
+        atkVisible();
+        lockBtn();
         statusUp();
         Toast.makeText(this, "移動", Toast.LENGTH_SHORT).show();
-        fullRoom.child(player).child("locationXSelf").setValue(locationXSelf);
-        fullRoom.child(player).child("locationYSelf").setValue(locationYSelf);
+        fullRoom.child(player).child("Next").child("locationXSelf").setValue(locationXSelf);
+        fullRoom.child(player).child("Next").child("locationYSelf").setValue(locationYSelf);
 //        connectManager.sendMessage(0, locationXSelf, locationYSelf, "move");
 
     }
 
-    public void sendMessageUp(String pp, int l) {
-        includeMoveInvisible();
+    public void sendMessageUp(String HPMP, int up) {
+        atkVisible();
         statusUp();
         Toast.makeText(this, "回復", Toast.LENGTH_SHORT).show();
-        connectManager.sendMessage(l, pp, "up");
+        switch (HPMP) {
+            case "hp":
+                fullRoom.child(player).child("Next").child("HPUP").setValue(up);
+                break;
+            case "mp":
+                fullRoom.child(player).child("Next").child("MPUP").setValue(up);
+                break;
+        }
     }
 
-    public void sendMessageMoveAtk(int[] atk, int hp, int mp) {
+
+    public void sendMessageMoveAtk(ArrayList<Integer> atk, int hp, int mp) {
         statusUp();
-        Toast.makeText(this, "攻擊", Toast.LENGTH_SHORT).show();
-        connectManager.sendMessage(atk, hp, mp, "atk");
-    }
-
-    public void sendMessageRestart() {
-        Toast.makeText(this, "重新開始", Toast.LENGTH_SHORT).show();
-        connectManager.sendMessage("restart");
+        fullRoom.child(player).child("Next").child("atkR").setValue(atk);
+        fullRoom.child(player).child("Next").child("atkHP").setValue(hp);
+        fullRoom.child(player).child("Next").child("atkMP").setValue(mp);
     }
 
 
     public void atk1(View v) {
         lockBtnAtk();
-        sendMessageMoveAtk(atkDecide.atk0[0], atkDecide.HP[0], atkDecide.MP[0]);
+        moveVisible();
+        lockBtn();
+        int a = Integer.parseInt(String.valueOf(finalHP.get(0)));
+        int b = Integer.parseInt(String.valueOf(finalMP.get(0)));
+        sendMessageMoveAtk(finalAtlR.get(0), a, b);
     }
 
     public void atk2(View v) {
         lockBtnAtk();
-        sendMessageMoveAtk(atkDecide.atk0[1], atkDecide.HP[1], atkDecide.MP[1]);
+        moveVisible();
+        lockBtn();
+        int a = Integer.parseInt(String.valueOf(finalHP.get(1)));
+        int b = Integer.parseInt(String.valueOf(finalMP.get(1)));
+        sendMessageMoveAtk(finalAtlR.get(1), a, b);
     }
 
     public void atk3(View v) {
         lockBtnAtk();
-        sendMessageMoveAtk(atkDecide.atk0[2], atkDecide.HP[2], atkDecide.MP[2]);
+        moveVisible();
+        lockBtn();
+        int a = Integer.parseInt(String.valueOf(finalHP.get(2)));
+        int b = Integer.parseInt(String.valueOf(finalMP.get(2)));
+        sendMessageMoveAtk(finalAtlR.get(2), a, b);
     }
 
     public void atk4(View v) {
         lockBtnAtk();
-        sendMessageMoveAtk(atkDecide.atk0[3], atkDecide.HP[3], atkDecide.MP[3]);
+        moveVisible();
+        lockBtn();
+        int a = Integer.parseInt(String.valueOf(finalHP.get(3)));
+        int b = Integer.parseInt(String.valueOf(finalMP.get(3)));
+        sendMessageMoveAtk(finalAtlR.get(3), a, b);
     }
 
-    public void atk5(View v) {
+    public void atk5(View v) {//變成特殊技能
         lockBtnAtk();
-        sendMessageMoveAtk(atkDecide.atk0[4], atkDecide.HP[4], atkDecide.MP[4]);
+        moveVisible();
+        lockBtn();
+        fullRoom.child(player).child("unique").setValue(true);
+        ArrayList<Integer> x = new ArrayList<>();
+        x.add(-1);
+        sendMessageMoveAtk(x, 0, 0);
     }
+
 
     public void atk6(View v) {
         lockBtnAtk();
-        sendMessageMoveAtk(null, 0, 0);
+        moveVisible();
+        lockBtn();
+        ArrayList<Integer> x = new ArrayList<>();
+        x.add(0);
+        sendMessageMoveAtk(x, 0, 0);
     }
 
+    int turn = 4;
 
     private void receiveMessage() {
+        fireVisibile();//收到後 地板火焰先取消
 
-        visibility();//收到後 地板火焰先取消
-
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < turn; i++) {
             Message msg = new Message();
             Bundle bundle = new Bundle();
             bundle.putInt("NUM", i);
             msg.setData(bundle);
             msg.what = 0;
-            handler.sendMessageDelayed(msg, 1000 * (i + 1));
+            switch (i) {
+                case 0:
+                    handler.sendMessageDelayed(msg, 1000);
+                    break;
+                case 1:
+                    handler.sendMessageDelayed(msg, 1050);
+                    break;
+                case 2:
+                    handler.sendMessageDelayed(msg, 2000);
+                    break;
+                case 3:
+                    handler.sendMessageDelayed(msg, 2050);
+                    break;
+            }
+
         }
     }
 
@@ -666,10 +836,23 @@ public class GameActivity extends AppCompatActivity {
                     fullRoom.child(player).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            long xl = (long) snapshot.child("locationXSelf").getValue();
-                            long yl = (long) snapshot.child("locationYSelf").getValue();
+                            long xl = (long) snapshot.child("Next").child("locationXSelf").getValue();
+                            long yl = (long) snapshot.child("Next").child("locationYSelf").getValue();
                             fullRoom.child(player).child("X").setValue((int) xl);
                             fullRoom.child(player).child("Y").setValue((int) yl);
+
+                            long HPUP = (long) snapshot.child("Next").child("HPUP").getValue();
+                            long MPUP = (long) snapshot.child("Next").child("MPUP").getValue();
+                            long HP = (long) snapshot.child("HP").getValue();
+                            long MP = (long) snapshot.child("MP").getValue();
+                            if ((int) HPUP > 0) {
+                                fullRoom.child(player).child("HP").setValue((int) HPUP + (int) HP);
+                            }
+                            if ((int) MPUP > 0) {
+                                fullRoom.child(player).child("MP").setValue((int) MPUP + (int) MP);
+                            }
+                            fullRoom.child(player).child("Next").child("HPUP").setValue(0);
+                            fullRoom.child(player).child("Next").child("MPUP").setValue(0);
                         }
 
                         @Override
@@ -677,14 +860,63 @@ public class GameActivity extends AppCompatActivity {
                         }
                     });
                     break;
-                case 1:
+                case 2:
+
+
+                    fullRoom.child(player).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            /**假如player自己是b74 則隔檔本次傷害*/
+                            long index = (long) snapshot.child("Index").getValue();
+                            Boolean aBoolean = (Boolean) snapshot.child("unique").getValue();
+
+                            long j4MP = (long) snapshot.child("Next").child("atkMP").getValue();
+//                            System.out.println("角色 : " + tools.roleChange((int) index));
+//                            System.out.println("aBoolean : " + aBoolean);
+//                            System.out.println("j4MP : " + j4MP);
+                            if (tools.roleChange((int) index).equals("b74") && aBoolean) {
+                                fullRoom.child(otherPlayer).child("Next").child("atkHP").setValue(0);
+                                fullRoom.child(player).child("unique").setValue(false);
+                            }
+
+
+
+
+
+                            if (tools.roleChange((int) index).equals("j4") && aBoolean && ((int) j4MP != 0)) {
+                                long j4atk = (long) snapshot.child("Next").child("atkHP").getValue();
+                                fullRoom.child(player).child("Next").child("atkHP").setValue((int) j4atk * 2);
+                                fullRoom.child(player).child("unique").setValue(false);
+                            }
+
+
+                            long HP = (long) snapshot.child("Next").child("atkHP").getValue();
+                            long MP = (long) snapshot.child("Next").child("atkMP").getValue();
+                            ArrayList<Integer> atkR = (ArrayList<Integer>) snapshot.child("Next").child("atkR").getValue();
+
+                            atkRules.atkJudgmentSelf(atkR, (int) HP, (int) MP, player);
+
+
+//                            MPUse(player, (int) MP);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                    break;
+                case 3:
                     fullRoom.child(otherPlayer).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            long xl = (long) snapshot.child("locationXSelf").getValue();
-                            long yl = (long) snapshot.child("locationYSelf").getValue();
-                            fullRoom.child(otherPlayer).child("X").setValue((int) xl);
-                            fullRoom.child(otherPlayer).child("Y").setValue((int) yl);
+                            long HP = (long) snapshot.child("Next").child("atkHP").getValue();
+                            long MP = (long) snapshot.child("Next").child("atkMP").getValue();
+                            ArrayList<Integer> atkR = (ArrayList<Integer>) snapshot.child("Next").child("atkR").getValue();
+                            atkRules.atkJudgmentCom(atkR, (int) HP, (int) MP);
+                            settlement();
+                            moveVisible();
+                            init();
                         }
 
                         @Override
@@ -692,17 +924,15 @@ public class GameActivity extends AppCompatActivity {
                         }
                     });
                     System.out.println("歸零");
-                    fullRoom.child("fourStatus").setValue(0);
-                    break;
-                case 2:
-                    fullRoom.child("fourStatus").setValue(0);
-                    break;
-                case 3:
-                    fullRoom.child("fourStatus").setValue(0);
                     break;
             }
         }
     }
 
+
+    public void settlement() {
+        MPUse();
+
+    }
 
 }

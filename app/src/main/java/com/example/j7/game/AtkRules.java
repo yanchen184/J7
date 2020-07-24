@@ -7,11 +7,20 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.example.j7.GameActivity;
 import com.example.j7.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.crypto.spec.DESedeKeySpec;
 
 public class AtkRules {
     private GameActivity activity;
@@ -27,16 +36,17 @@ public class AtkRules {
     public int[][] atkRangeDD; //重疊的範圍(根據座標重繪後的)
     public AtkDecide atkDecide = new AtkDecide();
 
+
     /**
      * 攻擊範圍(根據座標重繪後)
      * atkRangeSelf
      * atkRangeCom
      */
-    public int[][] getAtkRange(String who, int[] atkKindNum) {
+    public int[][] getAtkRange(String who, ArrayList<Integer> atkKindNum) {
         /**會記錄玩家攻擊的位置方便後續計算*/
 //        atkKindNum = atkKindNum - 1;
 //        int[][] atkRangeO = AtkKind.getAtk(atkKindNum); // 初始位置
-        if (atkKindNum[0] != 0) {
+        if (Integer.parseInt(String.valueOf(atkKindNum.get(0))) != 0) { // 如果不攻擊
             int[][] atkRangeO = pointJB(atkKindNum);
             int[][] atkRangeX = new int[atkRangeO.length][2]; //根據座標重繪的位置
             if (who.equals("自己")) {
@@ -66,6 +76,7 @@ public class AtkRules {
         }
     }
 
+
     /**
      * 繪製地圖
      * 1.畫自己的攻擊範圍
@@ -84,7 +95,7 @@ public class AtkRules {
         }
         for (int i = 0; i < range.length; i++) {
             if (range[i][0] >= 0 && range[i][1] >= 0 && range[i][0] < 5 && range[i][1] < 3) {
-                System.out.println(x + "燃燒的地方 : " + range[i][0] + "," + range[i][1]);
+//                System.out.println(x + "燃燒的地方 : " + range[i][0] + "," + range[i][1]);
                 switch (range[i][0] * 10 + range[i][1]) {
                     case 0:
                         activity.atkKJ00.setBackgroundDrawable(drawable);
@@ -171,74 +182,111 @@ public class AtkRules {
                 atkRangeDD[i][0] = listX.get(i);
                 atkRangeDD[i][1] = listY.get(i);
             }
-            System.out.println(atkRangeDD);
+
             if (atkRangeDD != null) {
                 atkJudgmentCommonRange("同個位置", atkRangeDD);
             }
         }
     }
 
-    /**
-     *
-     */
-    public void atkJudgmentSelf(int[] atkKindNum, int hp, int mp) {
+
+    //    "player1" 打到 "player2"
+    public void HPHit(final String playerW) {
+//        DatabaseReference fullRoom = FirebaseDatabase.getInstance().getReference("rooms").child(activity.roomKey);//FirebaseDatabase
+        activity.fullRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                /**
+                 * 1.player2的血量
+                 * 2.player1的傷害
+                 * 3.player2的血量 = player2的血量 - player1的傷害
+                 * */
+                String playerL = "";
+                switch (playerW) {
+                    case "player1":
+                        playerL = "player2";
+                        break;
+                    case "player2":
+                        playerL = "player1";
+                        break;
+                }
+
+                long HP = (long) snapshot.child(playerL).child("HP").getValue();
+                long HPUse = (long) snapshot.child(playerW).child("Next").child("atkHP").getValue();
+                activity.fullRoom.child(playerL).child("HP").setValue((int) HP - (int) HPUse);
+                activity.fullRoom.child(playerW).child("Next").child("atkHP").setValue(0);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+
+    public void atkJudgmentSelf(ArrayList<Integer> atkKindNum, int hp, int mp, String player) {
         /**
          * 1.扣魔力
          * 2.自己是否攻擊成功
          * 3.
          * */
-        if (atkKindNum[0] != 0) { // 如果不攻擊
-            activity.controlMPHP(activity.txt_self_mp, -mp);//1.扣自己魔力
-            int[] XY = {activity.locationXCom, activity.locationYCom};
-            boolean success = false;
-            for (int[] el : getAtkRange("自己", atkKindNum)) { // 獲取攻擊範圍時順便畫畫
-                if (XY[0] == el[0] && XY[1] == el[1]) {
-                    success = true;
+        switch (Integer.parseInt(String.valueOf(atkKindNum.get(0)))){
+            case 0 :
+                Toast.makeText(context, "自己站著不動", Toast.LENGTH_LONG).show();
+                break;
+            case -1 :
+                Toast.makeText(context, "自己使用獨有技能", Toast.LENGTH_LONG).show();
+                break;
+            default:
+                int[] XY = {activity.locationXCom, activity.locationYCom};
+                boolean success = false;
+
+
+                for (int[] el : getAtkRange("自己", atkKindNum)) { // 獲取攻擊範圍時順便畫畫
+                    if (XY[0] == el[0] && XY[1] == el[1]) {
+                        success = true;
+                    }
                 }
-            }
-            if (success) {
-                activity.controlMPHP(activity.txt_com_hp, -hp);//1.扣對手血量
-                Toast.makeText(context, "攻擊成功!! 扣對方 " + hp + " HP ", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(context, "攻擊失敗.. 消耗 " + mp + " MP ", Toast.LENGTH_LONG).show();
-            }
-            rangeSame();//如果攻擊位置重疊 變成其他圖片
-        } else {
-            Toast.makeText(context, "自己站著不動", Toast.LENGTH_LONG).show();
-        }
-    }
 
-    public void atkJudgmentCom(int[] atkKindNum, int hp, int mp) {
-        if (atkKindNum[0] != 0) {// 如果不攻擊
-            activity.controlMPHP(activity.txt_com_mp, -mp);//1.扣對手魔力
-            int[] XY = {activity.locationXSelf, activity.locationYSelf};
-            boolean success = false;
-            for (int[] el : getAtkRange("對手", atkKindNum)) {
-                if (XY[0] == el[0] && XY[1] == el[1]) {
-                    success = true;
+                if (success) {
+                    if (player.equals("player1")) {
+                        HPHit("player1");
+                    } else {
+                        HPHit("player2");
+                    }
+                    Toast.makeText(context, "攻擊成功!! 扣對方 " + hp + " HP ", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(context, "攻擊失敗.. 消耗 " + mp + " MP ", Toast.LENGTH_LONG).show();
                 }
-            }
-            if (success) {
-                activity.controlMPHP(activity.txt_self_hp, -hp);//1.扣自己血量
-            }
-            rangeSame();//如果攻擊位置重疊 變成其他圖片
-        } else {
-            Toast.makeText(context, "對手站著不動", Toast.LENGTH_LONG).show();
+                rangeSame();//如果攻擊位置重疊 變成其他圖片
+                break;
         }
     }
 
-
-//    public int getAtkMP(int atkKindNum) {
-//        atkKindNum = atkKindNum - 1;
-//        return AtkKind.getAtkMP(atkKindNum);
-//    }
-
-    public void MPLimit(int atkKindNum, View buttonX) {
-        if (Integer.parseInt(activity.txt_self_mp.getText().toString()) <= atkKindNum) {
-            buttonX.setBackgroundColor(Color.parseColor("#e0000000"));
-            buttonX.setEnabled(false);
+    public void atkJudgmentCom(ArrayList<Integer> atkKindNum, int hp, int mp) {
+        switch (Integer.parseInt(String.valueOf(atkKindNum.get(0)))){
+            case 0:
+                Toast.makeText(context, "對手站著不動", Toast.LENGTH_LONG).show();
+                break;
+            case -1:
+                Toast.makeText(context, "對手使用獨有技能", Toast.LENGTH_LONG).show();
+                break;
+            default:
+                int[] XY = {activity.locationXSelf, activity.locationYSelf};
+                boolean success = false;
+                for (int[] el : getAtkRange("對手", atkKindNum)) {
+                    if (XY[0] == el[0] && XY[1] == el[1]) {
+                        success = true;
+                    }
+                }
+                if (success) {
+//                activity.controlMPHP(activity.txt_self_hp, -hp);//1.扣自己血量
+                }
+                rangeSame();//如果攻擊位置重疊 變成其他圖片
+                break;
         }
     }
+
 
     public void initAtkRange() {
         atkRangeSelf = null;
@@ -246,23 +294,23 @@ public class AtkRules {
         atkRangeDD = null;
     }
 
-    public void atkDrawHPMP() {
-        activity.HP1.setText(atkDecide.HP[0] + "");
-        activity.HP2.setText(atkDecide.HP[1] + "");
-        activity.HP3.setText(atkDecide.HP[2] + "");
-        activity.HP4.setText(atkDecide.HP[3] + "");
-        activity.HP5.setText(atkDecide.HP[4] + "");
-        activity.MP1.setText(atkDecide.MP[0] + "");
-        activity.MP2.setText(atkDecide.MP[1] + "");
-        activity.MP3.setText(atkDecide.MP[2] + "");
-        activity.MP4.setText(atkDecide.MP[3] + "");
-        activity.MP5.setText(atkDecide.MP[4] + "");
-
+    public void atkDrawHPMP(ArrayList<Integer> HP, ArrayList<Integer> MP) {
+        activity.HP1.setText(HP.get(0) + "");
+        activity.HP2.setText(HP.get(1) + "");
+        activity.HP3.setText(HP.get(2) + "");
+        activity.HP4.setText(HP.get(3) + "");
+        activity.HP5.setText(HP.get(4) + "");
+        activity.MP1.setText(MP.get(0) + "");
+        activity.MP2.setText(MP.get(1) + "");
+        activity.MP3.setText(MP.get(2) + "");
+        activity.MP4.setText(MP.get(3) + "");
+        activity.MP5.setText(MP.get(4) + "");
     }
 
-    public void atkDraw() {
-        for (int i = 0; i < atkDecide.atk0[0].length; i++) {
-            switch (atkDecide.atk0[0][i]) {
+    public void atkDraw(ArrayList<ArrayList<Integer>> atk) {
+        for (int i = 0; i < atk.get(0).size(); i++) {
+            int yc = Integer.parseInt(String.valueOf(atk.get(0).get(i)));
+            switch (yc) {
                 case 1:
                     activity.line11.setVisibility(View.VISIBLE);
                     break;
@@ -292,9 +340,9 @@ public class AtkRules {
                     break;
             }
         }
-
-        for (int i = 0; i < atkDecide.atk0[1].length; i++) {
-            switch (atkDecide.atk0[1][i]) {
+        for (int i = 0; i < atk.get(1).size(); i++) {
+            int yc = Integer.parseInt(String.valueOf(atk.get(1).get(i)));
+            switch (yc) {
                 case 1:
                     activity.line21.setVisibility(View.VISIBLE);
                     break;
@@ -324,8 +372,9 @@ public class AtkRules {
                     break;
             }
         }
-        for (int i = 0; i < atkDecide.atk0[2].length; i++) {
-            switch (atkDecide.atk0[2][i]) {
+        for (int i = 0; i < atk.get(2).size(); i++) {
+            int yc = Integer.parseInt(String.valueOf(atk.get(2).get(i)));
+            switch (yc) {
                 case 1:
                     activity.line31.setVisibility(View.VISIBLE);
                     break;
@@ -355,8 +404,9 @@ public class AtkRules {
                     break;
             }
         }
-        for (int i = 0; i < atkDecide.atk0[3].length; i++) {
-            switch (atkDecide.atk0[3][i]) {
+        for (int i = 0; i < atk.get(3).size(); i++) {
+            int yc = Integer.parseInt(String.valueOf(atk.get(3).get(i)));
+            switch (yc) {
                 case 1:
                     activity.line41.setVisibility(View.VISIBLE);
                     break;
@@ -386,44 +436,46 @@ public class AtkRules {
                     break;
             }
         }
-        for (int i = 0; i < atkDecide.atk0[4].length; i++) {
-            switch (atkDecide.atk0[4][i]) {
-                case 1:
-                    activity.line51.setVisibility(View.VISIBLE);
-                    break;
-                case 2:
-                    activity.line52.setVisibility(View.VISIBLE);
-                    break;
-                case 3:
-                    activity.line53.setVisibility(View.VISIBLE);
-                    break;
-                case 4:
-                    activity.line54.setVisibility(View.VISIBLE);
-                    break;
-                case 5:
-                    activity.line55.setVisibility(View.VISIBLE);
-                    break;
-                case 6:
-                    activity.line56.setVisibility(View.VISIBLE);
-                    break;
-                case 7:
-                    activity.line57.setVisibility(View.VISIBLE);
-                    break;
-                case 8:
-                    activity.line58.setVisibility(View.VISIBLE);
-                    break;
-                case 9:
-                    activity.line59.setVisibility(View.VISIBLE);
-                    break;
-            }
-        }
+//        for (int i = 0; i < atk.get(4).size(); i++) {
+//            int yc = Integer.parseInt(String.valueOf(atk.get(4).get(i)));
+//            switch (yc) {
+//                case 1:
+//                    activity.line51.setVisibility(View.VISIBLE);
+//                    break;
+//                case 2:
+//                    activity.line52.setVisibility(View.VISIBLE);
+//                    break;
+//                case 3:
+//                    activity.line53.setVisibility(View.VISIBLE);
+//                    break;
+//                case 4:
+//                    activity.line54.setVisibility(View.VISIBLE);
+//                    break;
+//                case 5:
+//                    activity.line55.setVisibility(View.VISIBLE);
+//                    break;
+//                case 6:
+//                    activity.line56.setVisibility(View.VISIBLE);
+//                    break;
+//                case 7:
+//                    activity.line57.setVisibility(View.VISIBLE);
+//                    break;
+//                case 8:
+//                    activity.line58.setVisibility(View.VISIBLE);
+//                    break;
+//                case 9:
+//                    activity.line59.setVisibility(View.VISIBLE);
+//                    break;
+//            }
+//        }
     }
 
-    public static int[][] pointJB(int[] atk0) {
-        int[][] pointHere = new int[atk0.length][2];
-        for (int i = 0; i < atk0.length; i++) {
+
+    public static int[][] pointJB(ArrayList<Integer> atk0) {
+        int[][] pointHere = new int[atk0.size()][2];
+        for (int i = 0; i < atk0.size(); i++) {
             int x = i;
-            switch (atk0[i]) {
+            switch (Integer.parseInt(String.valueOf(atk0.get(i)))) {
                 case 1:
                     pointHere[x][0] = -1;
                     pointHere[x][1] = 1;
