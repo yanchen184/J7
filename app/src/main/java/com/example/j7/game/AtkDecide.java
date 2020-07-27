@@ -2,8 +2,8 @@ package com.example.j7.game;
 
 public class AtkDecide {
     public int[][] fsAtk = {{4, 5, 6}, {1, 2, 3, 5, 7, 8, 9}, {1, 3, 5, 7, 9}, {1, 3, 4, 6, 7, 9}, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
-    public int[] fsHP = {4, 2, 5, 2, 1};
-    public int[] fsMP = {4, 5, 3, 6, 5};
+    public int[] fsHP = {4, 2, 5, 2, 5};
+    public int[] fsMP = {4, 5, 3, 6, 8};
 
     public int[][] j4Atk = {{5, 6}, {2, 3, 6, 8, 9}, {3, 5, 9}, {3, 6, 9}, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
     public int[] j4HP = {7, 2, 3, 5, 0};

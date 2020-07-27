@@ -340,6 +340,7 @@ public class GameActivity extends AppCompatActivity {
         fullRoom.child("fourStatus").addValueEventListener(statusListener);//監聽
     }
 
+    int index;
 
     private void intent() {
         Intent it = getIntent();
@@ -347,6 +348,11 @@ public class GameActivity extends AppCompatActivity {
         finalMP = new ArrayList<>(it.getIntegerArrayListExtra("finalMP"));
         finalAtlR = new ArrayList<>((ArrayList<ArrayList<Integer>>) getIntent().getExtras().getSerializable("list"));
         roomKey = it.getStringExtra("roomKey");
+        index = it.getIntExtra("index", 0);
+
+        TextView roomNum = findViewById(R.id.roomNum);
+        roomNum.setText(roomKey);
+
         player = it.getStringExtra("player");
         switch (player) {
             case "player1":
@@ -534,7 +540,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void lockBtn() {
-        System.out.println("鎖住lockBtn");
         button.setEnabled(false);
         button2.setEnabled(false);
         button3.setEnabled(false);
@@ -558,7 +563,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void openBtn() {
-        System.out.println("openBtn");
         button.setEnabled(true);
         button2.setEnabled(true);
         button3.setEnabled(true);
@@ -778,9 +782,20 @@ public class GameActivity extends AppCompatActivity {
         moveVisible();
         lockBtn();
         fullRoom.child(player).child("unique").setValue(true);
+
         ArrayList<Integer> x = new ArrayList<>();
         x.add(-1);
-        sendMessageMoveAtk(x, 0, 0);
+        if (tools.roleChange(index).equals("fs")) {
+            ArrayList<Integer> y = new ArrayList<>();
+            for (int i = 1; i <= 9; i++) {
+                y.add(i);
+            }
+            fullRoom.child(player).child("unique").setValue(false);
+            sendMessageMoveAtk(y, 2, 5);
+        }else {
+            sendMessageMoveAtk(x, 0, 0);
+        }
+
     }
 
 
@@ -861,8 +876,6 @@ public class GameActivity extends AppCompatActivity {
                     });
                     break;
                 case 2:
-
-
                     fullRoom.child(player).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -871,16 +884,11 @@ public class GameActivity extends AppCompatActivity {
                             Boolean aBoolean = (Boolean) snapshot.child("unique").getValue();
 
                             long j4MP = (long) snapshot.child("Next").child("atkMP").getValue();
-//                            System.out.println("角色 : " + tools.roleChange((int) index));
-//                            System.out.println("aBoolean : " + aBoolean);
-//                            System.out.println("j4MP : " + j4MP);
+
                             if (tools.roleChange((int) index).equals("b74") && aBoolean) {
                                 fullRoom.child(otherPlayer).child("Next").child("atkHP").setValue(0);
                                 fullRoom.child(player).child("unique").setValue(false);
                             }
-
-
-
 
 
                             if (tools.roleChange((int) index).equals("j4") && aBoolean && ((int) j4MP != 0)) {
@@ -929,10 +937,29 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+//    public boolean fsUnique = false;
+//
+//    public void fsUnique() {
+//        fullRoom.child(player).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                Boolean aBoolean = (Boolean) snapshot.child("unique").getValue();
+//                long Index = (long) snapshot.child("Index").getValue();
+//                if (aBoolean && tools.roleChange((int)Index).equals("fs")) {
+//                    fsUnique = true;
+//                    fullRoom.child(player).child("unique").setValue(false);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//    }
 
     public void settlement() {
         MPUse();
-
     }
 
 }

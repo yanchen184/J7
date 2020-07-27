@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.crypto.spec.DESedeKeySpec;
+import javax.xml.parsers.FactoryConfigurationError;
 
 public class AtkRules {
     private GameActivity activity;
@@ -47,7 +48,10 @@ public class AtkRules {
 //        atkKindNum = atkKindNum - 1;
 //        int[][] atkRangeO = AtkKind.getAtk(atkKindNum); // 初始位置
         if (Integer.parseInt(String.valueOf(atkKindNum.get(0))) != 0) { // 如果不攻擊
-            int[][] atkRangeO = pointJB(atkKindNum);
+
+            int[][] atkRangeO ;
+            atkRangeO = pointJB(atkKindNum);
+
             int[][] atkRangeX = new int[atkRangeO.length][2]; //根據座標重繪的位置
             if (who.equals("自己")) {
                 for (int i = 0; i < atkRangeO.length; i++) {
@@ -230,11 +234,11 @@ public class AtkRules {
          * 2.自己是否攻擊成功
          * 3.
          * */
-        switch (Integer.parseInt(String.valueOf(atkKindNum.get(0)))){
-            case 0 :
+        switch (Integer.parseInt(String.valueOf(atkKindNum.get(0)))) {
+            case 0:
                 Toast.makeText(context, "自己站著不動", Toast.LENGTH_LONG).show();
                 break;
-            case -1 :
+            case -1:
                 Toast.makeText(context, "自己使用獨有技能", Toast.LENGTH_LONG).show();
                 break;
             default:
@@ -264,7 +268,7 @@ public class AtkRules {
     }
 
     public void atkJudgmentCom(ArrayList<Integer> atkKindNum, int hp, int mp) {
-        switch (Integer.parseInt(String.valueOf(atkKindNum.get(0)))){
+        switch (Integer.parseInt(String.valueOf(atkKindNum.get(0)))) {
             case 0:
                 Toast.makeText(context, "對手站著不動", Toast.LENGTH_LONG).show();
                 break;
@@ -470,8 +474,28 @@ public class AtkRules {
 //        }
     }
 
+//    public int[][] pointfs() {
+//        int[][] pointfs = new int[27][2];
+//
+//        for (int i = 0; i < 9; i++) {
+//            pointfs[i][0] = -4 + i;
+//            pointfs[i][1] = -1;
+//        }
+//        for (int i = 0; i < 9; i++) {
+//            pointfs[9 + i][0] = -4 + i;
+//            pointfs[9 + i][1] = 0;
+//        }
+//        for (int i = 0; i < 9; i++) {
+//            pointfs[9 * 2 + i][0] = -4 + i;
+//            pointfs[9 * 2 + i][1] = 1;
+//        }
+//        return pointfs;
+//    }
+
 
     public static int[][] pointJB(ArrayList<Integer> atk0) {
+
+
         int[][] pointHere = new int[atk0.size()][2];
         for (int i = 0; i < atk0.size(); i++) {
             int x = i;

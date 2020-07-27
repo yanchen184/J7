@@ -319,7 +319,7 @@ public class StartActivity extends AppCompatActivity {
                 role.setText("法師");
                 atkDrawHPMP(fsHP, fsMP);
                 atkDraw(fsatkR);
-                introduction.setText("攻擊範圍較大,傷害較低,回魔為一般人雙倍 \n 特殊技能 : 末日..全地圖AOE");
+                introduction.setText("攻擊範圍較大,傷害較低,回魔為一般人1.5倍 \n 特殊技能 : 末日..九宮格傷害");
                 break;
             case "player":
                 buttonAtk5.setText("尚未開發");
@@ -333,7 +333,7 @@ public class StartActivity extends AppCompatActivity {
                 role.setText("騎士");
                 atkDrawHPMP(b74HP, b74MP);
                 atkDraw(b74atkR);
-                introduction.setText("擁有厚實的血量,回血為一般人雙倍 \n 特殊技能 : 隔檔...可以隔檔攻擊");
+                introduction.setText("擁有雙倍的厚實血量,回血為一般人1.5倍 \n 特殊技能 : 隔檔...可以隔檔攻擊");
                 break;
         }
 
@@ -911,6 +911,7 @@ public class StartActivity extends AppCompatActivity {
                     System.out.println("對手加入了！");
                     Intent it = new Intent(StartActivity.this, GameActivity.class);
                     it.putExtra("player", player);
+                    it.putExtra("index", index);
                     it.putExtra("roomKey", roomKey);
                     it.putExtra("finalHP", finalHP);
                     it.putExtra("finalMP", finalMP);
