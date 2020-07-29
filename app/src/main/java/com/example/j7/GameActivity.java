@@ -334,8 +334,6 @@ public class GameActivity extends AppCompatActivity {
 
             }
         });
-
-
         fullRoom.addValueEventListener(upListener);//監聽
         fullRoom.child("fourStatus").addValueEventListener(statusListener);//監聽
     }

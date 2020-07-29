@@ -36,6 +36,27 @@ public class Tools {
         return je;
     }
 
+
+    public String roleChangeName(String index){
+        String je = null;
+        switch (index) {
+            case "j4":
+                je = "劍士";
+                break;
+            case "fs":
+                je = "法師";
+                break;
+            case "player":
+                je = "普通人";
+                break;
+            case "b74":
+                je = "騎士";
+                break;
+        }
+        return je;
+    }
+
+
     public int roleChangePicture(int index){
         int je = 0;
         switch (index) {

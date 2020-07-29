@@ -20,4 +20,8 @@ public class AtkDecide {
     public int[][] atk0 = {{4, 5, 6}, {1, 2, 3, 5, 7}, {1, 3, 8, 9}, {1, 3, 7}, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
     public int[] HP = {2, 2, 2, 7, 1};
     public int[] MP = {2, 2, 2, 4, 10};
+
+    public int[][] AtkBackpack = {{4, 5, 6}, {1, 2, 3, 5, 7, 8, 9}, {1, 3, 5, 7, 9}, {1, 3, 4, 6, 7, 9}, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
+    public int[] HPBackpack = {0, 0, 0, 0, 0};
+    public int[] MPBackpack = {0, 0, 0, 0, 0};
 }

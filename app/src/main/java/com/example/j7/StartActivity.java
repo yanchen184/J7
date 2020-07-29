@@ -150,9 +150,10 @@ public class StartActivity extends AppCompatActivity {
         //reading data from firebase database
 
         FUser = FirebaseDatabase.getInstance().getReference("users").child(TSUserId);
+        FRoom = FirebaseDatabase.getInstance().getReference("rooms");
+
 
         FUser.addValueEventListener(new ValueEventListener() {
-
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null) {
@@ -166,24 +167,25 @@ public class StartActivity extends AppCompatActivity {
 
                     index = Integer.parseInt(String.valueOf(dataSnapshot.child("record").getValue()));
 
-
                     j4HP = (ArrayList<Integer>) dataSnapshot.child("role").child("j4").child("HP").getValue();
                     j4MP = (ArrayList<Integer>) dataSnapshot.child("role").child("j4").child("MP").getValue();
                     j4atkR = (ArrayList<ArrayList<Integer>>) dataSnapshot.child("role").child("j4").child("atkR").getValue();
+
                     fsHP = (ArrayList<Integer>) dataSnapshot.child("role").child("fs").child("HP").getValue();
                     fsMP = (ArrayList<Integer>) dataSnapshot.child("role").child("fs").child("MP").getValue();
                     fsatkR = (ArrayList<ArrayList<Integer>>) dataSnapshot.child("role").child("fs").child("atkR").getValue();
+
                     playerHP = (ArrayList<Integer>) dataSnapshot.child("role").child("player").child("HP").getValue();
                     playerMP = (ArrayList<Integer>) dataSnapshot.child("role").child("player").child("MP").getValue();
                     playeratkR = (ArrayList<ArrayList<Integer>>) dataSnapshot.child("role").child("player").child("atkR").getValue();
+
                     b74HP = (ArrayList<Integer>) dataSnapshot.child("role").child("b74").child("HP").getValue();
                     b74MP = (ArrayList<Integer>) dataSnapshot.child("role").child("b74").child("MP").getValue();
                     b74atkR = (ArrayList<ArrayList<Integer>>) dataSnapshot.child("role").child("b74").child("atkR").getValue();
 
 
+
                     setRole();
-
-
                     dataSnapshot.child("role").child("j4").child("atkR").getValue();
                     for (int i = 0; i < indexGetBoolean.length; i++) {
                         if (indexGetBoolean[i]) {
@@ -194,7 +196,6 @@ public class StartActivity extends AppCompatActivity {
                     user.setLevel("00");
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
@@ -204,7 +205,7 @@ public class StartActivity extends AppCompatActivity {
         /**名字*/
         user.setName(TSUserId);
 
-
+//        fullRoom.addValueEventListener(upListener);//監聽
 
         /**密碼四碼後才開放使用加入遊戲*/
         Button HTTPJoin = findViewById(R.id.HTTPJoin);
@@ -253,6 +254,9 @@ public class StartActivity extends AppCompatActivity {
 
         final ImageSwitcher imageSwitcher = findViewById(R.id.hand);
 
+
+
+
         arrowLeftTextView = findViewById(R.id.rightBtn);
         arrowRightTextView = findViewById(R.id.leftBtn);
         role = findViewById(R.id.role);
@@ -264,8 +268,6 @@ public class StartActivity extends AppCompatActivity {
                 return new ImageView(StartActivity.this);
             }
         });
-
-
         arrowRightTextView.setOnClickListener(new View.OnClickListener() {//左箭頭單擊事件
             @Override
             public void onClick(View view) {
@@ -274,7 +276,6 @@ public class StartActivity extends AppCompatActivity {
                 {
                     index = drawableList.size() - 1;
                 }
-                setRole();
                 FUser.child("record").setValue(index);
             }
         });
@@ -287,13 +288,27 @@ public class StartActivity extends AppCompatActivity {
                 {
                     index = 0;
                 }
-                setRole();
                 FUser.child("record").setValue(index);
             }
         });
-        cancelConnect();
-
+        cancelConnect();//顯示的部分
+        FUser.addValueEventListener(downListener);//監聽
     }
+
+
+    private ValueEventListener downListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            setRole();
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+
+        }
+    };
+
+
 
 
     public void setRole() {
@@ -302,7 +317,6 @@ public class StartActivity extends AppCompatActivity {
          * 2. 更改角色名稱
          * 3. 更改技能組
          */
-
         atkDrawINVISIBLE();
         final ImageSwitcher imageSwitcher = findViewById(R.id.hand);
         imageSwitcher.setImageDrawable(drawableList.get(index));
@@ -323,7 +337,7 @@ public class StartActivity extends AppCompatActivity {
                 break;
             case "player":
                 buttonAtk5.setText("尚未開發");
-                role.setText("一般人");
+                role.setText("普通人");
                 atkDrawHPMP(playerHP, playerMP);
                 atkDraw(playeratkR);
                 introduction.setText("就是普通人 \n 特殊技能 : 還沒想到");
@@ -774,7 +788,7 @@ public class StartActivity extends AppCompatActivity {
     public void checkRepeat() {
         roomKey = tools.random4Number();
         System.out.println("checkRepeat :" + roomKey);
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).addListenerForSingleValueEvent(new ValueEventListener() {
+        FRoom.child(roomKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 System.out.println(snapshot.getValue());
@@ -787,14 +801,14 @@ public class StartActivity extends AppCompatActivity {
                      * 5.增加房間自己的血量跟魔量
                      * */
 
-                    FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child("player1").child("name").setValue(userId);
+                    FRoom.child(roomKey).child("player1").child("name").setValue(userId);
                     player = "player1";
-                    FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child("status").setValue(STATUS_INIT);
+                    FRoom.child(roomKey).child("status").setValue(STATUS_INIT);
 
                     TextView create1234 = findViewById(R.id.create1234);
                     create1234.setText(roomKey);
 
-                    FirebaseDatabase.getInstance().getReference("rooms")
+                    FRoom
                             .child(roomKey)
                             .child("status")
                             .addValueEventListener(statusListener);
@@ -841,7 +855,7 @@ public class StartActivity extends AppCompatActivity {
         Toast.makeText(this, "檢查是否有此房號....",
                 Toast.LENGTH_SHORT).show();
 
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomNum).addListenerForSingleValueEvent(new ValueEventListener() {
+        FRoom.child(roomNum).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue() == null) {
@@ -855,7 +869,7 @@ public class StartActivity extends AppCompatActivity {
                      * 5.增加房間自己的血量跟魔量
                      * */
 
-                    FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child("player2").child("name").setValue(TSUserId);
+                    FRoom.child(roomKey).child("player2").child("name").setValue(TSUserId);
                     player = "player2";
                     FUser.child("role").addValueEventListener(new ValueEventListener() {
                         @Override
@@ -867,8 +881,8 @@ public class StartActivity extends AppCompatActivity {
                         public void onCancelled(@NonNull DatabaseError error) {
                         }
                     });
-                    FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child("status").setValue(1);
-                    FirebaseDatabase.getInstance().getReference("rooms")
+                    FRoom.child(roomKey).child("status").setValue(1);
+                    FRoom
                             .child(roomKey)
                             .child("status")
                             .addValueEventListener(statusListener);
@@ -937,22 +951,22 @@ public class StartActivity extends AppCompatActivity {
 
     private void addHPMP(@NonNull DataSnapshot snapshot, String player) {
 
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("Index").setValue(index);
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("HP").setValue(snapshot.child(tools.roleChange(index)).child("SHP").getValue());
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("MP").setValue(snapshot.child(tools.roleChange(index)).child("SMP").getValue());
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("HPUP").setValue(0);
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("MPUP").setValue(0);
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("X").setValue(0);
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("Y").setValue(1);
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("Next").child("locationXSelf").setValue(0);
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("Next").child("locationYSelf").setValue(1);
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("Next").child("HPUP").setValue(0);
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("Next").child("MPUP").setValue(0);
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("Next").child("atkR").setValue(0);
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("Next").child("atkHP").setValue(0);
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("Next").child("atkMP").setValue(0);
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child("fourStatus").setValue(0);
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(player).child("unique").setValue(false);
+        FRoom.child(roomKey).child(player).child("Index").setValue(index);
+        FRoom.child(roomKey).child(player).child("HP").setValue(snapshot.child(tools.roleChange(index)).child("SHP").getValue());
+        FRoom.child(roomKey).child(player).child("MP").setValue(snapshot.child(tools.roleChange(index)).child("SMP").getValue());
+        FRoom.child(roomKey).child(player).child("HPUP").setValue(0);
+        FRoom.child(roomKey).child(player).child("MPUP").setValue(0);
+        FRoom.child(roomKey).child(player).child("X").setValue(0);
+        FRoom.child(roomKey).child(player).child("Y").setValue(1);
+        FRoom.child(roomKey).child(player).child("Next").child("locationXSelf").setValue(0);
+        FRoom.child(roomKey).child(player).child("Next").child("locationYSelf").setValue(1);
+        FRoom.child(roomKey).child(player).child("Next").child("HPUP").setValue(0);
+        FRoom.child(roomKey).child(player).child("Next").child("MPUP").setValue(0);
+        FRoom.child(roomKey).child(player).child("Next").child("atkR").setValue(0);
+        FRoom.child(roomKey).child(player).child("Next").child("atkHP").setValue(0);
+        FRoom.child(roomKey).child(player).child("Next").child("atkMP").setValue(0);
+        FRoom.child(roomKey).child("fourStatus").setValue(0);
+        FRoom.child(roomKey).child(player).child("unique").setValue(false);
     }
 
 

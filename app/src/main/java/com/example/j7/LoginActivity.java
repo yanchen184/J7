@@ -66,10 +66,8 @@ public class LoginActivity extends AppCompatActivity {
                 .getString("usersPassword", userPassword + ""));
 
 
-
         loginHot();
     }
-
 
 
     public LoginActivity() {
@@ -95,6 +93,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         }
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                     }
@@ -123,6 +122,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         }
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                     }
@@ -202,11 +202,15 @@ public class LoginActivity extends AppCompatActivity {
         for (int i = 0; i < atkDecide.b74Atk.length; i++) {
             b74.add(intToList(atkDecide.b74Atk[i]));
         }
+        ArrayList<ArrayList<Integer>> atkRBackpack = new ArrayList<>();
+        for (int i = 0; i < atkDecide.AtkBackpack.length; i++) {
+            atkRBackpack.add(intToList(atkDecide.AtkBackpack[i]));
+        }
 
         rootRef.child("users").setValue(userId);
         rootRef.child("password").setValue(passWd);
-        rootRef.child("level").setValue(1);
-
+        rootRef.child("level").setValue(10);
+        rootRef.child("record").setValue(j4Num);
         /** fs */
         rootRef.child("role").child("fs").child("have").setValue(true);
         rootRef.child("role").child("fs").child("SHP").setValue(10);
@@ -214,6 +218,10 @@ public class LoginActivity extends AppCompatActivity {
         rootRef.child("role").child("fs").child("atkR").setValue(fs);
         rootRef.child("role").child("fs").child("HP").setValue(intToList(atkDecide.fsHP));
         rootRef.child("role").child("fs").child("MP").setValue(intToList(atkDecide.fsMP));
+        rootRef.child("role").child("fs").child("backpack").child("HP").setValue(intToList(atkDecide.HPBackpack));
+        rootRef.child("role").child("fs").child("backpack").child("MP").setValue(intToList(atkDecide.HPBackpack));
+        rootRef.child("role").child("fs").child("backpack").child("atkR").setValue(atkRBackpack);
+
 
         /** j4 */
         rootRef.child("role").child("j4").child("have").setValue(true);
@@ -222,6 +230,9 @@ public class LoginActivity extends AppCompatActivity {
         rootRef.child("role").child("j4").child("atkR").setValue(j4);
         rootRef.child("role").child("j4").child("HP").setValue(intToList(atkDecide.j4HP));
         rootRef.child("role").child("j4").child("MP").setValue(intToList(atkDecide.j4MP));
+        rootRef.child("role").child("j4").child("backpack").child("HP").setValue(intToList(atkDecide.HPBackpack));
+        rootRef.child("role").child("j4").child("backpack").child("MP").setValue(intToList(atkDecide.HPBackpack));
+        rootRef.child("role").child("j4").child("backpack").child("atkR").setValue(atkRBackpack);
 
         /** player */
         rootRef.child("role").child("player").child("have").setValue(true);
@@ -230,6 +241,9 @@ public class LoginActivity extends AppCompatActivity {
         rootRef.child("role").child("player").child("atkR").setValue(player);
         rootRef.child("role").child("player").child("HP").setValue(intToList(atkDecide.playerHP));
         rootRef.child("role").child("player").child("MP").setValue(intToList(atkDecide.playerMP));
+        rootRef.child("role").child("player").child("backpack").child("HP").setValue(intToList(atkDecide.HPBackpack));
+        rootRef.child("role").child("player").child("backpack").child("MP").setValue(intToList(atkDecide.HPBackpack));
+        rootRef.child("role").child("player").child("backpack").child("atkR").setValue(atkRBackpack);
 
         /** b74 */
         rootRef.child("role").child("b74").child("have").setValue(false);
@@ -238,8 +252,10 @@ public class LoginActivity extends AppCompatActivity {
         rootRef.child("role").child("b74").child("atkR").setValue(b74);
         rootRef.child("role").child("b74").child("HP").setValue(intToList(atkDecide.b74HP));
         rootRef.child("role").child("b74").child("MP").setValue(intToList(atkDecide.b74MP));
+        rootRef.child("role").child("b74").child("backpack").child("HP").setValue(intToList(atkDecide.HPBackpack));
+        rootRef.child("role").child("b74").child("backpack").child("MP").setValue(intToList(atkDecide.HPBackpack));
+        rootRef.child("role").child("b74").child("backpack").child("atkR").setValue(atkRBackpack);
 
-        rootRef.child("record").setValue(j4Num);
 
     }
 

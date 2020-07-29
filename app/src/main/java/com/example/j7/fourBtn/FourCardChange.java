@@ -17,4 +17,6 @@ public class FourCardChange extends AppCompatActivity {
     public void btn_b(View v){
         finish();
     }
+
+
 }
