@@ -114,12 +114,6 @@ public class StartActivity extends AppCompatActivity {
 
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        setRole();
-//        Toast.makeText(this, "onResume", Toast.LENGTH_LONG).show();
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -137,14 +131,15 @@ public class StartActivity extends AppCompatActivity {
     public StartActivity() {
     }
 
-    private String roomKey;
+    public String roomKey;
+    public ActivityMainBinding binding;
 
     @Override
     protected void onRestart() {
         super.onRestart();
 
         //資料綁定
-        ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         final User user = new User();
         binding.setUser(user);
         //reading data from firebase database
@@ -184,7 +179,6 @@ public class StartActivity extends AppCompatActivity {
                     b74atkR = (ArrayList<ArrayList<Integer>>) dataSnapshot.child("role").child("b74").child("atkR").getValue();
 
 
-
                     setRole();
                     dataSnapshot.child("role").child("j4").child("atkR").getValue();
                     for (int i = 0; i < indexGetBoolean.length; i++) {
@@ -196,6 +190,7 @@ public class StartActivity extends AppCompatActivity {
                     user.setLevel("00");
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
@@ -255,8 +250,6 @@ public class StartActivity extends AppCompatActivity {
         final ImageSwitcher imageSwitcher = findViewById(R.id.hand);
 
 
-
-
         arrowLeftTextView = findViewById(R.id.rightBtn);
         arrowRightTextView = findViewById(R.id.leftBtn);
         role = findViewById(R.id.role);
@@ -307,8 +300,6 @@ public class StartActivity extends AppCompatActivity {
 
         }
     };
-
-
 
 
     public void setRole() {
@@ -785,60 +776,10 @@ public class StartActivity extends AppCompatActivity {
 
     String player;
 
-    public void checkRepeat() {
-        roomKey = tools.random4Number();
-        System.out.println("checkRepeat :" + roomKey);
-        FRoom.child(roomKey).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());
-                if (snapshot.getValue() == null) {
-                    /**
-                     * 1.增加房間player1名稱
-                     * 2.狀態設為 0
-                     * 3.告訴前端四位數密碼
-                     * 4.監聽狀態
-                     * 5.增加房間自己的血量跟魔量
-                     * */
 
-                    FRoom.child(roomKey).child("player1").child("name").setValue(userId);
-                    player = "player1";
-                    FRoom.child(roomKey).child("status").setValue(STATUS_INIT);
-
-                    TextView create1234 = findViewById(R.id.create1234);
-                    create1234.setText(roomKey);
-
-                    FRoom
-                            .child(roomKey)
-                            .child("status")
-                            .addValueEventListener(statusListener);
-
-                    FUser.child("role").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            addHPMP(snapshot, "player1");
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                        }
-                    });
-
-                } else {
-                    System.out.println("運氣不錯喔  :" + roomKey);
-                    checkRepeat();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
 
     public void onHTTPCreate(View v) {
-        checkRepeat(); //roomKey
+//        checkRepeat(); //roomKey
         Button HTTPCreate = findViewById(R.id.HTTPCreate);
         HTTPCreate.setEnabled(false);
         Button HTTPJoin = findViewById(R.id.HTTPJoin);
