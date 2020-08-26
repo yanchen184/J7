@@ -71,10 +71,9 @@ public class StartActivity extends AppCompatActivity {
     private Boolean[] indexGetBoolean;//角色擁有
     private List indexGetInt;//角色擁有
     private String[] indexAll = {"j4", "fs", "player", "b74"};//角色擁有
-    private int index = 0;//角色
+    public int index = 0;//角色
 
-    DatabaseReference FRoom;
-    DatabaseReference FUser;
+    public DatabaseReference FUser;
 
     ArrayList<Integer> j4HP;
     ArrayList<Integer> j4MP;
@@ -145,7 +144,7 @@ public class StartActivity extends AppCompatActivity {
         //reading data from firebase database
 
         FUser = FirebaseDatabase.getInstance().getReference("users").child(TSUserId);
-        FRoom = FirebaseDatabase.getInstance().getReference("rooms");
+//        FRoom = FirebaseDatabase.getInstance().getReference("rooms");
 
 
         FUser.addValueEventListener(new ValueEventListener() {
@@ -770,73 +769,28 @@ public class StartActivity extends AppCompatActivity {
         layout_pair2.setVisibility(View.INVISIBLE);
     }
 
-    public void onRandom(View v) {
-        Toast.makeText(this, "不要逼ㄛ 我還沒寫", Toast.LENGTH_LONG).show();
-    }
+
 
     String player;
 
+//    Queue queue = new Queue(this);
+    Queue queue ;
 
 
-    public void onHTTPCreate(View v) {
-//        checkRepeat(); //roomKey
-        Button HTTPCreate = findViewById(R.id.HTTPCreate);
-        HTTPCreate.setEnabled(false);
-        Button HTTPJoin = findViewById(R.id.HTTPJoin);
-        HTTPJoin.setEnabled(false);
-        EditText roomEditText = findViewById(R.id.roomEditText);
-        roomEditText.setEnabled(false);
+    public void onHTTPCreate(View v) { // 好友創建房間
+        queue.getQueue(this).friendsCreate();
     }
 
-    public void onHTTPJoin(View v) {
+    public void onHTTPJoin(View v) {   // 好友加入房間
+        queue.getQueue(this).friendsJoin();
+    }
 
-        EditText roomEditText = findViewById(R.id.roomEditText);
-        String roomNum = roomEditText.getText().toString();
-        roomKey = roomNum;
-        Toast.makeText(this, "檢查是否有此房號....",
-                Toast.LENGTH_SHORT).show();
-
-        FRoom.child(roomNum).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.getValue() == null) {
-                    Toast.makeText(StartActivity.this, "查無此房間....", Toast.LENGTH_SHORT).show();
-                } else {
-
-                    /**
-                     * 1.增加房間player2名稱
-                     * 2.狀態設為 1
-                     * 4.監聽狀態
-                     * 5.增加房間自己的血量跟魔量
-                     * */
-
-                    FRoom.child(roomKey).child("player2").child("name").setValue(TSUserId);
-                    player = "player2";
-                    FUser.child("role").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            addHPMP(snapshot, "player2");
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                        }
-                    });
-                    FRoom.child(roomKey).child("status").setValue(1);
-                    FRoom
-                            .child(roomKey)
-                            .child("status")
-                            .addValueEventListener(statusListener);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+    public void onRandom(View v) {
+        queue.getQueue(this).randomJoin();
     }
 
     public void cancelC(View v) {
+//        queue.cancelC();
         Button cancelC = findViewById(R.id.cancelC);
         cancelC.setVisibility(View.INVISIBLE);
         cancelConnect();
@@ -852,63 +806,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
 
-    private ValueEventListener statusListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            if (snapshot.getValue() == null)
-                return;
-            long status = (long) snapshot.getValue();
-            switch ((int) status) {
-                case 0:
-                    System.out.println("等待對手進入遊戲室");
-                    break;
-                case 1:
-                    System.out.println("對手加入了！");
-                    Intent it = new Intent(StartActivity.this, GameActivity.class);
-                    it.putExtra("player", player);
-                    it.putExtra("index", index);
-                    it.putExtra("roomKey", roomKey);
-                    it.putExtra("finalHP", finalHP);
-                    it.putExtra("finalMP", finalMP);
 
-                    Bundle mBundle = new Bundle();
-                    mBundle.putSerializable("list", finalAtlR);
-                    it.putExtras(mBundle);
-
-
-//                    it.putExtra("finalAtlR",finalAtlR);
-
-                    startActivity(it);
-                    break;
-            }
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-
-        }
-    };
-
-
-    private void addHPMP(@NonNull DataSnapshot snapshot, String player) {
-
-        FRoom.child(roomKey).child(player).child("Index").setValue(index);
-        FRoom.child(roomKey).child(player).child("HP").setValue(snapshot.child(tools.roleChange(index)).child("SHP").getValue());
-        FRoom.child(roomKey).child(player).child("MP").setValue(snapshot.child(tools.roleChange(index)).child("SMP").getValue());
-        FRoom.child(roomKey).child(player).child("HPUP").setValue(0);
-        FRoom.child(roomKey).child(player).child("MPUP").setValue(0);
-        FRoom.child(roomKey).child(player).child("X").setValue(0);
-        FRoom.child(roomKey).child(player).child("Y").setValue(1);
-        FRoom.child(roomKey).child(player).child("Next").child("locationXSelf").setValue(0);
-        FRoom.child(roomKey).child(player).child("Next").child("locationYSelf").setValue(1);
-        FRoom.child(roomKey).child(player).child("Next").child("HPUP").setValue(0);
-        FRoom.child(roomKey).child(player).child("Next").child("MPUP").setValue(0);
-        FRoom.child(roomKey).child(player).child("Next").child("atkR").setValue(0);
-        FRoom.child(roomKey).child(player).child("Next").child("atkHP").setValue(0);
-        FRoom.child(roomKey).child(player).child("Next").child("atkMP").setValue(0);
-        FRoom.child(roomKey).child("fourStatus").setValue(0);
-        FRoom.child(roomKey).child(player).child("unique").setValue(false);
-    }
 
 
 }

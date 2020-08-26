@@ -1,10 +1,20 @@
 package com.example.j7.tools;
 
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+
 import com.example.j7.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import static com.example.j7.LoginActivity.TSUserId;
 
 public class Tools {
 
-    public String random4Number(){
+    public String random4Number() {
         int n = (int) (Math.random() * 9998 + 1);
 //        int n = (int) (Math.random() * 3 + 1);
         String nn = "";
@@ -17,7 +27,7 @@ public class Tools {
         return nn;
     }
 
-    public String roleChange(int index){
+    public String roleChange(int index) {
         String je = null;
         switch (index) {
             case 0:
@@ -37,7 +47,7 @@ public class Tools {
     }
 
 
-    public String roleChangeName(String index){
+    public String roleChangeName(String index) {
         String je = null;
         switch (index) {
             case "j4":
@@ -57,7 +67,7 @@ public class Tools {
     }
 
 
-    public int roleChangePicture(int index){
+    public int roleChangePicture(int index) {
         int je = 0;
         switch (index) {
             case 0:
@@ -76,7 +86,44 @@ public class Tools {
         return je;
     }
 
+    public int fBGetInt(DatabaseReference who) {
+        final int[] x = {0};
+        who.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue() == null) {
 
+                } else {
+                    long index = (long) snapshot.getValue();
+                    x[0] = (int) index;
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        return x[0];
+    }
+
+    public String fBGetString(DatabaseReference who) {
+        final String[] x = {""};
+        who.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue() == null) {
+
+                } else {
+                    x[0] = snapshot.getValue().toString();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        return x[0];
+    }
 
 }

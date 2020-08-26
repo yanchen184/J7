@@ -13,23 +13,7 @@ import android.widget.ImageView;
 public class User extends BaseObservable {
 
     private String name;
-    private String address;
-    private String email;
-    private String image;
     private String level;
-
-
-    @Bindable
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-        notifyPropertyChanged(BR.level);
-    }
-
-
 
     @Bindable
     public String getName() {
@@ -41,45 +25,14 @@ public class User extends BaseObservable {
         notifyPropertyChanged(BR.name);
     }
 
-
     @Bindable
-    public String getAddress() {
-        return address;
+    public String getLevel() {
+        return level;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-
-        notifyPropertyChanged(BR.address);
+    public void setLevel(String level) {
+        this.level = level;
+        notifyPropertyChanged(BR.level);
     }
 
-    @Bindable
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-        notifyPropertyChanged(BR.email);
-    }
-
-    @Bindable
-    public String getImage() {
-        return image;
-
-    }
-
-    @Bindable
-    public void setImage(String image) {
-        this.image = image;
-        notifyPropertyChanged(BR.image);
-    }
-
-
-    @BindingAdapter({"android:image"})
-    public static void loadImage(ImageView imageView, String image) {
-//        Glide.with(imageView)
-//                .load(image)
-//                .into(imageView);
-    }
 }
