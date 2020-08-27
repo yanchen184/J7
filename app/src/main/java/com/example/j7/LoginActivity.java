@@ -218,8 +218,8 @@ public class LoginActivity extends AppCompatActivity {
         rootRef.child("role").child("fs").child("atkR").setValue(fs);
         rootRef.child("role").child("fs").child("HP").setValue(intToList(atkDecide.fsHP));
         rootRef.child("role").child("fs").child("MP").setValue(intToList(atkDecide.fsMP));
-        rootRef.child("role").child("fs").child("backpack").child("HP").setValue(intToList(atkDecide.HPBackpack));
-        rootRef.child("role").child("fs").child("backpack").child("MP").setValue(intToList(atkDecide.HPBackpack));
+        rootRef.child("role").child("fs").child("backpack").child("HP").setValue(intToList(atkDecide.HPBackpackTest));
+        rootRef.child("role").child("fs").child("backpack").child("MP").setValue(intToList(atkDecide.HPBackpackTest));
         rootRef.child("role").child("fs").child("backpack").child("atkR").setValue(atkRBackpack);
 
 
@@ -230,8 +230,8 @@ public class LoginActivity extends AppCompatActivity {
         rootRef.child("role").child("j4").child("atkR").setValue(j4);
         rootRef.child("role").child("j4").child("HP").setValue(intToList(atkDecide.j4HP));
         rootRef.child("role").child("j4").child("MP").setValue(intToList(atkDecide.j4MP));
-        rootRef.child("role").child("j4").child("backpack").child("HP").setValue(intToList(atkDecide.HPBackpack));
-        rootRef.child("role").child("j4").child("backpack").child("MP").setValue(intToList(atkDecide.HPBackpack));
+        rootRef.child("role").child("j4").child("backpack").child("HP").setValue(intToList(atkDecide.HPBackpackTest));
+        rootRef.child("role").child("j4").child("backpack").child("MP").setValue(intToList(atkDecide.HPBackpackTest));
         rootRef.child("role").child("j4").child("backpack").child("atkR").setValue(atkRBackpack);
 
         /** player */
@@ -241,8 +241,8 @@ public class LoginActivity extends AppCompatActivity {
         rootRef.child("role").child("player").child("atkR").setValue(player);
         rootRef.child("role").child("player").child("HP").setValue(intToList(atkDecide.playerHP));
         rootRef.child("role").child("player").child("MP").setValue(intToList(atkDecide.playerMP));
-        rootRef.child("role").child("player").child("backpack").child("HP").setValue(intToList(atkDecide.HPBackpack));
-        rootRef.child("role").child("player").child("backpack").child("MP").setValue(intToList(atkDecide.HPBackpack));
+        rootRef.child("role").child("player").child("backpack").child("HP").setValue(intToList(atkDecide.HPBackpackTest));
+        rootRef.child("role").child("player").child("backpack").child("MP").setValue(intToList(atkDecide.HPBackpackTest));
         rootRef.child("role").child("player").child("backpack").child("atkR").setValue(atkRBackpack);
 
         /** b74 */
@@ -252,8 +252,8 @@ public class LoginActivity extends AppCompatActivity {
         rootRef.child("role").child("b74").child("atkR").setValue(b74);
         rootRef.child("role").child("b74").child("HP").setValue(intToList(atkDecide.b74HP));
         rootRef.child("role").child("b74").child("MP").setValue(intToList(atkDecide.b74MP));
-        rootRef.child("role").child("b74").child("backpack").child("HP").setValue(intToList(atkDecide.HPBackpack));
-        rootRef.child("role").child("b74").child("backpack").child("MP").setValue(intToList(atkDecide.HPBackpack));
+        rootRef.child("role").child("b74").child("backpack").child("HP").setValue(intToList(atkDecide.HPBackpackTest));
+        rootRef.child("role").child("b74").child("backpack").child("MP").setValue(intToList(atkDecide.HPBackpackTest));
         rootRef.child("role").child("b74").child("backpack").child("atkR").setValue(atkRBackpack);
 
 

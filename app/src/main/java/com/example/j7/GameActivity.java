@@ -98,11 +98,11 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("---------遊戲開始---------");
 
-        System.out.println(startActivity.fsatkR);
+//        System.out.println(startActivity.fsatkR);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity_main);
 
-        connectManager.initiateSocketConnection();//連線
+//        connectManager.initiateSocketConnection();//連線
         findView(); //findView()
         intent(); //從上一頁告知我 roomKey player otherPlayer
 

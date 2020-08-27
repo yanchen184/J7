@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -29,8 +30,8 @@ public class FourCardAdd extends AppCompatActivity {
     TextView juge, sg2, HP1, MP1, je;
     View atkR, HPMP;
     public View line11, line12, line13, line14, line15, line16, line17, line18, line19;
-    int index = 5;
-    int index2 = 5;
+    int power;//素材量
+    int maxBackpack = 7;//背包上限值
     Button buttonAtk1, shop;
     public DatabaseReference level, backpack, record;
     Tools tools = new Tools();
@@ -44,7 +45,6 @@ public class FourCardAdd extends AppCompatActivity {
 
         findView();
         level = FirebaseDatabase.getInstance().getReference("users").child(userId).child("level");
-
         record = FirebaseDatabase.getInstance().getReference("users").child(userId).child("record");
 
         /**更改 rocord 值*/
@@ -53,7 +53,6 @@ public class FourCardAdd extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 long x = (long) snapshot.getValue();
                 rocord = tools.roleChange((int) x);
-//                backpack = FirebaseDatabase.getInstance().getReference("users").child(userId).child("role").child(rocord).child("backpack");
                 je.setText(tools.roleChangeName(rocord));
             }
 
@@ -139,28 +138,21 @@ public class FourCardAdd extends AppCompatActivity {
         public void onDataChange(@NonNull DataSnapshot snapshot) {
             /** 有素材才能升等 隨即監聽按鈕是否可按*/
             long i = (long) snapshot.child("level").getValue();
-            index = (int) i;
+            power = (int) i;
 
             /**背包有格子才能按*/
             ArrayList<Integer> x = (ArrayList<Integer>) snapshot.child("role").child(rocord).child("backpack").child("HP").getValue();
-            System.out.println("rocord : " + rocord);
-            int w = x.indexOf((long)0);
 
-            switch (w) {
-                case -1:
-                    index2 = 0;
-                    break;
-                default:
-                    index2 = 5 - w;
-                    break;
-            }
-            System.out.println("背包格子數量 : " + index2);
-            if (index2 <= 0 || index <= 0) {
+            int c = x == null ? 0 : x.size();
+            System.out.println("剩餘背包格子數量 : " + (maxBackpack - c));
+
+            if (power <= 0 || maxBackpack <= 0) {
                 shop.setEnabled(false);
             } else {
                 shop.setEnabled(true);
             }
-            sg2.setText("目前剩下 " + index + " 素材,背包還有 " + index2 + " 格空間");
+
+            sg2.setText("目前剩下 " + power + " 素材,背包還有 " + (maxBackpack - c) + " / " + maxBackpack + " 格空間");
         }
 
         @Override
@@ -179,42 +171,89 @@ public class FourCardAdd extends AppCompatActivity {
 
     public int randomHP = 0;
     public int randomMP = 0;
+
+    public int getRandomHP() {
+        return randomHP;
+    }
+
+    public void setRandomHP(int randomHP) {
+        this.randomHP = randomHP;
+    }
+
+    public int getRandomMP() {
+        return randomMP;
+    }
+
+    public void setRandomMP(int randomMP) {
+        this.randomMP = randomMP;
+    }
+
+    public ArrayList<Integer> getRandomAtkR() {
+        return randomAtkR;
+    }
+
+    public void setRandomAtkR(ArrayList<Integer> randomAtkR) {
+        this.randomAtkR = randomAtkR;
+    }
+
     public ArrayList<Integer> randomAtkR = new ArrayList<>();
 
     public void shop(View v) {
-        if (index >= 0) {
+        if (maxBackpack >= 0) {
             /**初始化*/
             atkDrawINVISIBLE();
             /**計算結果*/
             countSkillIntensity();
             /**計算評價*/
             judgingSkillIntensity();
+            /**消耗一素材*/
+            level.setValue(power - 1);
 
             FirebaseDatabase.getInstance().getReference("users").child(userId).child("role").child(rocord).child("backpack").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     HPBackpack = (ArrayList<Integer>) snapshot.child("HP").getValue();
-                    System.out.println("HPBackpack :" + HPBackpack);
                     MPBackpack = (ArrayList<Integer>) snapshot.child("MP").getValue();
                     atkRBackpack = (ArrayList<ArrayList<Integer>>) snapshot.child("atkR").getValue();
+                    System.out.println("HPBackpack :" + HPBackpack);
+                    int c = HPBackpack == null ? 0 : HPBackpack.size();
 
-                    int indexx = 0;
-                    for (int k = 0; k < HPBackpack.size(); k++) {
-                        int a = Integer.parseInt(String.valueOf(HPBackpack.get(k)));
-                        if (a == 0) {
-                            indexx = k;
-                            break;
+
+                    if (c == 0) {
+                        HPBackpack = new ArrayList<>();
+                        HPBackpack.add(randomHP);
+                        MPBackpack = new ArrayList<>();
+                        MPBackpack.add(randomMP);
+
+                        atkRBackpack = new ArrayList<>();
+                        ArrayList<Integer> yc = new ArrayList<>();
+                        for (int i = 0; i < randomAtkR.size(); i++) {
+                            yc.add(randomAtkR.get(i));
                         }
+                        atkRBackpack.add(yc);
+                        
+                    } else {
+                        HPBackpack.add(getRandomHP());
+                        MPBackpack.add(getRandomMP());
+                        atkRBackpack.add(getRandomAtkR());
+//                        HPBackpack.set(c, getRandomHP());
+//                        MPBackpack.set(c, getRandomMP());
+//                        atkRBackpack.set(c, getRandomAtkR());
+                        backpack.child("HP").setValue(HPBackpack);
+                        backpack.child("MP").setValue(MPBackpack);
+                        backpack.child("atkR").setValue(atkRBackpack);
                     }
 
-                    HPBackpack.set(indexx, randomHP);
-                    MPBackpack.set(indexx, randomMP);
-                    atkRBackpack.set(indexx, randomAtkR);
-
+                    Log.d("TAG", "onDataChange: " + getRandomHP());
+                    Log.d("TAG", "onDataChange: " + HPBackpack);
+                    Log.d("TAG", "onDataChange: " + MPBackpack);
+                    Log.d("TAG", "onDataChange: " + atkRBackpack);
                     backpack = FirebaseDatabase.getInstance().getReference("users").child(userId).child("role").child(rocord).child("backpack");
                     backpack.child("HP").setValue(HPBackpack);
                     backpack.child("MP").setValue(MPBackpack);
                     backpack.child("atkR").setValue(atkRBackpack);
+
+
                 }
 
                 @Override
@@ -226,10 +265,8 @@ public class FourCardAdd extends AppCompatActivity {
     }
 
     public void countSkillIntensity() {
-        level.setValue(index - 1);
-        index2 = index2 - 1;
-        randomHP = (int) (Math.random() * 10) + 1;//產生1-10
-        randomMP = (int) (Math.random() * 10) + 1;//產生1-10
+        setRandomHP((int) (Math.random() * 10) + 1);//產生1-10
+        setRandomMP((int) (Math.random() * 10) + 1);//產生1-10
         int randomAtkRCount = (int) (Math.random() * 9) + 1;//產生1-9
         randomAtkR = new ArrayList<>();
         for (int j = 0; j < randomAtkRCount; j++) {

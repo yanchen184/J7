@@ -1,50 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="卡片交換"
-        android:textSize="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.499"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
 
-    <include
-        android:id="@+id/includeAtk1"
-        layout="@layout/game_activity_down2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="卡片交換"
+            android:textSize="30dp"
+            app:layout_constraintBottom_toTopOf="@+id/recycler"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.499"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView2" />
 
-    <include
-        android:id="@+id/includeAtk2"
-        layout="@layout/game_activity_down2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp" />
+        <include
+            android:id="@+id/includeAtk1"
+            layout="@layout/game_activity_down2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
 
-    <Button
-        android:id="@+id/btn_b"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="btn_b"
-        android:text="返回"
-        android:textSize="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView2"
-        app:layout_constraintTop_toTopOf="parent"></Button>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/includeAtk1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_b" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/btn_b"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="btn_b"
+            android:text="返回"
+            android:textSize="40dp"
+            app:layout_constraintEnd_toStartOf="@+id/btn_"
+            app:layout_constraintTop_toTopOf="parent"></Button>
+
+        <Button
+            android:id="@+id/btn_"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="btn_b"
+            android:text="分解"
+            android:textSize="40dp"
+            android:enabled="false"
+            app:layout_constraintEnd_toEndOf="@+id/horizontalScrollView2"
+            app:layout_constraintTop_toTopOf="parent"></Button>
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/title"
+            tools:layout_editor_absoluteX="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/j4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="j4Add"
+                    android:text="劍士" />
+
+                <Button
+                    android:id="@+id/fs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="fsAdd"
+                    android:text="法師" />
+
+                <Button
+                    android:id="@+id/player"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="playerAdd"
+                    android:text="普通人" />
+
+                <Button
+                    android:id="@+id/b74"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="b74Add"
+                    android:text="騎士" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

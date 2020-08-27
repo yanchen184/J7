@@ -13,10 +13,11 @@
         layout="@layout/game_picture_layout_atk_fire"
         android:layout_width="110dp"
         android:layout_height="80dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline4"
         app:layout_constraintEnd_toStartOf="@+id/guideline7"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_player" />
+        app:layout_constraintTop_toTopOf="@+id/guideline6" />
 
     <include
         android:id="@+id/atkKJ10"
@@ -176,17 +177,14 @@
         app:layout_constraintTop_toTopOf="@+id/guideline6"
         tools:layout_editor_absoluteX="0dp" />
 
+
     <View
         android:id="@+id/lineY2"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="#000000"
         android:padding="150dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline3"
-        app:layout_constraintVertical_bias="0.319" />
-
+        app:layout_constraintTop_toTopOf="@+id/guideline5" />
 
     <View
         android:id="@+id/lineX0"
@@ -194,6 +192,7 @@
         android:layout_height="340dp"
         android:background="#000000"
         android:padding="150dp"
+        app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="16dp" />
 
@@ -239,11 +238,6 @@
         tools:layout_editor_absoluteY="35dp" />
 
 
-
-
-
-
-
     <ImageView
         android:id="@+id/image_player"
         android:layout_width="50dp"
@@ -271,14 +265,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.11192214" />
+        app:layout_constraintGuide_percent="0.31" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.8321168" />
+        app:layout_constraintGuide_percent="0.81" />
 
     <include
         android:id="@+id/includeAtk"
@@ -297,9 +291,6 @@
         app:layout_constraintStart_toStartOf="parent" />
 
 
-
-
-
     <include
         android:id="@+id/include"
         layout="@layout/game_activity_up"
@@ -313,14 +304,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.35" />
+        app:layout_constraintGuide_percent="0.47" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.59" />
+        app:layout_constraintGuide_percent="0.63" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline7"
@@ -364,9 +355,28 @@
         android:onClick="initGame"
         android:text="再來一局"
         android:textSize="100dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/include" />
+
+    <include
+        android:id="@+id/includeMove1"
+        layout="@layout/game_activity_down1"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        app:layout_constraintBottom_toTopOf="@+id/atkKJ12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <include
+        android:id="@+id/includeAtk1"
+        layout="@layout/game_activity_down2"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        app:layout_constraintTop_toBottomOf="@+id/include" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
