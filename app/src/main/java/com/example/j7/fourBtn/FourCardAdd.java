@@ -146,7 +146,7 @@ public class FourCardAdd extends AppCompatActivity {
             int c = x == null ? 0 : x.size();
             System.out.println("剩餘背包格子數量 : " + (maxBackpack - c));
 
-            if (power <= 0 || maxBackpack <= 0) {
+            if (power <= 0 || (maxBackpack - c) <= 0) {
                 shop.setEnabled(false);
             } else {
                 shop.setEnabled(true);
@@ -205,7 +205,7 @@ public class FourCardAdd extends AppCompatActivity {
             /**計算結果*/
             countSkillIntensity();
             /**計算評價*/
-            judgingSkillIntensity();
+            juge.setText("判斷技能強度 : " + judgingSkillIntensity(randomHP,randomMP,randomAtkR));
             /**消耗一素材*/
             level.setValue(power - 1);
 
@@ -236,18 +236,19 @@ public class FourCardAdd extends AppCompatActivity {
                         HPBackpack.add(getRandomHP());
                         MPBackpack.add(getRandomMP());
                         atkRBackpack.add(getRandomAtkR());
+                        Log.d("TAG", "onDataChange: " + HPBackpack);
+                        Log.d("TAG", "onDataChange: " + MPBackpack);
+                        Log.d("TAG", "onDataChange: " + atkRBackpack);
+
 //                        HPBackpack.set(c, getRandomHP());
 //                        MPBackpack.set(c, getRandomMP());
 //                        atkRBackpack.set(c, getRandomAtkR());
-                        backpack.child("HP").setValue(HPBackpack);
-                        backpack.child("MP").setValue(MPBackpack);
-                        backpack.child("atkR").setValue(atkRBackpack);
                     }
 
-                    Log.d("TAG", "onDataChange: " + getRandomHP());
-                    Log.d("TAG", "onDataChange: " + HPBackpack);
-                    Log.d("TAG", "onDataChange: " + MPBackpack);
-                    Log.d("TAG", "onDataChange: " + atkRBackpack);
+//                    Log.d("TAG", "onDataChange: " + getRandomHP());
+//                    Log.d("TAG", "onDataChange: " + HPBackpack);
+//                    Log.d("TAG", "onDataChange: " + MPBackpack);
+//                    Log.d("TAG", "onDataChange: " + atkRBackpack);
                     backpack = FirebaseDatabase.getInstance().getReference("users").child(userId).child("role").child(rocord).child("backpack");
                     backpack.child("HP").setValue(HPBackpack);
                     backpack.child("MP").setValue(MPBackpack);
@@ -286,7 +287,7 @@ public class FourCardAdd extends AppCompatActivity {
     }
 
 
-    public void judgingSkillIntensity() {
+    public String judgingSkillIntensity(int randomHP ,int randomMP,ArrayList<Integer> randomAtkR) {
         String abcd = null;
         int j = randomHP * (10 - randomMP) * randomAtkR.size();
         if (j <= 15) {//0 - 10%
@@ -304,7 +305,8 @@ public class FourCardAdd extends AppCompatActivity {
         } else if (j < 10000) {//95 - 100%
             abcd = "SSS";
         }
-        juge.setText("判斷技能強度 : " + abcd);
+
+        return abcd;
     }
 
 

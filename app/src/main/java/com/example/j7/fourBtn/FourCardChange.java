@@ -167,6 +167,8 @@ public class FourCardChange extends AppCompatActivity {
         finish();
     }
 
+    FourCardAdd fourCardAdd = new FourCardAdd();
+
     public class RAdapter extends RecyclerView.Adapter<RAdapter.ContactHolder> {
         List<AtkCard> atkCards;
 
@@ -186,6 +188,11 @@ public class FourCardChange extends AppCompatActivity {
             AtkCard atkCard = atkCards.get(position);
             holder.hpText.setText(atkCard.hp + "");
             holder.mpText.setText(atkCard.mp + "");
+            ArrayList<Integer> yc = new ArrayList<>();
+            for (int i = 0; i < atkCard.atkR.length; i++) {
+                yc.add(atkCard.atkR[i]);
+            }
+            holder.pg.setText("評價 : " + fourCardAdd.judgingSkillIntensity(atkCard.hp,atkCard.mp,yc));
             atkDraw(atkCard.atkR, holder.line11, holder.line12, holder.line13, holder.line14, holder.line15, holder.line16, holder.line17, holder.line18, holder.line19);
         }
 
@@ -198,6 +205,7 @@ public class FourCardChange extends AppCompatActivity {
         public class ContactHolder extends RecyclerView.ViewHolder {
             TextView hpText;
             TextView mpText;
+            TextView pg;
             View line11, line12, line13, line14, line15, line16, line17, line18, line19;
 
             public ContactHolder(@NonNull View itemView) {
@@ -213,6 +221,7 @@ public class FourCardChange extends AppCompatActivity {
                 line17 = itemView.findViewById(R.id.line17);
                 line18 = itemView.findViewById(R.id.line18);
                 line19 = itemView.findViewById(R.id.line19);
+                pg = itemView.findViewById(R.id.pg);
             }
         }
     }
