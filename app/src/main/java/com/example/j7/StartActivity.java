@@ -310,33 +310,46 @@ public class StartActivity extends AppCompatActivity {
         atkDrawINVISIBLE();
         final ImageSwitcher imageSwitcher = findViewById(R.id.hand);
         imageSwitcher.setImageDrawable(drawableList.get(index));
+        finalAtlR = j4atkR;
         switch (tools.roleChange(index)) {
             case "j4":
                 buttonAtk5.setText("續力");
                 role.setText("劍士");
                 atkDrawHPMP(j4HP, j4MP);
-                atkDraw(j4atkR);
+                atkDraw(j4atkR, line11, line12, line13, line14, line15, line16, line17, line18, line19
+                        , line21, line22, line23, line24, line25, line26, line27, line28, line29
+                        , line31, line32, line33, line34, line35, line36, line37, line38, line39
+                        , line41, line42, line43, line44, line45, line46, line47, line48, line49);
                 introduction.setText("攻擊範圍較小,傷害極高,回血較快 \n 特殊技能 : 續力..下次攻擊傷害為雙倍");
                 break;
             case "fs":
                 buttonAtk5.setText("末日");
                 role.setText("法師");
                 atkDrawHPMP(fsHP, fsMP);
-                atkDraw(fsatkR);
+                atkDraw(fsatkR, line11, line12, line13, line14, line15, line16, line17, line18, line19
+                        , line21, line22, line23, line24, line25, line26, line27, line28, line29
+                        , line31, line32, line33, line34, line35, line36, line37, line38, line39
+                        , line41, line42, line43, line44, line45, line46, line47, line48, line49);
                 introduction.setText("攻擊範圍較大,傷害較低,回魔為一般人1.5倍 \n 特殊技能 : 末日..九宮格傷害");
                 break;
             case "player":
                 buttonAtk5.setText("尚未開發");
                 role.setText("普通人");
                 atkDrawHPMP(playerHP, playerMP);
-                atkDraw(playeratkR);
+                atkDraw(playeratkR, line11, line12, line13, line14, line15, line16, line17, line18, line19
+                        , line21, line22, line23, line24, line25, line26, line27, line28, line29
+                        , line31, line32, line33, line34, line35, line36, line37, line38, line39
+                        , line41, line42, line43, line44, line45, line46, line47, line48, line49);
                 introduction.setText("就是普通人 \n 特殊技能 : 還沒想到");
                 break;
             case "b74":
                 buttonAtk5.setText("隔檔");
                 role.setText("騎士");
                 atkDrawHPMP(b74HP, b74MP);
-                atkDraw(b74atkR);
+                atkDraw(b74atkR, line11, line12, line13, line14, line15, line16, line17, line18, line19
+                        , line21, line22, line23, line24, line25, line26, line27, line28, line29
+                        , line31, line32, line33, line34, line35, line36, line37, line38, line39
+                        , line41, line42, line43, line44, line45, line46, line47, line48, line49);
                 introduction.setText("擁有雙倍的厚實血量,回血為一般人1.5倍 \n 特殊技能 : 隔檔...可以隔檔攻擊");
                 break;
         }
@@ -488,8 +501,12 @@ public class StartActivity extends AppCompatActivity {
     }
 
 
-    public void atkDraw(ArrayList<ArrayList<Integer>> atk) {
-        finalAtlR = atk;
+    public void atkDraw(ArrayList<ArrayList<Integer>> atk
+            , View line11, View line12, View line13, View line14, View line15, View line16, View line17, View line18, View line19
+            , View line21, View line22, View line23, View line24, View line25, View line26, View line27, View line28, View line29
+            , View line31, View line32, View line33, View line34, View line35, View line36, View line37, View line38, View line39
+            , View line41, View line42, View line43, View line44, View line45, View line46, View line47, View line48, View line49) {
+
         for (int i = 0; i < atk.get(0).size(); i++) {
             int yc = Integer.parseInt(String.valueOf(atk.get(0).get(i)));
             switch (yc) {
@@ -770,11 +787,10 @@ public class StartActivity extends AppCompatActivity {
     }
 
 
-
     String player;
 
-//    Queue queue = new Queue(this);
-    Queue queue ;
+    //    Queue queue = new Queue(this);
+    Queue queue;
 
 
     public void onHTTPCreate(View v) { // 好友創建房間
@@ -804,9 +820,6 @@ public class StartActivity extends AppCompatActivity {
         roomEditText.setEnabled(true);
         roomEditText.setText("");
     }
-
-
-
 
 
 }
