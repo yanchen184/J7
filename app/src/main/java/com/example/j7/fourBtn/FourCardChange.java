@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageSwitcher;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.j7.R;
 import com.example.j7.StartActivity;
@@ -123,11 +124,11 @@ public class FourCardChange extends AppCompatActivity {
     public void j4Add(View v) {
         backpackRoleChange("j4");
         record.setValue(0);
-//        je.setText("劍士");
         binding.j4.setBackgroundColor(Color.parseColor("#00000000"));
         binding.fs.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.player.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.b74.setBackgroundColor(Color.parseColor("#e0000000"));
+//        je.setText("劍士");
 
     }
 
@@ -192,7 +193,7 @@ public class FourCardChange extends AppCompatActivity {
             for (int i = 0; i < atkCard.atkR.length; i++) {
                 yc.add(atkCard.atkR[i]);
             }
-            holder.pg.setText("評價 : " + fourCardAdd.judgingSkillIntensity(atkCard.hp,atkCard.mp,yc));
+            holder.pg.setText("評價 : " + fourCardAdd.judgingSkillIntensity(atkCard.hp, atkCard.mp, yc));
             atkDraw(atkCard.atkR, holder.line11, holder.line12, holder.line13, holder.line14, holder.line15, holder.line16, holder.line17, holder.line18, holder.line19);
         }
 
@@ -222,9 +223,58 @@ public class FourCardChange extends AppCompatActivity {
                 line18 = itemView.findViewById(R.id.line18);
                 line19 = itemView.findViewById(R.id.line19);
                 pg = itemView.findViewById(R.id.pg);
+
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        view.setAlpha(0.7f);
+                        if (lastClick != null) {
+                            lastClick.setAlpha(1.0f);
+
+                            if (lastClick != view) {
+                                clickInt = getAdapterPosition();
+                            } else {
+                                clickInt = 100;
+                            }
+                        }
+
+                        lastClick = view;
+                        Toast.makeText(view.getContext(),
+                                "選擇 :  " + clickInt, Toast.LENGTH_SHORT).show();
+
+//                        backpackRoleChange();
+                    }
+                });
             }
         }
     }
+
+    View lastClick;
+    int clickInt;
+//    class ViewHolder extends RecyclerView.ViewHolder{
+//        // 宣告元件
+//        private TextView txtItem;
+////        private Button btnRemove;
+//
+//        ViewHolder(View itemView) {
+//            super(itemView);
+//            txtItem = (TextView) itemView.findViewById(R.id.txtItem);
+////            btnRemove = (Button) itemView.findViewById(R.id.btnRemove);
+//
+//            // 點擊項目時
+//
+//
+//            // 點擊項目中的Button時
+////            btnRemove.setOnClickListener(new View.OnClickListener() {
+////                @Override
+////                public void onClick(View view) {
+////                    // 按下Button要做的事
+////                }
+////            });
+//        }
+//    }
+
 
     public void atkDraw(int[] atk, View line11, View line12, View line13, View line14, View line15, View line16, View line17, View line18, View line19) {
         for (int i = 0; i < atk.length; i++) {

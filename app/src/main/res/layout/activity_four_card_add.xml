@@ -1,165 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fourBtn.FourCardChange">
+    xmlns:tools="http://schemas.android.com/tools">
 
-
-    <HorizontalScrollView
-        android:id="@+id/horizontalScrollView2"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/title">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            app:layout_constraintTop_toBottomOf="@+id/title">
 
-            <Button
-                android:id="@+id/j4"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/j4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="j4"
+                    android:text="劍士" />
+
+                <Button
+                    android:id="@+id/fs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="fs"
+                    android:text="法師" />
+
+                <Button
+                    android:id="@+id/player"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="player"
+                    android:text="普通人" />
+
+                <Button
+                    android:id="@+id/b74"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="b74"
+                    android:text="騎士" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+
+        <Button
+            android:id="@+id/shop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="shop"
+            android:text="花費1素材"
+            android:textSize="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline17"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView2"></Button>
+
+
+        <Button
+            android:id="@+id/btn_b"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="btn_b"
+            android:text="返回"
+            android:textSize="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"></Button>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <TextView
+            android:id="@+id/sg2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="目前剩下2素材,背包還有3隔空間"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/shop"
+            app:layout_constraintStart_toStartOf="@+id/shop"
+            app:layout_constraintTop_toBottomOf="@+id/shop" />
+
+
+        <include
+            android:id="@+id/atkR"
+            layout="@layout/layout_button_nine1"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline17"
+            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView2" />
+
+
+        <LinearLayout
+            android:id="@+id/HPMP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@+id/atkR"
+            app:layout_constraintStart_toEndOf="@+id/atkR"
+            app:layout_constraintTop_toTopOf="@+id/atkR">
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="j4"
-                android:text="劍士" />
+                android:text="HP :"
+                android:textSize="30dp" />
 
-            <Button
-                android:id="@+id/fs"
+            <TextView
+                android:id="@+id/HP1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="fs"
-                android:text="法師" />
+                android:text="10"
+                android:textSize="30dp" />
 
-            <Button
-                android:id="@+id/player"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="player"
-                android:text="普通人" />
+                android:text="MP :"
+                android:textSize="30dp" />
 
-            <Button
-                android:id="@+id/b74"
+            <TextView
+                android:id="@+id/MP1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="b74"
-                android:text="騎士" />
+                android:text="5"
+                android:textSize="30dp" />
+
         </LinearLayout>
-    </HorizontalScrollView>
-
-
-    <Button
-        android:id="@+id/shop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="shop"
-        android:text="花費1素材"
-        android:textSize="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline17"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView2"></Button>
-
-
-    <Button
-        android:id="@+id/btn_b"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="btn_b"
-        android:text="返回"
-        android:textSize="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"></Button>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline17"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
-
-    <TextView
-        android:id="@+id/sg2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="目前剩下2素材,背包還有3隔空間"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/shop"
-        app:layout_constraintStart_toStartOf="@+id/shop"
-        app:layout_constraintTop_toBottomOf="@+id/shop" />
-
-
-    <include
-        android:id="@+id/atkR"
-        layout="@layout/layout_button_nine1"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline17"
-        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView2" />
-
-
-    <LinearLayout
-        android:id="@+id/HPMP"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@+id/atkR"
-        app:layout_constraintStart_toEndOf="@+id/atkR"
-        app:layout_constraintTop_toTopOf="@+id/atkR">
 
         <TextView
+            android:id="@+id/juge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="HP :"
-            android:textSize="30dp" />
+            android:text="判斷技能強度 : B"
+            android:textSize="30dp"
+            app:layout_constraintBottom_toTopOf="@+id/atkR"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline17"
+            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView2" />
 
         <TextView
-            android:id="@+id/HP1"
+            android:id="@+id/je"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="10"
-            android:textSize="30dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="MP :"
-            android:textSize="30dp" />
-
-        <TextView
-            android:id="@+id/MP1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="5"
-            android:textSize="30dp" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/juge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="判斷技能強度 : B"
-        android:textSize="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/atkR"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline17"
-        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView2" />
-
-    <TextView
-        android:id="@+id/je"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="劍士"
-        android:textSize="30dp"
-        app:layout_constraintBottom_toBottomOf="@+id/juge"
-        app:layout_constraintEnd_toStartOf="@+id/guideline17"
-        app:layout_constraintStart_toStartOf="parent" />
+            android:text="劍士"
+            android:textSize="30dp"
+            app:layout_constraintBottom_toBottomOf="@+id/juge"
+            app:layout_constraintEnd_toStartOf="@+id/guideline17"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

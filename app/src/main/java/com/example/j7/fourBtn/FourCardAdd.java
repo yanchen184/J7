@@ -2,6 +2,7 @@ package com.example.j7.fourBtn;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,6 +12,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.j7.R;
+import com.example.j7.databinding.ActivityFourCardAddBinding;
+import com.example.j7.databinding.ActivityMainBinding;
 import com.example.j7.tools.Tools;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,15 +40,22 @@ public class FourCardAdd extends AppCompatActivity {
     Tools tools = new Tools();
     String rocord;
 
+    public ActivityFourCardAddBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_four_card_add);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_four_card_add);
 
         findView();
         level = FirebaseDatabase.getInstance().getReference("users").child(userId).child("level");
         record = FirebaseDatabase.getInstance().getReference("users").child(userId).child("record");
+
+        binding.j4.setBackgroundColor(Color.parseColor("#e0000000"));
+        binding.fs.setBackgroundColor(Color.parseColor("#e0000000"));
+        binding.player.setBackgroundColor(Color.parseColor("#e0000000"));
+        binding.b74.setBackgroundColor(Color.parseColor("#e0000000"));
 
         /**更改 rocord 值*/
         record.addValueEventListener(new ValueEventListener() {
@@ -54,6 +64,20 @@ public class FourCardAdd extends AppCompatActivity {
                 long x = (long) snapshot.getValue();
                 rocord = tools.roleChange((int) x);
                 je.setText(tools.roleChangeName(rocord));
+                switch (rocord){
+                    case  "j4":
+                        binding.j4.setBackgroundColor(Color.parseColor("#00000000"));
+                        break;
+                    case  "fs":
+                        binding.fs.setBackgroundColor(Color.parseColor("#00000000"));
+                        break;
+                    case  "player":
+                        binding.player.setBackgroundColor(Color.parseColor("#00000000"));
+                        break;
+                    case  "b74":
+                        binding.b74.setBackgroundColor(Color.parseColor("#00000000"));
+                        break;
+                }
             }
 
             @Override
@@ -113,21 +137,37 @@ public class FourCardAdd extends AppCompatActivity {
     }
 
     public void j4(View v) {
+        binding.j4.setBackgroundColor(Color.parseColor("#00000000"));
+        binding.fs.setBackgroundColor(Color.parseColor("#e0000000"));
+        binding.player.setBackgroundColor(Color.parseColor("#e0000000"));
+        binding.b74.setBackgroundColor(Color.parseColor("#e0000000"));
         record.setValue(0);
         je.setText("劍士");
     }
 
     public void fs(View v) {
+        binding.j4.setBackgroundColor(Color.parseColor("#e0000000"));
+        binding.fs.setBackgroundColor(Color.parseColor("#00000000"));
+        binding.player.setBackgroundColor(Color.parseColor("#e0000000"));
+        binding.b74.setBackgroundColor(Color.parseColor("#e0000000"));
         record.setValue(1);
         je.setText("法師");
     }
 
     public void player(View v) {
+        binding.j4.setBackgroundColor(Color.parseColor("#e0000000"));
+        binding.fs.setBackgroundColor(Color.parseColor("#e0000000"));
+        binding.player.setBackgroundColor(Color.parseColor("#00000000"));
+        binding.b74.setBackgroundColor(Color.parseColor("#e0000000"));
         record.setValue(2);
         je.setText("普通人");
     }
 
     public void b74(View v) {
+        binding.j4.setBackgroundColor(Color.parseColor("#e0000000"));
+        binding.fs.setBackgroundColor(Color.parseColor("#e0000000"));
+        binding.player.setBackgroundColor(Color.parseColor("#e0000000"));
+        binding.b74.setBackgroundColor(Color.parseColor("#00000000"));
         record.setValue(3);
         je.setText("騎士");
     }
@@ -205,7 +245,7 @@ public class FourCardAdd extends AppCompatActivity {
             /**計算結果*/
             countSkillIntensity();
             /**計算評價*/
-            juge.setText("判斷技能強度 : " + judgingSkillIntensity(randomHP,randomMP,randomAtkR));
+            juge.setText("判斷技能強度 : " + judgingSkillIntensity(randomHP, randomMP, randomAtkR));
             /**消耗一素材*/
             level.setValue(power - 1);
 
@@ -231,7 +271,7 @@ public class FourCardAdd extends AppCompatActivity {
                             yc.add(randomAtkR.get(i));
                         }
                         atkRBackpack.add(yc);
-                        
+
                     } else {
                         HPBackpack.add(getRandomHP());
                         MPBackpack.add(getRandomMP());
@@ -287,7 +327,7 @@ public class FourCardAdd extends AppCompatActivity {
     }
 
 
-    public String judgingSkillIntensity(int randomHP ,int randomMP,ArrayList<Integer> randomAtkR) {
+    public String judgingSkillIntensity(int randomHP, int randomMP, ArrayList<Integer> randomAtkR) {
         String abcd = null;
         int j = randomHP * (10 - randomMP) * randomAtkR.size();
         if (j <= 15) {//0 - 10%
