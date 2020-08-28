@@ -21,10 +21,7 @@
                     android:id="@+id/includeAtk1"
                     layout="@layout/layout_button_nine1"
                     android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline"
-                    app:layout_constraintStart_toEndOf="@+id/button2"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_height="80dp" />
 
 
                 <LinearLayout
@@ -67,9 +64,7 @@
                     layout="@layout/layout_button_nine2"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline"
-                    app:layout_constraintStart_toEndOf="@+id/button2"
-                    app:layout_constraintTop_toTopOf="parent" />
+                     />
 
                 <LinearLayout
                     android:layout_width="10dp"
@@ -110,9 +105,7 @@
                     layout="@layout/layout_button_nine3"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline"
-                    app:layout_constraintStart_toEndOf="@+id/button2"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    />
 
                 <LinearLayout
                     android:layout_width="10dp"
@@ -153,9 +146,7 @@
                     layout="@layout/layout_button_nine4"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline"
-                    app:layout_constraintStart_toEndOf="@+id/button2"
-                    app:layout_constraintTop_toTopOf="parent" />
+                     />
 
                 <LinearLayout
                     android:layout_width="10dp"
@@ -196,9 +187,7 @@
                     layout="@layout/layout_button_nine5"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline"
-                    app:layout_constraintStart_toEndOf="@+id/button2"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    />
 
                 <LinearLayout
                     android:layout_width="10dp"

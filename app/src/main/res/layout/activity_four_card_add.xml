@@ -94,7 +94,7 @@
 
         <include
             android:id="@+id/atkR"
-            layout="@layout/layout_button_nine1"
+            layout="@layout/layout_button_nine_add_card"
             android:layout_width="150dp"
             android:layout_height="150dp"
             app:layout_constraintBottom_toBottomOf="parent"

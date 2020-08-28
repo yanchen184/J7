@@ -228,20 +228,29 @@ public class FourCardChange extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
 
-                        view.setAlpha(0.7f);
-                        if (lastClick != null) {
-                            lastClick.setAlpha(1.0f);
+                        view.setAlpha(0.4f);
 
-                            if (lastClick != view) {
-                                clickInt = getAdapterPosition();
-                            } else {
-                                clickInt = 100;
-                            }
+                        if (lastClick != null && lastClick != view) {
+                            lastClick.setAlpha(1.0f);
+                            clickInt = getAdapterPosition();
+                            Toast.makeText(view.getContext(),
+                                    "選擇 :  " + clickInt, Toast.LENGTH_SHORT).show();
+                        }
+
+                        if (lastClick != null && lastClick == view) {
+                            lastClick.setAlpha(1.0f);
+                            Toast.makeText(view.getContext(),
+                                    "取消選擇 :  " + clickInt, Toast.LENGTH_SHORT).show();
+                        }
+
+                        if (lastClick == null) {
+                            clickInt = getAdapterPosition();
+                            Toast.makeText(view.getContext(),
+                                    "選擇 :  " + clickInt, Toast.LENGTH_SHORT).show();
                         }
 
                         lastClick = view;
-                        Toast.makeText(view.getContext(),
-                                "選擇 :  " + clickInt, Toast.LENGTH_SHORT).show();
+
 
 //                        backpackRoleChange();
                     }
