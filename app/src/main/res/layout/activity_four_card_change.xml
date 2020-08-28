@@ -24,9 +24,10 @@
         <include
             android:id="@+id/includeAtk1"
             layout="@layout/game_activity_down2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -52,10 +53,10 @@
             android:id="@+id/btn_"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:onClick="btn_b"
             android:text="分解"
             android:textSize="40dp"
-            android:enabled="false"
             app:layout_constraintEnd_toEndOf="@+id/horizontalScrollView2"
             app:layout_constraintTop_toTopOf="parent"></Button>
 

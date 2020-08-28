@@ -1,281 +1,283 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context=".GameActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-
-    <TableLayout
-        android:id="@+id/twobtn"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:shrinkColumns="0"
-        android:stretchColumns="*">
-
-        <TableRow android:layout_height="40dp">
+        android:layout_height="80dp">
 
 
-            <include
-                android:id="@+id/includeAtk1"
-                layout="@layout/layout_button_nine1"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline"
-                app:layout_constraintStart_toEndOf="@+id/button2"
-                app:layout_constraintTop_toTopOf="parent" />
+        <TableLayout
+            android:id="@+id/twobtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:shrinkColumns="0"
+            android:stretchColumns="*">
+
+            <TableRow android:layout_height="40dp">
 
 
-            <LinearLayout
-                android:layout_width="10dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="HP :"
-                    android:textSize="8dp" />
-
-                <TextView
-                    android:id="@+id/HP1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="10"
-                    android:textSize="15dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="MP :"
-                    android:textSize="8dp" />
-
-                <TextView
-                    android:id="@+id/MP1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="5"
-                    android:textSize="15dp" />
-            </LinearLayout>
+                <include
+                    android:id="@+id/includeAtk1"
+                    layout="@layout/layout_button_nine1"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline"
+                    app:layout_constraintStart_toEndOf="@+id/button2"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
-            <include
-                android:id="@+id/includeAtk2"
-                layout="@layout/layout_button_nine2"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline"
-                app:layout_constraintStart_toEndOf="@+id/button2"
-                app:layout_constraintTop_toTopOf="parent" />
+                <LinearLayout
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="10dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:gravity="center"
-                android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="HP :"
+                        android:textSize="8dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="HP :"
-                    android:textSize="8dp" />
+                    <TextView
+                        android:id="@+id/HP1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10"
+                        android:textSize="15dp" />
 
-                <TextView
-                    android:id="@+id/HP2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="10"
-                    android:textSize="15dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MP :"
+                        android:textSize="8dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="MP :"
-                    android:textSize="8dp" />
+                    <TextView
+                        android:id="@+id/MP1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5"
+                        android:textSize="15dp" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/MP2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="5"
-                    android:textSize="15dp" />
-            </LinearLayout>
 
-            <include
-                android:id="@+id/includeAtk3"
-                layout="@layout/layout_button_nine3"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline"
-                app:layout_constraintStart_toEndOf="@+id/button2"
-                app:layout_constraintTop_toTopOf="parent" />
+                <include
+                    android:id="@+id/includeAtk2"
+                    layout="@layout/layout_button_nine2"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline"
+                    app:layout_constraintStart_toEndOf="@+id/button2"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
-                android:layout_width="10dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:gravity="center"
-                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="HP :"
-                    android:textSize="8dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="HP :"
+                        android:textSize="8dp" />
 
-                <TextView
-                    android:id="@+id/HP3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="10"
-                    android:textSize="15dp" />
+                    <TextView
+                        android:id="@+id/HP2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10"
+                        android:textSize="15dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="MP :"
-                    android:textSize="8dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MP :"
+                        android:textSize="8dp" />
 
-                <TextView
-                    android:id="@+id/MP3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="5"
-                    android:textSize="15dp" />
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/MP2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5"
+                        android:textSize="15dp" />
+                </LinearLayout>
 
-            <include
-                android:id="@+id/includeAtk4"
-                layout="@layout/layout_button_nine4"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline"
-                app:layout_constraintStart_toEndOf="@+id/button2"
-                app:layout_constraintTop_toTopOf="parent" />
+                <include
+                    android:id="@+id/includeAtk3"
+                    layout="@layout/layout_button_nine3"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline"
+                    app:layout_constraintStart_toEndOf="@+id/button2"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
-                android:layout_width="10dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:gravity="center"
-                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="HP :"
-                    android:textSize="8dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="HP :"
+                        android:textSize="8dp" />
 
-                <TextView
-                    android:id="@+id/HP4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="10"
-                    android:textSize="15dp" />
+                    <TextView
+                        android:id="@+id/HP3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10"
+                        android:textSize="15dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="MP :"
-                    android:textSize="8dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MP :"
+                        android:textSize="8dp" />
 
-                <TextView
-                    android:id="@+id/MP4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="5"
-                    android:textSize="15dp" />
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/MP3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5"
+                        android:textSize="15dp" />
+                </LinearLayout>
 
-            <include
-                android:id="@+id/includeAtk5"
-                layout="@layout/layout_button_nine5"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline"
-                app:layout_constraintStart_toEndOf="@+id/button2"
-                app:layout_constraintTop_toTopOf="parent" />
+                <include
+                    android:id="@+id/includeAtk4"
+                    layout="@layout/layout_button_nine4"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline"
+                    app:layout_constraintStart_toEndOf="@+id/button2"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
-                android:layout_width="10dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:gravity="center"
-                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="HP :"
-                    android:textSize="8dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="HP :"
+                        android:textSize="8dp" />
 
-                <TextView
-                    android:id="@+id/HP5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="X"
-                    android:textSize="15dp" />
+                    <TextView
+                        android:id="@+id/HP4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10"
+                        android:textSize="15dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="MP :"
-                    android:textSize="8dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MP :"
+                        android:textSize="8dp" />
 
-                <TextView
-                    android:id="@+id/MP5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="X"
-                    android:textSize="15dp" />
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/MP4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5"
+                        android:textSize="15dp" />
+                </LinearLayout>
 
-            <include
-                android:id="@+id/includeAtk6"
-                layout="@layout/layout_button_nine6"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:gravity="center"
-                app:layout_constraintBottom_toTopOf="@+id/guideline"
-                app:layout_constraintStart_toEndOf="@+id/button2"
-                app:layout_constraintTop_toTopOf="parent" />
+                <include
+                    android:id="@+id/includeAtk5"
+                    layout="@layout/layout_button_nine5"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline"
+                    app:layout_constraintStart_toEndOf="@+id/button2"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
-                android:layout_width="10dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="HP :"
-                    android:textSize="8dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="HP :"
+                        android:textSize="8dp" />
 
-                <TextView
-                    android:id="@+id/HP6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textSize="15dp" />
+                    <TextView
+                        android:id="@+id/HP5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="X"
+                        android:textSize="15dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="MP :"
-                    android:textSize="8dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MP :"
+                        android:textSize="8dp" />
 
-                <TextView
-                    android:id="@+id/MP6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textSize="15dp" />
-            </LinearLayout>
-        </TableRow>
-    </TableLayout>
+                    <TextView
+                        android:id="@+id/MP5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="X"
+                        android:textSize="15dp" />
+                </LinearLayout>
 
-</LinearLayout>
+                <include
+                    android:id="@+id/includeAtk6"
+                    layout="@layout/layout_button_nine6"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline"
+                    app:layout_constraintStart_toEndOf="@+id/button2"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="HP :"
+                        android:textSize="8dp" />
+
+                    <TextView
+                        android:id="@+id/HP6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MP :"
+                        android:textSize="8dp" />
+
+                    <TextView
+                        android:id="@+id/MP6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="15dp" />
+                </LinearLayout>
+            </TableRow>
+        </TableLayout>
+
+    </LinearLayout>
+</layout>

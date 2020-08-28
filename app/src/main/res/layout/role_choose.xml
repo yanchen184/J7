@@ -64,8 +64,6 @@
             app:layout_constraintStart_toStartOf="@+id/guideline10" />
 
 
-
-
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline16"
             android:layout_width="wrap_content"
@@ -143,6 +141,7 @@
             app:layout_constraintStart_toEndOf="@+id/textView5"
             app:layout_constraintTop_toTopOf="@+id/textView5" />
 
+
         <include
             android:id="@+id/includeAtk"
             layout="@layout/game_activity_down2"
@@ -150,9 +149,6 @@
             android:layout_height="80dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
-
-
 
         <View
             android:id="@+id/lineY2"
@@ -175,14 +171,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/lineY"
             app:layout_constraintTop_toTopOf="@+id/rightBtn" />
-    <Button
+
+        <Button
             android:id="@+id/roleAdd"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
-            android:text="抽角色"
             android:onClick="roleAdd"
+            android:text="抽角色"
             app:layout_constraintBottom_toTopOf="@+id/lineX2"
             app:layout_constraintEnd_toStartOf="@+id/guideline19" />
 
@@ -192,8 +189,8 @@
             android:layout_height="100dp"
             android:layout_marginStart="10dp"
             android:layout_marginBottom="10dp"
-            android:text="抽卡片"
             android:onClick="cardAdd"
+            android:text="抽卡片"
             app:layout_constraintBottom_toTopOf="@+id/lineX2"
             app:layout_constraintStart_toStartOf="@+id/guideline19" />
 
@@ -203,8 +200,8 @@
             android:layout_height="100dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            android:text="升級卡片"
             android:onClick="cardUpgrade"
+            android:text="升級卡片"
             app:layout_constraintEnd_toStartOf="@+id/guideline19"
             app:layout_constraintTop_toBottomOf="@+id/lineX2" />
 
@@ -214,8 +211,8 @@
             android:layout_height="100dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:text="換卡片"
             android:onClick="cardChange"
+            android:text="換卡片"
             app:layout_constraintStart_toStartOf="@+id/guideline19"
             app:layout_constraintTop_toBottomOf="@+id/lineX2" />
 
@@ -235,8 +232,9 @@
             android:layout_height="match_parent"
             android:alpha="0"
             android:onClick="cancelC"
-            android:visibility="invisible"></Button>
-
+            android:visibility="invisible"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp"></Button>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
