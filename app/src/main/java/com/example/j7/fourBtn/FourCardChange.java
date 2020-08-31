@@ -345,9 +345,9 @@ public class FourCardChange extends AppCompatActivity {
 //                                    "選擇 :  " + clickInt, Toast.LENGTH_SHORT).show();
                         }
 
-                        Log.d("TAG", "onClick: "+recordButton);
-                        if(recordButton != 0){
-                            changeCard(recordButton-1,getAdapterPosition());
+                        Log.d("TAG", "onClick: " + recordButton);
+                        if (recordButton != 0) {
+                            changeCard(recordButton - 1, getAdapterPosition());
 
                         }
 

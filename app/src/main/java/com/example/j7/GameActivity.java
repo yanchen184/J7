@@ -86,6 +86,11 @@ public class GameActivity extends AppCompatActivity {
     public String roomKey;
     String player;
     String otherPlayer;
+
+    String playerName;
+    String otherPlayerName;
+
+
     public DatabaseReference fullRoom;
     int upHPInt;
     int upMPInt;
@@ -790,7 +795,7 @@ public class GameActivity extends AppCompatActivity {
             }
             fullRoom.child(player).child("unique").setValue(false);
             sendMessageMoveAtk(y, 2, 5);
-        }else {
+        } else {
             sendMessageMoveAtk(x, 0, 0);
         }
 
