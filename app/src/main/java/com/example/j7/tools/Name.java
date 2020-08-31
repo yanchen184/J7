@@ -10,6 +10,7 @@ public class Name {
     public static final int b74Num = 3;
 
 
-
+    public static final int CHANGE_CARD = 100;
+    public static final int recordButton = 0;
 
 }

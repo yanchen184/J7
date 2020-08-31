@@ -307,7 +307,10 @@ public class StartActivity extends AppCompatActivity {
          * 2. 更改角色名稱
          * 3. 更改技能組
          */
-        atkDrawINVISIBLE();
+        atkDrawINVISIBLE(line11, line12, line13, line14, line15, line16, line17, line18, line19
+                , line21, line22, line23, line24, line25, line26, line27, line28, line29
+                , line31, line32, line33, line34, line35, line36, line37, line38, line39
+                , line41, line42, line43, line44, line45, line46, line47, line48, line49);
         final ImageSwitcher imageSwitcher = findViewById(R.id.hand);
         imageSwitcher.setImageDrawable(drawableList.get(index));
         finalAtlR = j4atkR;
@@ -450,7 +453,10 @@ public class StartActivity extends AppCompatActivity {
 
     }
 
-    public void atkDrawINVISIBLE() {
+    public void atkDrawINVISIBLE(View line11, View line12, View line13, View line14, View line15, View line16, View line17, View line18, View line19
+            , View line21, View line22, View line23, View line24, View line25, View line26, View line27, View line28, View line29
+            , View line31, View line32, View line33, View line34, View line35, View line36, View line37, View line38, View line39
+            , View line41, View line42, View line43, View line44, View line45, View line46, View line47, View line48, View line49) {
         line11.setVisibility(View.INVISIBLE);
         line12.setVisibility(View.INVISIBLE);
         line13.setVisibility(View.INVISIBLE);
@@ -806,7 +812,6 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void cancelC(View v) {
-//        queue.cancelC();
         Button cancelC = findViewById(R.id.cancelC);
         cancelC.setVisibility(View.INVISIBLE);
         cancelConnect();
@@ -814,8 +819,6 @@ public class StartActivity extends AppCompatActivity {
         HTTPCreate.setEnabled(true);
         TextView create1234 = findViewById(R.id.create1234);
         create1234.setText("----");
-//        Button HTTPJoin = findViewById(R.id.HTTPJoin);
-//        HTTPJoin.setEnabled(true);
         EditText roomEditText = findViewById(R.id.roomEditText);
         roomEditText.setEnabled(true);
         roomEditText.setText("");
