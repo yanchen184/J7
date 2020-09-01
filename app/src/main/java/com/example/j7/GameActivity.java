@@ -104,16 +104,13 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("---------遊戲開始---------");
-
-//        System.out.println(startActivity.fsatkR);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity_main);
-
         binding = DataBindingUtil.setContentView(this, R.layout.game_activity_main);
 
-//        connectManager.initiateSocketConnection();//連線
         findView(); //findView()
         intent(); //從上一頁告知我 roomKey player otherPlayer
+
         fullRoom = FirebaseDatabase.getInstance().getReference("rooms").child(roomKey);//FirebaseDatabase
         locationX = new View[]{lineX0, lineX1, lineX2, lineX3, lineX4};
         locationY = new View[]{lineY0, lineY1, lineY2};
@@ -151,9 +148,6 @@ public class GameActivity extends AppCompatActivity {
         binding.includeAtkE.includeAtk4.buttonAtk4.setEnabled(false);
         binding.includeAtkE.includeAtk5.buttonAtk5.setEnabled(false);
         binding.includeAtkE.includeAtk6.buttonAtk6.setEnabled(false);
-//        atkRules.atkDraw(finalAtlR);
-//        atkRules.atkDrawHPMP(finalHP, finalMP);
-
 
         //繪製圖片
 //        imagePlayer.layout(locationX[locationXSelf].getLeft() + 30, locationY[locationYSelf].getTop() - 200, locationX[locationXSelf].getLeft() + 100 + 30, locationY[locationYSelf].getBottom());
