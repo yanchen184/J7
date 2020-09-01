@@ -46,15 +46,15 @@
             android:onClick="btn_b"
             android:text="返回"
             android:textSize="40dp"
-            app:layout_constraintEnd_toStartOf="@+id/btn_"
+            app:layout_constraintEnd_toStartOf="@+id/btnDelete"
             app:layout_constraintTop_toTopOf="parent"></Button>
 
         <Button
-            android:id="@+id/btn_"
+            android:id="@+id/btnDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:onClick="btn_b"
+            android:onClick="btn_delete"
             android:text="分解"
             android:textSize="40dp"
             app:layout_constraintEnd_toEndOf="@+id/horizontalScrollView2"

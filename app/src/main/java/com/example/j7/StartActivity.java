@@ -427,6 +427,19 @@ public class StartActivity extends AppCompatActivity {
         MP5.setText(MP.get(4) + "");
     }
 
+    public void atkDrawHPMP(ArrayList<Integer> HP, ArrayList<Integer> MP,TextView HP1,TextView HP2,TextView HP3,TextView HP4,TextView HP5,TextView MP1,TextView MP2,TextView MP3,TextView MP4,TextView MP5) {
+        HP1.setText(HP.get(0) + "");
+        HP2.setText(HP.get(1) + "");
+        HP3.setText(HP.get(2) + "");
+        HP4.setText(HP.get(3) + "");
+        HP5.setText(HP.get(4) + "");
+        MP1.setText(MP.get(0) + "");
+        MP2.setText(MP.get(1) + "");
+        MP3.setText(MP.get(2) + "");
+        MP4.setText(MP.get(3) + "");
+        MP5.setText(MP.get(4) + "");
+    }
+
     public void atk1(View v) {
     }
 

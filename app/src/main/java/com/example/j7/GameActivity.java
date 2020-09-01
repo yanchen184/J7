@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,7 +15,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
+import com.example.j7.databinding.GameActivityMainBinding;
 import com.example.j7.game.AtkDecide;
 import com.example.j7.game.AtkRules;
 import com.example.j7.game.ConnectManager;
@@ -30,6 +33,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.sql.SQLOutput;
 import java.util.ArrayList;
+
+import static com.example.j7.LoginActivity.userId;
 
 public class GameActivity extends AppCompatActivity {
     /**0626讓冠宇看懂的連線版本 */
@@ -51,12 +56,7 @@ public class GameActivity extends AppCompatActivity {
     public AtkDecide atkDecide = new AtkDecide();
     Tools tools = new Tools();
     public StartActivity startActivity = new StartActivity();
-    /**
-     * 命名用途 只有不同名字的人才可以連線成功　TODO
-     */
-    String[] text1 = {"預言家", "女巫", "獵人", "騎士", "守衛", "禁言長老",
-            "魔術師", "通靈師", "熊", "白癡", "炸彈人", "守墓人", "九尾妖狐"};
-    public String userName = text1[(int) (Math.random() * text1.length)] + (int) (Math.random() * 9999 + 1);
+
 
     public int locationXSelf = 0;
     public int locationYSelf = 1;
@@ -89,8 +89,8 @@ public class GameActivity extends AppCompatActivity {
 
     String playerName;
     String otherPlayerName;
-
-
+    int indexE;
+    public String userName = "";
     public DatabaseReference fullRoom;
     int upHPInt;
     int upMPInt;
@@ -98,6 +98,7 @@ public class GameActivity extends AppCompatActivity {
     ArrayList<Integer> finalMP = null;
     ArrayList<ArrayList<Integer>> finalAtlR = null;
 
+    public GameActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,13 +108,15 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity_main);
 
+        binding = DataBindingUtil.setContentView(this, R.layout.game_activity_main);
+
 //        connectManager.initiateSocketConnection();//連線
         findView(); //findView()
         intent(); //從上一頁告知我 roomKey player otherPlayer
-
         fullRoom = FirebaseDatabase.getInstance().getReference("rooms").child(roomKey);//FirebaseDatabase
         locationX = new View[]{lineX0, lineX1, lineX2, lineX3, lineX4};
         locationY = new View[]{lineY0, lineY1, lineY2};
+
 
         upText();
 
@@ -141,9 +144,14 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
-
-        atkRules.atkDraw(finalAtlR);
-        atkRules.atkDrawHPMP(finalHP, finalMP);
+        binding.includeAtkE.includeAtk1.buttonAtk1.setEnabled(false);
+        binding.includeAtkE.includeAtk2.buttonAtk2.setEnabled(false);
+        binding.includeAtkE.includeAtk3.buttonAtk3.setEnabled(false);
+        binding.includeAtkE.includeAtk4.buttonAtk4.setEnabled(false);
+        binding.includeAtkE.includeAtk5.buttonAtk5.setEnabled(false);
+        binding.includeAtkE.includeAtk6.buttonAtk6.setEnabled(false);
+//        atkRules.atkDraw(finalAtlR);
+//        atkRules.atkDrawHPMP(finalHP, finalMP);
 
 
         //繪製圖片
@@ -347,11 +355,42 @@ public class GameActivity extends AppCompatActivity {
 
     private void intent() {
         Intent it = getIntent();
-        finalHP = new ArrayList<>(it.getIntegerArrayListExtra("finalHP"));
-        finalMP = new ArrayList<>(it.getIntegerArrayListExtra("finalMP"));
-        finalAtlR = new ArrayList<>((ArrayList<ArrayList<Integer>>) getIntent().getExtras().getSerializable("list"));
+//        finalHP = new ArrayList<>(it.getIntegerArrayListExtra("finalHP"));
+//        finalMP = new ArrayList<>(it.getIntegerArrayListExtra("finalMP"));
         roomKey = it.getStringExtra("roomKey");
         index = it.getIntExtra("index", 0);
+
+
+        FirebaseDatabase.getInstance().getReference("users").child(userId).child("role").child(tools.roleChange(index)).child("atkR").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("finalAtlR", String.valueOf((ArrayList<ArrayList<Integer>>) snapshot.getValue()));
+                finalAtlR = (ArrayList<ArrayList<Integer>>) snapshot.getValue();
+                startActivity.atkDraw((ArrayList<ArrayList<Integer>>) snapshot.getValue(), binding.includeAtk.includeAtk1.line11, binding.includeAtk.includeAtk1.line12, binding.includeAtk.includeAtk1.line13, binding.includeAtk.includeAtk1.line14, binding.includeAtk.includeAtk1.line15, binding.includeAtk.includeAtk1.line16, binding.includeAtk.includeAtk1.line17, binding.includeAtk.includeAtk1.line18, binding.includeAtk.includeAtk1.line19
+                        , binding.includeAtk.includeAtk2.line21, binding.includeAtk.includeAtk2.line22, binding.includeAtk.includeAtk2.line23, binding.includeAtk.includeAtk2.line24, binding.includeAtk.includeAtk2.line25, binding.includeAtk.includeAtk2.line26, binding.includeAtk.includeAtk2.line27, binding.includeAtk.includeAtk2.line28, binding.includeAtk.includeAtk2.line29
+                        , binding.includeAtk.includeAtk3.line31, binding.includeAtk.includeAtk3.line32, binding.includeAtk.includeAtk3.line33, binding.includeAtk.includeAtk3.line34, binding.includeAtk.includeAtk3.line35, binding.includeAtk.includeAtk3.line36, binding.includeAtk.includeAtk3.line37, binding.includeAtk.includeAtk3.line38, binding.includeAtk.includeAtk3.line39
+                        , binding.includeAtk.includeAtk4.line41, binding.includeAtk.includeAtk4.line42, binding.includeAtk.includeAtk4.line43, binding.includeAtk.includeAtk4.line44, binding.includeAtk.includeAtk4.line45, binding.includeAtk.includeAtk4.line46, binding.includeAtk.includeAtk4.line47, binding.includeAtk.includeAtk4.line48, binding.includeAtk.includeAtk4.line49);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        FirebaseDatabase.getInstance().getReference("users").child(userId).child("role").child(tools.roleChange(index)).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                finalHP = (ArrayList<Integer>)snapshot.child("HP").getValue();
+                finalMP = (ArrayList<Integer>)snapshot.child("MP").getValue();
+
+                startActivity.atkDrawHPMP((ArrayList<Integer>)snapshot.child("HP").getValue(),(ArrayList<Integer>)snapshot.child("MP").getValue()
+                        ,binding.includeAtk.HP1,binding.includeAtk.HP2,binding.includeAtk.HP3,binding.includeAtk.HP4,binding.includeAtk.HP5
+                        ,binding.includeAtk.MP1,binding.includeAtk.MP2,binding.includeAtk.MP3,binding.includeAtk.MP4,binding.includeAtk.MP5);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+
 
         TextView roomNum = findViewById(R.id.roomNum);
         roomNum.setText(roomKey);
@@ -365,6 +404,54 @@ public class GameActivity extends AppCompatActivity {
                 otherPlayer = "player1";
                 break;
         }
+
+        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(otherPlayer).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                otherPlayerName = (String) snapshot.child("name").getValue();
+                indexE = Integer.parseInt(String.valueOf(snapshot.child("Index").getValue()));
+                Log.d("TAG", "敵人名稱為 : "  +otherPlayerName);
+                Log.d("TAG", "敵人角色為 : " + tools.roleChange(indexE));
+
+                FirebaseDatabase.getInstance().getReference("users").child(otherPlayerName).child("role").child(tools.roleChange(indexE)).child("atkR").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Log.d("TAG", String.valueOf((ArrayList<ArrayList<Integer>>) snapshot.getValue()));
+                        binding.includeAtkE.includeAtk1.buttonAtk1.setBackgroundColor(Color.parseColor("#00000000"));
+                        binding.includeAtkE.includeAtk2.buttonAtk2.setBackgroundColor(Color.parseColor("#00000000"));
+                        binding.includeAtkE.includeAtk3.buttonAtk3.setBackgroundColor(Color.parseColor("#00000000"));
+                        binding.includeAtkE.includeAtk4.buttonAtk4.setBackgroundColor(Color.parseColor("#00000000"));
+                        binding.includeAtkE.includeAtk5.buttonAtk5.setBackgroundColor(Color.parseColor("#00000000"));
+                        startActivity.atkDraw((ArrayList<ArrayList<Integer>>) snapshot.getValue(), binding.includeAtkE.includeAtk1.line11, binding.includeAtkE.includeAtk1.line12, binding.includeAtkE.includeAtk1.line13, binding.includeAtkE.includeAtk1.line14, binding.includeAtkE.includeAtk1.line15, binding.includeAtkE.includeAtk1.line16, binding.includeAtkE.includeAtk1.line17, binding.includeAtkE.includeAtk1.line18, binding.includeAtkE.includeAtk1.line19
+                                , binding.includeAtkE.includeAtk2.line21, binding.includeAtkE.includeAtk2.line22, binding.includeAtkE.includeAtk2.line23, binding.includeAtkE.includeAtk2.line24, binding.includeAtkE.includeAtk2.line25, binding.includeAtkE.includeAtk2.line26, binding.includeAtkE.includeAtk2.line27, binding.includeAtkE.includeAtk2.line28, binding.includeAtkE.includeAtk2.line29
+                                , binding.includeAtkE.includeAtk3.line31, binding.includeAtkE.includeAtk3.line32, binding.includeAtkE.includeAtk3.line33, binding.includeAtkE.includeAtk3.line34, binding.includeAtkE.includeAtk3.line35, binding.includeAtkE.includeAtk3.line36, binding.includeAtkE.includeAtk3.line37, binding.includeAtkE.includeAtk3.line38, binding.includeAtkE.includeAtk3.line39
+                                , binding.includeAtkE.includeAtk4.line41, binding.includeAtkE.includeAtk4.line42, binding.includeAtkE.includeAtk4.line43, binding.includeAtkE.includeAtk4.line44, binding.includeAtkE.includeAtk4.line45, binding.includeAtkE.includeAtk4.line46, binding.includeAtkE.includeAtk4.line47, binding.includeAtkE.includeAtk4.line48, binding.includeAtkE.includeAtk4.line49);
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+
+                FirebaseDatabase.getInstance().getReference("users").child(otherPlayerName).child("role").child(tools.roleChange(indexE)).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Log.d("TAG", String.valueOf(snapshot.child("HP").getValue()));
+                        startActivity.atkDrawHPMP((ArrayList<Integer>)snapshot.child("HP").getValue(),(ArrayList<Integer>)snapshot.child("MP").getValue()
+                                ,binding.includeAtkE.HP1,binding.includeAtkE.HP2,binding.includeAtkE.HP3,binding.includeAtkE.HP4,binding.includeAtkE.HP5
+                                ,binding.includeAtkE.MP1,binding.includeAtkE.MP2,binding.includeAtkE.MP3,binding.includeAtkE.MP4,binding.includeAtkE.MP5);
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+
     }
 
     private void findView() {
@@ -964,5 +1051,6 @@ public class GameActivity extends AppCompatActivity {
     public void settlement() {
         MPUse();
     }
+
 
 }

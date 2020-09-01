@@ -66,10 +66,7 @@ public class FourCardChange extends AppCompatActivity {
 
             }
         });
-//        for (int i = 0; i < fsHP.length; i++) {
-//            AtkCard atkCard = new AtkCard(fsHP[i], fsMP[i], fsAtk[i]);
-//            atkCardList.add(atkCard);
-//        }
+
 
         recyclerView = findViewById(R.id.recycler);
         recyclerView.setHasFixedSize(true);
@@ -201,8 +198,8 @@ public class FourCardChange extends AppCompatActivity {
 
 
     public void j4Add(View v) {
-        backpackRoleChange("j4");
         record.setValue(0);
+        backpackRoleChange(tools.roleChange(index));
         binding.j4.setBackgroundColor(Color.parseColor("#00000000"));
         binding.fs.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.player.setBackgroundColor(Color.parseColor("#e0000000"));
@@ -217,8 +214,8 @@ public class FourCardChange extends AppCompatActivity {
 
 
     public void fsAdd(View v) {
-        backpackRoleChange("fs");
         record.setValue(1);
+        backpackRoleChange(tools.roleChange(index));
         binding.j4.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.fs.setBackgroundColor(Color.parseColor("#00000000"));
         binding.player.setBackgroundColor(Color.parseColor("#e0000000"));
@@ -231,8 +228,8 @@ public class FourCardChange extends AppCompatActivity {
     }
 
     public void playerAdd(View v) {
-        backpackRoleChange("player");
         record.setValue(2);
+        backpackRoleChange(tools.roleChange(index));
         binding.j4.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.fs.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.player.setBackgroundColor(Color.parseColor("#00000000"));
@@ -245,8 +242,8 @@ public class FourCardChange extends AppCompatActivity {
     }
 
     public void b74Add(View v) {
-        backpackRoleChange("b74");
         record.setValue(3);
+        backpackRoleChange(tools.roleChange(index));
         binding.j4.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.fs.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.player.setBackgroundColor(Color.parseColor("#e0000000"));
@@ -323,27 +320,32 @@ public class FourCardChange extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
 
-                        view.setAlpha(0.4f);
+                        view.setAlpha(0.1f);
+
+                        if (clickInt == CHANGE_CARD) {
+                            clickInt = getAdapterPosition();
+                            lastClick = null;
+                            Log.d("第一次點擊 : ", String.valueOf(clickInt));
+//                            Toast.makeText(view.getContext(),
+//                                    "選擇 :  " + clickInt, Toast.LENGTH_SHORT).show();
+                        }
 
                         if (lastClick != null && lastClick != view) {
                             lastClick.setAlpha(1.0f);
                             clickInt = getAdapterPosition();
+                            Log.d("點擊不同的 : ", String.valueOf(clickInt));
 //                            Toast.makeText(view.getContext(),
 //                                    "選擇 :  " + clickInt, Toast.LENGTH_SHORT).show();
                         }
 
                         if (lastClick != null && lastClick == view) {
-                            clickInt = CHANGE_CARD;
                             lastClick.setAlpha(1.0f);
+                            clickInt = CHANGE_CARD;
+                            Log.d("點擊一樣的 : ", String.valueOf(clickInt));
 //                            Toast.makeText(view.getContext(),
 //                                    "取消選擇 :  " + clickInt, Toast.LENGTH_SHORT).show();
                         }
 
-                        if (lastClick == null) {
-                            clickInt = getAdapterPosition();
-//                            Toast.makeText(view.getContext(),
-//                                    "選擇 :  " + clickInt, Toast.LENGTH_SHORT).show();
-                        }
 
                         Log.d("TAG", "onClick: " + recordButton);
                         if (recordButton != 0) {
@@ -352,7 +354,11 @@ public class FourCardChange extends AppCompatActivity {
                         }
 
                         lastClick = view;
-
+                        if (clickInt != CHANGE_CARD) {
+                            binding.btnDelete.setEnabled(true);
+                        } else {
+                            binding.btnDelete.setEnabled(false);
+                        }
 
 //                        backpackRoleChange();
                     }
@@ -521,6 +527,49 @@ public class FourCardChange extends AppCompatActivity {
             recordButton = 5;
         }
         changeCard(4, clickInt);
+    }
+
+
+    public void btn_delete(View v) {
+        DatabaseReference backpack = FirebaseDatabase.getInstance().getReference("users").child(userId).child("role").child(tools.roleChange(index)).child("backpack");
+        backpack.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<Integer> hp = (ArrayList<Integer>) snapshot.child("HP").getValue();
+                ArrayList<Integer> mp = (ArrayList<Integer>) snapshot.child("MP").getValue();
+
+                hp.remove(clickInt);
+                mp.remove(clickInt);
+
+                DatabaseReference backpack = FirebaseDatabase.getInstance().getReference("users").child(userId).child("role").child(tools.roleChange(index)).child("backpack");
+                backpack.child("HP").setValue(hp);
+                backpack.child("MP").setValue(hp);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        backpack.child("atkR").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<ArrayList<Integer>> atkR = (ArrayList<ArrayList<Integer>>) snapshot.getValue();
+
+                atkR.remove(clickInt);
+
+                DatabaseReference backpack = FirebaseDatabase.getInstance().getReference("users").child(userId).child("role").child(tools.roleChange(index)).child("backpack");
+                backpack.child("atkR").setValue(atkR);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        binding.btnDelete.setEnabled(false);
     }
 
 

@@ -311,7 +311,7 @@ public class FourCardAdd extends AppCompatActivity {
         int randomAtkRCount = (int) (Math.random() * 9) + 1;//產生1-9
         randomAtkR = new ArrayList<>();
         for (int j = 0; j < randomAtkRCount; j++) {
-            randomAtkR.add((int) (Math.random() * 9));
+            randomAtkR.add((int) (Math.random() * 9)+1);
         }
         /**去重後排序*/
         randomAtkR = new ArrayList<>(new HashSet<>(randomAtkR));
