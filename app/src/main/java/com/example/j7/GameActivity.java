@@ -34,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 
+import static com.example.j7.LoginActivity.TSUserId;
 import static com.example.j7.LoginActivity.userId;
 
 public class GameActivity extends AppCompatActivity {
@@ -284,12 +285,25 @@ public class GameActivity extends AppCompatActivity {
     public void gameEnd(int selfHP, int comHP) {
         if (selfHP <= 0) {
             initGame.setVisibility(View.VISIBLE);
-            initGame.setText("獲得勝利！");
+            initGame.setText("對手太強");
             lockBtn();
         }
         if (comHP <= 0) {
             initGame.setVisibility(View.VISIBLE);
-            initGame.setText("對手太強..");
+            initGame.setText("獲得勝利！");
+            DatabaseReference level =  FirebaseDatabase.getInstance().getReference("users").child(TSUserId).child("level");
+            level.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    DatabaseReference level =  FirebaseDatabase.getInstance().getReference("users").child(TSUserId).child("level");
+                    level.setValue((int)snapshot.getValue() + 5);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
             lockBtn();
         }
         if (selfHP <= 0 && comHP <= 0) {

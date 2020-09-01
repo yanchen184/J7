@@ -78,6 +78,5 @@
                     android:text="創建房間" />
             </LinearLayout>
         </LinearLayout>
-
     </RelativeLayout>
 </layout>

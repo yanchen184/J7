@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -822,19 +823,31 @@ public class StartActivity extends AppCompatActivity {
 
     public void onRandom(View v) {
         queue.getQueue(this).randomJoin();
+        binding.layoutPair.HTTPCreate.setEnabled(false);
+        binding.layoutPair.HTTPJoin.setEnabled(false);
+        binding.layoutPair2.onRandom.setEnabled(false);
+        binding.layoutPair2.onFriend.setEnabled(false);
+        binding.roleChoose.horse.setFocusable(true);
+        binding.roleChoose.horse.setSelected(true);
+        binding.roleChoose.horse.setVisibility(View.VISIBLE);
     }
 
     public void cancelC(View v) {
-        Button cancelC = findViewById(R.id.cancelC);
-        cancelC.setVisibility(View.INVISIBLE);
+        binding.roleChoose.cancelC.setVisibility(View.INVISIBLE);
+        binding.layoutPair.HTTPCreate.setEnabled(true);
+        binding.layoutPair.HTTPJoin.setEnabled(true);
+        binding.layoutPair2.onRandom.setEnabled(true);
+        binding.layoutPair2.onFriend.setEnabled(true);
+        binding.layoutPair.create1234.setText("----");
+        binding.layoutPair.roomEditText.setEnabled(true);
+        binding.layoutPair.roomEditText.setText("");
+        binding.roleChoose.horse.setFocusable(false);
+        binding.roleChoose.horse.setSelected(false);
+        binding.roleChoose.horse.setVisibility(View.INVISIBLE);
+        FirebaseDatabase.getInstance().getReference("waitRoom").removeValue();
+
         cancelConnect();
-        Button HTTPCreate = findViewById(R.id.HTTPCreate);
-        HTTPCreate.setEnabled(true);
-        TextView create1234 = findViewById(R.id.create1234);
-        create1234.setText("----");
-        EditText roomEditText = findViewById(R.id.roomEditText);
-        roomEditText.setEnabled(true);
-        roomEditText.setText("");
+
     }
 
 

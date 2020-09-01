@@ -209,7 +209,6 @@ public class FourCardChange extends AppCompatActivity {
         binding.player.setTextColor(Color.parseColor("#faf3f2"));
         binding.b74.setTextColor(Color.parseColor("#faf3f2"));
 //        je.setText("劍士");
-
     }
 
 
@@ -483,6 +482,7 @@ public class FourCardChange extends AppCompatActivity {
         }
 
         changeCard(0, clickInt);
+        binding.btnDelete.setEnabled(false);
     }
 
     public void atk2(View v) {
@@ -494,6 +494,7 @@ public class FourCardChange extends AppCompatActivity {
             recordButton = 2;
         }
         changeCard(1, clickInt);
+        binding.btnDelete.setEnabled(false);
     }
 
     public void atk3(View v) {
@@ -505,6 +506,7 @@ public class FourCardChange extends AppCompatActivity {
             recordButton = 3;
         }
         changeCard(2, clickInt);
+        binding.btnDelete.setEnabled(false);
     }
 
     public void atk4(View v) {
@@ -516,6 +518,7 @@ public class FourCardChange extends AppCompatActivity {
             recordButton = 4;
         }
         changeCard(3, clickInt);
+        binding.btnDelete.setEnabled(false);
     }
 
     public void atk5(View v) {
@@ -527,6 +530,7 @@ public class FourCardChange extends AppCompatActivity {
             recordButton = 5;
         }
         changeCard(4, clickInt);
+        binding.btnDelete.setEnabled(false);
     }
 
 

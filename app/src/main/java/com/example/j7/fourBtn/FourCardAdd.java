@@ -141,6 +141,10 @@ public class FourCardAdd extends AppCompatActivity {
         binding.fs.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.player.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.b74.setBackgroundColor(Color.parseColor("#e0000000"));
+        binding.j4.setTextColor(Color.parseColor("#2b0501"));
+        binding.fs.setTextColor(Color.parseColor("#faf3f2"));
+        binding.player.setTextColor(Color.parseColor("#faf3f2"));
+        binding.b74.setTextColor(Color.parseColor("#faf3f2"));
         record.setValue(0);
         je.setText("劍士");
     }
@@ -150,6 +154,10 @@ public class FourCardAdd extends AppCompatActivity {
         binding.fs.setBackgroundColor(Color.parseColor("#00000000"));
         binding.player.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.b74.setBackgroundColor(Color.parseColor("#e0000000"));
+        binding.j4.setTextColor(Color.parseColor("#faf3f2"));
+        binding.fs.setTextColor(Color.parseColor("#2b0501"));
+        binding.player.setTextColor(Color.parseColor("#faf3f2"));
+        binding.b74.setTextColor(Color.parseColor("#faf3f2"));
         record.setValue(1);
         je.setText("法師");
     }
@@ -159,6 +167,10 @@ public class FourCardAdd extends AppCompatActivity {
         binding.fs.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.player.setBackgroundColor(Color.parseColor("#00000000"));
         binding.b74.setBackgroundColor(Color.parseColor("#e0000000"));
+        binding.j4.setTextColor(Color.parseColor("#faf3f2"));
+        binding.fs.setTextColor(Color.parseColor("#faf3f2"));
+        binding.player.setTextColor(Color.parseColor("#2b0501"));
+        binding.b74.setTextColor(Color.parseColor("#faf3f2"));
         record.setValue(2);
         je.setText("普通人");
     }
@@ -168,6 +180,10 @@ public class FourCardAdd extends AppCompatActivity {
         binding.fs.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.player.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.b74.setBackgroundColor(Color.parseColor("#00000000"));
+        binding.j4.setTextColor(Color.parseColor("#faf3f2"));
+        binding.fs.setTextColor(Color.parseColor("#faf3f2"));
+        binding.player.setTextColor(Color.parseColor("#faf3f2"));
+        binding.b74.setTextColor(Color.parseColor("#2b0501"));
         record.setValue(3);
         je.setText("騎士");
     }
