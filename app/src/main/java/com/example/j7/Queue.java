@@ -20,6 +20,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 import static com.example.j7.LoginActivity.TSUserId;
 import static com.example.j7.LoginActivity.userId;
 import static com.example.j7.tools.Name.STATUS_INIT;
@@ -272,7 +274,13 @@ public class Queue {
         FRoom.child(activity.roomKey).child(player).child("Next").child("atkMP").setValue(0);
 
         /**使用 狀態值-獨有技能*/
-        FRoom.child(activity.roomKey).child("fourStatus").setValue(0);
+
+
+        FRoom.child(activity.roomKey).child("fourStatus").child("player11").setValue(false);
+        FRoom.child(activity.roomKey).child("fourStatus").child("player12").setValue(0);
+        FRoom.child(activity.roomKey).child("fourStatus").child("player21").setValue(false);
+        FRoom.child(activity.roomKey).child("fourStatus").child("player22").setValue(0);
+
         FRoom.child(activity.roomKey).child(player).child("unique").setValue(false);
 
     }

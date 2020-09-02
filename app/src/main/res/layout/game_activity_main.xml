@@ -167,6 +167,7 @@
             android:layout_height="2dp"
             android:background="#000000"
             android:padding="150dp"
+            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/guideline4" />
 
         <View

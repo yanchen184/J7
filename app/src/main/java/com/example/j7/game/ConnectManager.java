@@ -132,7 +132,7 @@ public class ConnectManager extends AppCompatActivity {
      */
     private void receiveMessage(JSONArray jsonArray) {
 //        isReceiving = true;
-        activity.fireVisibile();//收到
+        activity.fireVisible();//收到
 //        int totalTime = 4;
 //        new Handler().postDelayed(() -> {
 //            rm(0, 1, jsonArray);
@@ -226,9 +226,9 @@ public class ConnectManager extends AppCompatActivity {
                         String pp = jsonObject.getString("pp");
                         System.out.println("是不是自己要回復 " + pp + " : " + sender.equals(activity.userName));
                         if (sender.equals(activity.userName)) {
-                            activity.upRules.upJudgmentSelf(l, pp);
+//                            activity.upRules.upJudgmentSelf(l, pp);
                         } else {
-                            activity.upRules.upJudgmentCom(l, pp);
+//                            activity.upRules.upJudgmentCom(l, pp);
                         }
                         break;
                 }

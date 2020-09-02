@@ -18,12 +18,22 @@ public class Variable {
     String otherPlayer; //對手是player幾? player1 or player2
 
 
+    Boolean unique = false; //自己是否開啟了獨有技能
+
 
     int roleS; //自己使用的角色
     int roleC; //對手使用的角色
 
     int upHPInt; // 回血量
     int upMPInt; // 回魔量
+
+    public Boolean getUnique() {
+        return unique;
+    }
+
+    public void setUnique(Boolean unique) {
+        this.unique = unique;
+    }
 
     public String getPlayerName() {
         return playerName;
