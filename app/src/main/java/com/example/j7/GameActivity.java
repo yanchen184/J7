@@ -68,7 +68,7 @@ public class GameActivity extends AppCompatActivity {
     public View atkKJ01, atkKJ11, atkKJ21, atkKJ31, atkKJ41;
     public View atkKJ02, atkKJ12, atkKJ22, atkKJ32, atkKJ42;
     public Button initGame;
-    public TextView txt_self_hp, txt_self_mp, txt_com_hp, txt_com_mp, upHP, upMP;
+    public TextView txt_self_hp, txt_self_mp, txt_com_hp, txt_com_mp;
     public View button, button2, button3, button4, button5, button6;
     public Button buttonAtk1, buttonAtk2, buttonAtk3, buttonAtk4, buttonAtk5, buttonAtk6;
     public Button buttonTools1, buttonTools2;
@@ -95,11 +95,10 @@ public class GameActivity extends AppCompatActivity {
     public DatabaseReference fullRoom;
     int upHPInt;
     int upMPInt;
-    ArrayList<Integer> finalHP = null;
-    ArrayList<Integer> finalMP = null;
-    ArrayList<ArrayList<Integer>> finalAtlR = null;
+
 
     public GameActivityMainBinding binding;
+    Variable variable = new Variable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,36 +110,46 @@ public class GameActivity extends AppCompatActivity {
         findView(); //findView()
         intent(); //從上一頁告知我 roomKey player otherPlayer
 
-        fullRoom = FirebaseDatabase.getInstance().getReference("rooms").child(roomKey);//FirebaseDatabase
-        locationX = new View[]{lineX0, lineX1, lineX2, lineX3, lineX4};
-        locationY = new View[]{lineY0, lineY1, lineY2};
+        fullRoom = FirebaseDatabase.getInstance().getReference("rooms").child(variable.getRoomKey());//FirebaseDatabase
+
+//        locationX = new View[]{lineX0, lineX1, lineX2, lineX3, lineX4};
+        locationX = new View[]{binding.lineX0, binding.lineX1, binding.lineX2, binding.lineX3, binding.lineX4};
+        locationY = new View[]{binding.lineY0, binding.lineY1, binding.lineY2};
 
 
-        upText();
+
 
         fullRoom.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //告訴我兩個人選的角色
-                long x1 = (long) snapshot.child(player).child("Index").getValue();
-                long x2 = (long) snapshot.child(otherPlayer).child("Index").getValue();
-                //告訴我兩個人選的角色的圖片
-                int role1 = tools.roleChangePicture((int) x1);
-                int role2 = tools.roleChangePicture((int) x2);
-                //換圖
-                imagePlayer.setImageResource(role1);
-                imageCom.setImageResource(role2);
-                //翻轉高雄
-                imageCom.setScaleX(-1);
+                variable.setRoleS(Integer.parseInt(String.valueOf(snapshot.child(variable.getPlayer()).child("Index").getValue())));
+                variable.setRoleC(Integer.parseInt(String.valueOf(snapshot.child(variable.getOtherPlayer()).child("Index").getValue())));
                 //告訴我兩個人的名字
-                txt_self_name.setText(snapshot.child(player).child("name").getValue().toString());
-                txt_com_name.setText(snapshot.child(otherPlayer).child("name").getValue().toString());
+                variable.setPlayerName(String.valueOf(snapshot.child(variable.getPlayer()).child("name").getValue()));
+                variable.setOtherPlayerName(String.valueOf(snapshot.child(variable.getOtherPlayer()).child("name").getValue()));
+
+
+                //換圖
+                imagePlayer.setImageResource(tools.roleChangePicture(variable.getRoleS()));
+                imageCom.setImageResource(tools.roleChangePicture(variable.getRoleC()));
+                //對手要翻轉
+                imageCom.setScaleX(-1);
+
+                //告訴我兩個人的名字
+                binding.include.txtSelfName.setText(variable.getPlayerName());
+                binding.include.txtComName.setText(variable.getOtherPlayerName());
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+
+
+
+        upText(); //回血回魔 法師跟騎士有稍微調整
 
         binding.includeAtkE.includeAtk1.buttonAtk1.setEnabled(false);
         binding.includeAtkE.includeAtk2.buttonAtk2.setEnabled(false);
@@ -182,29 +191,13 @@ public class GameActivity extends AppCompatActivity {
 
 
     public void upText() {
-        upHP = findViewById(R.id.upHP);
-        upMP = findViewById(R.id.upMP);
-        /**回血回魔的量*/
-
+        /**回血回魔的量 - 法師回魔力快一些 騎士回血快一些*/
         fullRoom.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                long index = (long) snapshot.child(player).child("Index").getValue();
-                if (tools.roleChange((int) index).equals("b74")) { // b74
-                    upHP.setText("4");
-                    upHPInt = 4;
-                } else {
-                    upHP.setText("2");
-                    upHPInt = 2;
-                }
 
-                if (tools.roleChange((int) index).equals("fs")) {
-                    upMP.setText("6");
-                    upMPInt = 6;
-                } else {
-                    upMP.setText("4");
-                    upMPInt = 4;
-                }
+
+
 
             }
 
@@ -285,12 +278,12 @@ public class GameActivity extends AppCompatActivity {
         if (comHP <= 0) {
             initGame.setVisibility(View.VISIBLE);
             initGame.setText("獲得勝利！");
-            DatabaseReference level =  FirebaseDatabase.getInstance().getReference("users").child(TSUserId).child("level");
+            DatabaseReference level = FirebaseDatabase.getInstance().getReference("users").child(TSUserId).child("level");
             level.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    DatabaseReference level =  FirebaseDatabase.getInstance().getReference("users").child(TSUserId).child("level");
-                    level.setValue((int)snapshot.getValue() + 5);
+                    DatabaseReference level = FirebaseDatabase.getInstance().getReference("users").child(TSUserId).child("level");
+                    level.setValue((int) snapshot.getValue() + 5);
                 }
 
                 @Override
@@ -363,65 +356,39 @@ public class GameActivity extends AppCompatActivity {
 
     private void intent() {
         Intent it = getIntent();
-//        finalHP = new ArrayList<>(it.getIntegerArrayListExtra("finalHP"));
-//        finalMP = new ArrayList<>(it.getIntegerArrayListExtra("finalMP"));
-        roomKey = it.getStringExtra("roomKey");
-        index = it.getIntExtra("index", 0);
+        variable.setRoomKey(it.getStringExtra("roomKey"));
+        variable.setIndex(it.getIntExtra("index", 0));
 
+        /**正上方的房間號碼*/
+        TextView roomNum = findViewById(R.id.roomNum);//TODO Binding
+        roomNum.setText(variable.getRoomKey());
 
-        FirebaseDatabase.getInstance().getReference("users").child(userId).child("role").child(tools.roleChange(index)).child("atkR").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Log.d("finalAtlR", String.valueOf((ArrayList<ArrayList<Integer>>) snapshot.getValue()));
-                finalAtlR = (ArrayList<ArrayList<Integer>>) snapshot.getValue();
-                startActivity.atkDraw((ArrayList<ArrayList<Integer>>) snapshot.getValue(), binding.includeAtk.includeAtk1.line11, binding.includeAtk.includeAtk1.line12, binding.includeAtk.includeAtk1.line13, binding.includeAtk.includeAtk1.line14, binding.includeAtk.includeAtk1.line15, binding.includeAtk.includeAtk1.line16, binding.includeAtk.includeAtk1.line17, binding.includeAtk.includeAtk1.line18, binding.includeAtk.includeAtk1.line19
-                        , binding.includeAtk.includeAtk2.line21, binding.includeAtk.includeAtk2.line22, binding.includeAtk.includeAtk2.line23, binding.includeAtk.includeAtk2.line24, binding.includeAtk.includeAtk2.line25, binding.includeAtk.includeAtk2.line26, binding.includeAtk.includeAtk2.line27, binding.includeAtk.includeAtk2.line28, binding.includeAtk.includeAtk2.line29
-                        , binding.includeAtk.includeAtk3.line31, binding.includeAtk.includeAtk3.line32, binding.includeAtk.includeAtk3.line33, binding.includeAtk.includeAtk3.line34, binding.includeAtk.includeAtk3.line35, binding.includeAtk.includeAtk3.line36, binding.includeAtk.includeAtk3.line37, binding.includeAtk.includeAtk3.line38, binding.includeAtk.includeAtk3.line39
-                        , binding.includeAtk.includeAtk4.line41, binding.includeAtk.includeAtk4.line42, binding.includeAtk.includeAtk4.line43, binding.includeAtk.includeAtk4.line44, binding.includeAtk.includeAtk4.line45, binding.includeAtk.includeAtk4.line46, binding.includeAtk.includeAtk4.line47, binding.includeAtk.includeAtk4.line48, binding.includeAtk.includeAtk4.line49);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-        FirebaseDatabase.getInstance().getReference("users").child(userId).child("role").child(tools.roleChange(index)).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                finalHP = (ArrayList<Integer>)snapshot.child("HP").getValue();
-                finalMP = (ArrayList<Integer>)snapshot.child("MP").getValue();
-
-                startActivity.atkDrawHPMP((ArrayList<Integer>)snapshot.child("HP").getValue(),(ArrayList<Integer>)snapshot.child("MP").getValue()
-                        ,binding.includeAtk.HP1,binding.includeAtk.HP2,binding.includeAtk.HP3,binding.includeAtk.HP4,binding.includeAtk.HP5
-                        ,binding.includeAtk.MP1,binding.includeAtk.MP2,binding.includeAtk.MP3,binding.includeAtk.MP4,binding.includeAtk.MP5);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-
-
-
-        TextView roomNum = findViewById(R.id.roomNum);
-        roomNum.setText(roomKey);
-
-        player = it.getStringExtra("player");
-        switch (player) {
+        /**檢視自己是player1 or player2*/
+        variable.setPlayer(it.getStringExtra("player"));
+        switch (variable.getPlayer()) {
             case "player1":
-                otherPlayer = "player2";
+                variable.setOtherPlayer("player2");
                 break;
             case "player2":
-                otherPlayer = "player1";
+                variable.setOtherPlayer("player1");
                 break;
         }
+        insertAtkS();
+        insertAtkC();
+    }
 
-        FirebaseDatabase.getInstance().getReference("rooms").child(roomKey).child(otherPlayer).addListenerForSingleValueEvent(new ValueEventListener() {
+    private void insertAtkC() {
+        /**填入對手的招式*/ //TODO 改成相反的形狀
+        FirebaseDatabase.getInstance().getReference("rooms").child(variable.getRoomKey()).child(variable.getOtherPlayer()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                otherPlayerName = (String) snapshot.child("name").getValue();
-                indexE = Integer.parseInt(String.valueOf(snapshot.child("Index").getValue()));
-                Log.d("TAG", "敵人名稱為 : "  +otherPlayerName);
+                variable.setOtherPlayerName((String) snapshot.child("name").getValue());
+                variable.setIndexE(Integer.parseInt(String.valueOf(snapshot.child("Index").getValue())));
+
+                Log.d("TAG", "敵人名稱為 : " + otherPlayerName);
                 Log.d("TAG", "敵人角色為 : " + tools.roleChange(indexE));
 
-                FirebaseDatabase.getInstance().getReference("users").child(otherPlayerName).child("role").child(tools.roleChange(indexE)).child("atkR").addListenerForSingleValueEvent(new ValueEventListener() {
+                FirebaseDatabase.getInstance().getReference("users").child(variable.getOtherPlayerName()).child("role").child(tools.roleChange(variable.getIndexE())).child("atkR").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         Log.d("TAG", String.valueOf((ArrayList<ArrayList<Integer>>) snapshot.getValue()));
@@ -435,19 +402,21 @@ public class GameActivity extends AppCompatActivity {
                                 , binding.includeAtkE.includeAtk3.line31, binding.includeAtkE.includeAtk3.line32, binding.includeAtkE.includeAtk3.line33, binding.includeAtkE.includeAtk3.line34, binding.includeAtkE.includeAtk3.line35, binding.includeAtkE.includeAtk3.line36, binding.includeAtkE.includeAtk3.line37, binding.includeAtkE.includeAtk3.line38, binding.includeAtkE.includeAtk3.line39
                                 , binding.includeAtkE.includeAtk4.line41, binding.includeAtkE.includeAtk4.line42, binding.includeAtkE.includeAtk4.line43, binding.includeAtkE.includeAtk4.line44, binding.includeAtkE.includeAtk4.line45, binding.includeAtkE.includeAtk4.line46, binding.includeAtkE.includeAtk4.line47, binding.includeAtkE.includeAtk4.line48, binding.includeAtkE.includeAtk4.line49);
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                     }
                 });
 
-                FirebaseDatabase.getInstance().getReference("users").child(otherPlayerName).child("role").child(tools.roleChange(indexE)).addListenerForSingleValueEvent(new ValueEventListener() {
+                FirebaseDatabase.getInstance().getReference("users").child(variable.getOtherPlayerName()).child("role").child(tools.roleChange(variable.getIndexE())).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         Log.d("TAG", String.valueOf(snapshot.child("HP").getValue()));
-                        startActivity.atkDrawHPMP((ArrayList<Integer>)snapshot.child("HP").getValue(),(ArrayList<Integer>)snapshot.child("MP").getValue()
-                                ,binding.includeAtkE.HP1,binding.includeAtkE.HP2,binding.includeAtkE.HP3,binding.includeAtkE.HP4,binding.includeAtkE.HP5
-                                ,binding.includeAtkE.MP1,binding.includeAtkE.MP2,binding.includeAtkE.MP3,binding.includeAtkE.MP4,binding.includeAtkE.MP5);
+                        startActivity.atkDrawHPMP((ArrayList<Integer>) snapshot.child("HP").getValue(), (ArrayList<Integer>) snapshot.child("MP").getValue()
+                                , binding.includeAtkE.HP1, binding.includeAtkE.HP2, binding.includeAtkE.HP3, binding.includeAtkE.HP4, binding.includeAtkE.HP5
+                                , binding.includeAtkE.MP1, binding.includeAtkE.MP2, binding.includeAtkE.MP3, binding.includeAtkE.MP4, binding.includeAtkE.MP5);
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                     }
@@ -458,9 +427,41 @@ public class GameActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-
-
     }
+
+    private void insertAtkS() {
+        /**填入自己的招式**/
+        FirebaseDatabase.getInstance().getReference("users").child(userId).child("role").child(tools.roleChange(variable.getIndex())).child("atkR").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                variable.setFinalAtlR((ArrayList<ArrayList<Integer>>) snapshot.getValue());
+
+                startActivity.atkDraw((ArrayList<ArrayList<Integer>>) snapshot.getValue(), binding.includeAtk.includeAtk1.line11, binding.includeAtk.includeAtk1.line12, binding.includeAtk.includeAtk1.line13, binding.includeAtk.includeAtk1.line14, binding.includeAtk.includeAtk1.line15, binding.includeAtk.includeAtk1.line16, binding.includeAtk.includeAtk1.line17, binding.includeAtk.includeAtk1.line18, binding.includeAtk.includeAtk1.line19
+                        , binding.includeAtk.includeAtk2.line21, binding.includeAtk.includeAtk2.line22, binding.includeAtk.includeAtk2.line23, binding.includeAtk.includeAtk2.line24, binding.includeAtk.includeAtk2.line25, binding.includeAtk.includeAtk2.line26, binding.includeAtk.includeAtk2.line27, binding.includeAtk.includeAtk2.line28, binding.includeAtk.includeAtk2.line29
+                        , binding.includeAtk.includeAtk3.line31, binding.includeAtk.includeAtk3.line32, binding.includeAtk.includeAtk3.line33, binding.includeAtk.includeAtk3.line34, binding.includeAtk.includeAtk3.line35, binding.includeAtk.includeAtk3.line36, binding.includeAtk.includeAtk3.line37, binding.includeAtk.includeAtk3.line38, binding.includeAtk.includeAtk3.line39
+                        , binding.includeAtk.includeAtk4.line41, binding.includeAtk.includeAtk4.line42, binding.includeAtk.includeAtk4.line43, binding.includeAtk.includeAtk4.line44, binding.includeAtk.includeAtk4.line45, binding.includeAtk.includeAtk4.line46, binding.includeAtk.includeAtk4.line47, binding.includeAtk.includeAtk4.line48, binding.includeAtk.includeAtk4.line49);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        FirebaseDatabase.getInstance().getReference("users").child(userId).child("role").child(tools.roleChange(index)).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                variable.setFinalHP((ArrayList<Integer>) snapshot.child("HP").getValue());
+                variable.setFinalMP((ArrayList<Integer>) snapshot.child("MP").getValue());
+
+                startActivity.atkDrawHPMP((ArrayList<Integer>) snapshot.child("HP").getValue(), (ArrayList<Integer>) snapshot.child("MP").getValue()
+                        , binding.includeAtk.HP1, binding.includeAtk.HP2, binding.includeAtk.HP3, binding.includeAtk.HP4, binding.includeAtk.HP5
+                        , binding.includeAtk.MP1, binding.includeAtk.MP2, binding.includeAtk.MP3, binding.includeAtk.MP4, binding.includeAtk.MP5);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        /**填入完畢**/}
 
     private void findView() {
 

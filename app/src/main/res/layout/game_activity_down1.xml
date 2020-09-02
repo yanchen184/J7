@@ -1,95 +1,92 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    tools:context=".GameActivity">
-
-
-
-    <TableLayout
-        android:id="@+id/twobtn"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="wrap_content">
 
-        android:shrinkColumns="0"
-        android:stretchColumns="*">
 
-        <TableRow android:layout_height="40dp">
+        <TableLayout
+            android:id="@+id/twobtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
 
-            <ImageButton
-                android:id="@+id/button"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="#00000000"
-                android:src="@drawable/move_left"
-                android:onClick="moveDown"
-                android:scaleType="fitXY"
-                android:rotation="270"
-                android:layout_marginRight="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline"
-                app:layout_constraintStart_toEndOf="@+id/button2"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+            android:shrinkColumns="0"
+            android:stretchColumns="*">
 
-            <ImageButton
-                android:id="@+id/button2"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/move_left"
-                android:rotation="90"
-                android:background="#00000000"
-                android:onClick="moveTop"
-                android:scaleType="fitXY"
-                android:layout_marginRight="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            <TableRow android:layout_height="40dp">
 
-            <ImageButton
-                android:id="@+id/button3"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="#00000000"
-                android:src="@drawable/move_left"
-                android:onClick="moveLeft"
-                android:scaleType="fitXY"
-                android:layout_marginRight="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <ImageButton
+                    android:id="@+id/button"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginRight="10dp"
+                    android:background="#00000000"
+                    android:onClick="moveDown"
+                    android:rotation="270"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/move_left"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline"
+                    app:layout_constraintStart_toEndOf="@+id/button2"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
-                android:id="@+id/button4"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:rotation="180"
-                android:background="#00000000"
-                android:src="@drawable/move_left"
-                android:onClick="moveRight"
-                android:scaleType="fitXY"
-                android:layout_marginRight="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <ImageButton
+                    android:id="@+id/button2"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginRight="10dp"
+                    android:background="#00000000"
+                    android:onClick="moveTop"
+                    android:rotation="90"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/move_left"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <include
-                android:id="@+id/button5"
-                layout="@layout/hp_layout"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginRight="10dp"
-                />
+                <ImageButton
+                    android:id="@+id/button3"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginRight="10dp"
+                    android:background="#00000000"
+                    android:onClick="moveLeft"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/move_left"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <include
-                android:id="@+id/button6"
-                layout="@layout/mp_layout"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                />
+                <ImageButton
+                    android:id="@+id/button4"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginRight="10dp"
+                    android:background="#00000000"
+                    android:onClick="moveRight"
+                    android:rotation="180"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/move_left"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        </TableRow>
-    </TableLayout>
+                <include
+                    android:id="@+id/button5"
+                    layout="@layout/hp_layout"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginRight="10dp" />
 
-</LinearLayout>
+                <include
+                    android:id="@+id/button6"
+                    layout="@layout/mp_layout"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp" />
+
+            </TableRow>
+        </TableLayout>
+
+    </LinearLayout>
+</layout>
