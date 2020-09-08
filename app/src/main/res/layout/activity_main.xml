@@ -38,7 +38,7 @@
         <include
             android:id="@+id/layout_pair_bk"
             layout="@layout/layout_pair_bk_number"
-            android:visibility="visible" />
+            android:visibility="invisible" />
 
         <include
             android:id="@+id/layout_pair"
@@ -48,7 +48,7 @@
         <include
             android:id="@+id/layout_pair2"
             layout="@layout/layout_pair_number_1"
-            android:visibility="visible" />
+            android:visibility="invisible" />
 
 
 

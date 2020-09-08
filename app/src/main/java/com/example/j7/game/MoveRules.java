@@ -3,6 +3,7 @@ package com.example.j7.game;
 import android.content.Context;
 
 import com.example.j7.GameActivity;
+import com.example.j7.Parameter;
 
 public class MoveRules {
 
@@ -18,19 +19,19 @@ public class MoveRules {
 
     public void moveCommon(int x, int y) {
         /**邊界限制*/
-        if (activity.locationXSelf + x < 0) {
-            activity.locationXSelf = 0;
-        } else if (activity.locationXSelf + x > 4) {
-            activity.locationXSelf = 4;
+        if (activity.parameter.getLocationXS() + x < 0) {
+            activity.parameter.setLocationXS(0);
+        } else if (activity.parameter.getLocationXS() + x > 4) {
+            activity.parameter.setLocationXS(4);
         } else {
-            activity.locationXSelf = activity.locationXSelf + x;
+            activity.parameter.setLocationXS(activity.parameter.getLocationXS() + x);
         }
-        if (activity.locationYSelf + y < 0) {
-            activity.locationYSelf = 0;
-        } else if (activity.locationYSelf + y > 2) {
-            activity.locationYSelf = 2;
+        if (activity.parameter.getLocationYS() + y < 0) {
+            activity.parameter.setLocationYS(0);
+        } else if (activity.parameter.getLocationYS() + y > 2) {
+            activity.parameter.setLocationYS(2);
         } else {
-            activity.locationYSelf = activity.locationYSelf + y;
+            activity.parameter.setLocationYS(activity.parameter.getLocationYS() + y);
         }
         activity.sendMessageMove();
 
@@ -56,16 +57,16 @@ public class MoveRules {
                 x = 4;
                 break;
         }
-        activity.locationXCom = x;
-        activity.locationYCom = y;
-        activity.imageCom.layout(activity.locationX[x].getLeft() + 30 + 50 , activity.locationY[y].getTop() - 200, activity.locationX[x].getLeft() + 100 + 30 + 50 , activity.locationY[y].getBottom());
+        activity.parameter.setLocationXC(x);
+        activity.parameter.setLocationYC(y);
+        activity.binding.imageCom.layout(activity.locationX[x].getLeft() + 30 + 50, activity.locationY[y].getTop() - 200, activity.locationX[x].getLeft() + 100 + 30 + 50, activity.locationY[y].getBottom());
     }
 
     public void moveJudgmentSelf(int x, int y) {
         /**重新繪製位置*/
-        activity.locationXSelf = x;
-        activity.locationYSelf = y;
-        activity.imagePlayer.layout(activity.locationX[x].getLeft() + 30, activity.locationY[y].getTop() - 200, activity.locationX[x].getLeft() + 100 + 30, activity.locationY[y].getBottom());
+        activity.parameter.setLocationXS(x);
+        activity.parameter.setLocationYS(y);
+        activity.binding.imagePlayer.layout(activity.locationX[x].getLeft() + 30, activity.locationY[y].getTop() - 200, activity.locationX[x].getLeft() + 100 + 30, activity.locationY[y].getBottom());
     }
 
 

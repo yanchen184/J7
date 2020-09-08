@@ -269,22 +269,19 @@ public class Queue {
         FRoom.child(activity.roomKey).child(player).child("Next").child("locationYSelf").setValue(1);
         FRoom.child(activity.roomKey).child(player).child("Next").child("HPUP").setValue(0);
         FRoom.child(activity.roomKey).child(player).child("Next").child("MPUP").setValue(0);
-        FRoom.child(activity.roomKey).child(player).child("Next").child("atkR").setValue(0);
+        ArrayList<Integer> yc = new ArrayList<>();
+        yc.add(0);
+        FRoom.child(activity.roomKey).child(player).child("Next").child("atkR").setValue(yc);
         FRoom.child(activity.roomKey).child(player).child("Next").child("atkHP").setValue(0);
         FRoom.child(activity.roomKey).child(player).child("Next").child("atkMP").setValue(0);
 
         /**使用 狀態值-獨有技能*/
 
-
         FRoom.child(activity.roomKey).child("fourStatus").child("player11").setValue(false);
         FRoom.child(activity.roomKey).child("fourStatus").child("player12").setValue(0);
         FRoom.child(activity.roomKey).child("fourStatus").child("player21").setValue(false);
         FRoom.child(activity.roomKey).child("fourStatus").child("player22").setValue(0);
-
         FRoom.child(activity.roomKey).child(player).child("unique").setValue(false);
-
     }
-
-
 }
 

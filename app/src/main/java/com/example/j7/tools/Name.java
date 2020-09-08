@@ -13,4 +13,10 @@ public class Name {
     public static final int CHANGE_CARD = 100;
     public static final int recordButton = 0;
 
+    public static final int UNIQUE = 5;
+    public static final int STAND = 6;
+    public static final int ERROR = 100;
+
+
+
 }

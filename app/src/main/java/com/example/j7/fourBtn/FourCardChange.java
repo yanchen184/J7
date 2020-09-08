@@ -346,7 +346,7 @@ public class FourCardChange extends AppCompatActivity {
                         }
 
 
-                        Log.d("TAG", "onClick: " + recordButton);
+
                         if (recordButton != 0) {
                             changeCard(recordButton - 1, getAdapterPosition());
 

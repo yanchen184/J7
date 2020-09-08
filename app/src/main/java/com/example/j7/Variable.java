@@ -20,12 +20,68 @@ public class Variable {
 
     Boolean unique = false; //自己是否開啟了獨有技能
 
+    Boolean uniqueC = false;//對手是否開啟了獨有技能
+
 
     int roleS; //自己使用的角色
     int roleC; //對手使用的角色
 
     int upHPInt; // 回血量
     int upMPInt; // 回魔量
+
+    /**
+     * player獨有技
+     */
+    int playerUX;
+    int playerUY;
+
+    /**
+     * player獨有技 自己標記自己
+     */
+    int playerUXB;
+    int playerUYB;
+
+    public int getPlayerUXB() {
+        return playerUXB;
+    }
+
+    public void setPlayerUXB(int playerUXB) {
+        this.playerUXB = playerUXB;
+    }
+
+    public int getPlayerUYB() {
+        return playerUYB;
+    }
+
+    public void setPlayerUYB(int playerUYB) {
+        this.playerUYB = playerUYB;
+    }
+
+    public int getPlayerUX() {
+        return playerUX;
+    }
+
+    public void setPlayerUX(int playerUX) {
+        this.playerUX = playerUX;
+    }
+
+    public int getPlayerUY() {
+        return playerUY;
+    }
+
+    public void setPlayerUY(int playerUY) {
+        this.playerUY = playerUY;
+    }
+
+
+    public Boolean getUniqueC() {
+        return uniqueC;
+    }
+
+    public void setUniqueC(Boolean uniqueC) {
+        this.uniqueC = uniqueC;
+    }
+
 
     public Boolean getUnique() {
         return unique;
@@ -58,7 +114,6 @@ public class Variable {
     public void setUpMPInt(int upMPInt) {
         this.upMPInt = upMPInt;
     }
-
 
 
     public int getRoleS() {

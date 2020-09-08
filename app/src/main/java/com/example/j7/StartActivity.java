@@ -334,17 +334,17 @@ public class StartActivity extends AppCompatActivity {
                         , line21, line22, line23, line24, line25, line26, line27, line28, line29
                         , line31, line32, line33, line34, line35, line36, line37, line38, line39
                         , line41, line42, line43, line44, line45, line46, line47, line48, line49);
-                introduction.setText("攻擊範圍較大,傷害較低,回魔為一般人1.5倍 \n 特殊技能 : 末日..九宮格傷害");
-                break;
+                introduction.setText("攻擊範圍較大,傷害較低,回魔為一般人1.5倍 \n 特殊技能 : 末日..全地圖傷害");
+            break;
             case "player":
-                buttonAtk5.setText("尚未開發");
+                buttonAtk5.setText("定點攻擊");
                 role.setText("普通人");
                 atkDrawHPMP(playerHP, playerMP);
                 atkDraw(playeratkR, line11, line12, line13, line14, line15, line16, line17, line18, line19
                         , line21, line22, line23, line24, line25, line26, line27, line28, line29
                         , line31, line32, line33, line34, line35, line36, line37, line38, line39
                         , line41, line42, line43, line44, line45, line46, line47, line48, line49);
-                introduction.setText("就是普通人 \n 特殊技能 : 還沒想到");
+                introduction.setText("就是普通人 \n 特殊技能 : 定點攻擊..攻擊對手玩家腳底下的那個位置");
                 break;
             case "b74":
                 buttonAtk5.setText("隔檔");
@@ -849,6 +849,144 @@ public class StartActivity extends AppCompatActivity {
         cancelConnect();
 
     }
+    public void atkDrawForC(ArrayList<ArrayList<Integer>> atk
+            , View line11, View line12, View line13, View line14, View line15, View line16, View line17, View line18, View line19
+            , View line21, View line22, View line23, View line24, View line25, View line26, View line27, View line28, View line29
+            , View line31, View line32, View line33, View line34, View line35, View line36, View line37, View line38, View line39
+            , View line41, View line42, View line43, View line44, View line45, View line46, View line47, View line48, View line49) {
+
+        for (int i = 0; i < atk.get(0).size(); i++) {
+            int yc = Integer.parseInt(String.valueOf(atk.get(0).get(i)));
+            switch (yc) {
+                case 1:
+                    line13.setVisibility(View.VISIBLE);
+                    break;
+                case 2:
+                    line12.setVisibility(View.VISIBLE);
+                    break;
+                case 3:
+                    line11.setVisibility(View.VISIBLE);
+                    break;
+                case 4:
+                    line16.setVisibility(View.VISIBLE);
+                    break;
+                case 5:
+                    line15.setVisibility(View.VISIBLE);
+                    break;
+                case 6:
+                    line14.setVisibility(View.VISIBLE);
+                    break;
+                case 7:
+                    line19.setVisibility(View.VISIBLE);
+                    break;
+                case 8:
+                    line18.setVisibility(View.VISIBLE);
+                    break;
+                case 9:
+                    line17.setVisibility(View.VISIBLE);
+                    break;
+            }
+        }
+        for (int i = 0; i < atk.get(1).size(); i++) {
+            int yc = Integer.parseInt(String.valueOf(atk.get(1).get(i)));
+            switch (yc) {
+                case 1:
+                    line23.setVisibility(View.VISIBLE);
+                    break;
+                case 2:
+                    line22.setVisibility(View.VISIBLE);
+                    break;
+                case 3:
+                    line21.setVisibility(View.VISIBLE);
+                    break;
+                case 4:
+                    line26.setVisibility(View.VISIBLE);
+                    break;
+                case 5:
+                    line25.setVisibility(View.VISIBLE);
+                    break;
+                case 6:
+                    line24.setVisibility(View.VISIBLE);
+                    break;
+                case 7:
+                    line29.setVisibility(View.VISIBLE);
+                    break;
+                case 8:
+                    line28.setVisibility(View.VISIBLE);
+                    break;
+                case 9:
+                    line27.setVisibility(View.VISIBLE);
+                    break;
+            }
+        }
+        for (int i = 0; i < atk.get(2).size(); i++) {
+            int yc = Integer.parseInt(String.valueOf(atk.get(2).get(i)));
+            switch (yc) {
+                case 1:
+                    line33.setVisibility(View.VISIBLE);
+                    break;
+                case 2:
+                    line32.setVisibility(View.VISIBLE);
+                    break;
+                case 3:
+                    line31.setVisibility(View.VISIBLE);
+                    break;
+                case 4:
+                    line36.setVisibility(View.VISIBLE);
+                    break;
+                case 5:
+                    line35.setVisibility(View.VISIBLE);
+                    break;
+                case 6:
+                    line34.setVisibility(View.VISIBLE);
+                    break;
+                case 7:
+                    line39.setVisibility(View.VISIBLE);
+                    break;
+                case 8:
+                    line38.setVisibility(View.VISIBLE);
+                    break;
+                case 9:
+                    line37.setVisibility(View.VISIBLE);
+                    break;
+            }
+        }
+        for (int i = 0; i < atk.get(3).size(); i++) {
+            int yc = Integer.parseInt(String.valueOf(atk.get(3).get(i)));
+            switch (yc) {
+                case 1:
+                    line43.setVisibility(View.VISIBLE);
+                    break;
+                case 2:
+                    line42.setVisibility(View.VISIBLE);
+                    break;
+                case 3:
+                    line41.setVisibility(View.VISIBLE);
+                    break;
+                case 4:
+                    line46.setVisibility(View.VISIBLE);
+                    break;
+                case 5:
+                    line45.setVisibility(View.VISIBLE);
+                    break;
+                case 6:
+                    line44.setVisibility(View.VISIBLE);
+                    break;
+                case 7:
+                    line49.setVisibility(View.VISIBLE);
+                    break;
+                case 8:
+                    line48.setVisibility(View.VISIBLE);
+                    break;
+                case 9:
+                    line47.setVisibility(View.VISIBLE);
+                    break;
+            }
+        }
+    }
+
+
+
 
 
 }

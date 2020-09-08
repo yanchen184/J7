@@ -4,18 +4,23 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.example.j7.GameActivity;
+import com.example.j7.Parameter;
 import com.example.j7.R;
+import com.example.j7.Variable;
+import com.example.j7.tools.Tools;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.snapshot.Index;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,61 +28,110 @@ import java.util.List;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.xml.parsers.FactoryConfigurationError;
 
+import static com.example.j7.tools.Name.ERROR;
+import static com.example.j7.tools.Name.STAND;
+import static com.example.j7.tools.Name.UNIQUE;
+
+
 public class AtkRules {
     private GameActivity activity;
     private Context context;
+    Tools tools = new Tools();
+
+//    Parameter parameter = new Parameter();
+//    Variable variable = new Variable();
 
     public AtkRules(Context context) {
         this.context = context;
         this.activity = (GameActivity) context;
     }
 
-    public int[][] atkRangeSelf; // 自己的攻擊範圍(根據座標重繪後的)
-    public int[][] atkRangeCom; //對手的攻擊範圍(根據座標重繪後的)
-    public int[][] atkRangeDD; //重疊的範圍(根據座標重繪後的)
-    public AtkDecide atkDecide = new AtkDecide();
+//    public int[][] atkRangeSelf; // 自己的攻擊範圍(根據座標重繪後的)
+//    public int[][] atkRangeCom; //對手的攻擊範圍(根據座標重繪後的)
+//    public int[][] atkRangeDD; //重疊的範圍(根據座標重繪後的)
+//    public AtkDecide atkDecide = new AtkDecide();
 
 
     /**
      * 攻擊範圍(根據座標重繪後)
-     * atkRangeSelf
-     * atkRangeCom
+     * 1.[2,2]
+     * 2.[1,2,3]
      */
-    public int[][] getAtkRange(String who, ArrayList<Integer> atkKindNum) {
+    public int[][] getAtkRange(String who, ArrayList<Integer> atkRange) {
         /**會記錄玩家攻擊的位置方便後續計算*/
-//        atkKindNum = atkKindNum - 1;
-//        int[][] atkRangeO = AtkKind.getAtk(atkKindNum); // 初始位置
-        if (Integer.parseInt(String.valueOf(atkKindNum.get(0))) != 0) { // 如果不攻擊
-
-            int[][] atkRangeO ;
-            atkRangeO = pointJB(atkKindNum);
-
-            int[][] atkRangeX = new int[atkRangeO.length][2]; //根據座標重繪的位置
-            if (who.equals("自己")) {
-                for (int i = 0; i < atkRangeO.length; i++) {
-                    atkRangeX[i][0] = activity.locationXSelf + atkRangeO[i][0];
-                    atkRangeX[i][1] = activity.locationYSelf + atkRangeO[i][1];
-                }
-                atkRangeSelf = new int[atkRangeX.length][];
-                for (int k = 0; k < atkRangeX.length; k++) {
-                    atkRangeSelf[k] = atkRangeX[k].clone();
-                }
-            } else if (who.equals("對手")) {
-                for (int i = 0; i < atkRangeO.length; i++) {
-                    atkRangeX[i][0] = activity.locationXCom + -1 * atkRangeO[i][0];
-                    atkRangeX[i][1] = activity.locationYCom + atkRangeO[i][1];
-                }
-                atkRangeCom = new int[atkRangeX.length][];
-                for (int k = 0; k < atkRangeX.length; k++) {
-                    atkRangeCom[k] = atkRangeX[k].clone();
-                }
-            }
-            atkJudgmentCommonRange(who, atkRangeX);
-            return atkRangeX;
-        } else {
-            int[][] atkRangeX = new int[0][0];
-            return atkRangeX;
+        int[] XY = null;
+        int pink;
+        switch (who) {
+            case "self":
+                XY = new int[]{activity.parameter.getLocationXS(), activity.parameter.getLocationYS()};
+                pink = activity.parameter.getAtkNumS();
+                break;
+            case "com":
+                XY = new int[]{activity.parameter.getLocationXC(), activity.parameter.getLocationYC()};
+                pink = activity.parameter.getAtkNumC();
+                break;
+            default:
+                pink = ERROR;
+                break;
         }
+        int[][] point15 = new int[0][];
+        switch (pink) {//點擊第幾個 1-4 開始算攻擊位置
+            case STAND:
+            case UNIQUE:
+                break;
+            default:
+                point15 = new int[atkRange.size()][2];
+                for (int i = 0; i < atkRange.size(); i++) {
+                    switch (Integer.parseInt(String.valueOf(atkRange.get(i)))) {
+                        case 1:
+                            point15[i][0] = XY[0] - 1;
+                            point15[i][1] = XY[1] + 1;
+                            break;
+                        case 2:
+                            point15[i][0] = XY[0];
+                            point15[i][1] = XY[1] + 1;
+                            break;
+                        case 3:
+                            point15[i][0] = XY[0] + 1;
+                            point15[i][1] = XY[1] + 1;
+                            break;
+                        case 4:
+                            point15[i][0] = XY[0] - 1;
+                            point15[i][1] = XY[1];
+                            break;
+                        case 5:
+                            point15[i][0] = XY[0];
+                            point15[i][1] = XY[1];
+                            break;
+                        case 6:
+                            point15[i][0] = XY[0] + 1;
+                            point15[i][1] = XY[1];
+                            break;
+                        case 7:
+                            point15[i][0] = XY[0] - 1;
+                            point15[i][1] = XY[1] - 1;
+                            break;
+                        case 8:
+                            point15[i][0] = XY[0];
+                            point15[i][1] = XY[1] - 1;
+                            break;
+                        case 9:
+                            point15[i][0] = XY[0] + 1;
+                            point15[i][1] = XY[1] - 1;
+                            break;
+                    }
+                }
+                switch (who) {
+                    case "self":
+                        activity.parameter.setAtkRangeSelf(point15);
+                        break;
+                    case "com":
+                        activity.parameter.setAtkRangeCom(point15);
+                        break;
+                }
+                break;
+        }
+        return point15;
     }
 
 
@@ -91,10 +145,10 @@ public class AtkRules {
         Resources res = activity.getResources();
         Drawable drawable;
         drawable = res.getDrawable(R.drawable.atk);
-        if (x.equals("對手")) {
+        if (x.equals("com")) {
             drawable = res.getDrawable(R.drawable.atkc);
         }
-        if (x.equals("同個位置")) {
+        if (x.equals("DD")) {
             drawable = res.getDrawable(R.drawable.atkt);
         }
         for (int i = 0; i < range.length; i++) {
@@ -102,64 +156,64 @@ public class AtkRules {
 //                System.out.println(x + "燃燒的地方 : " + range[i][0] + "," + range[i][1]);
                 switch (range[i][0] * 10 + range[i][1]) {
                     case 0:
-                        activity.atkKJ00.setBackgroundDrawable(drawable);
-                        activity.atkKJ00.setVisibility(View.VISIBLE);
+                        activity.binding.atkKJ00.setBackgroundDrawable(drawable);
+                        activity.binding.atkKJ00.setVisibility(View.VISIBLE);
                         break;
                     case 10:
-                        activity.atkKJ10.setBackgroundDrawable(drawable);
-                        activity.atkKJ10.setVisibility(View.VISIBLE);
+                        activity.binding.atkKJ10.setBackgroundDrawable(drawable);
+                        activity.binding.atkKJ10.setVisibility(View.VISIBLE);
                         break;
                     case 20:
-                        activity.atkKJ20.setBackgroundDrawable(drawable);
-                        activity.atkKJ20.setVisibility(View.VISIBLE);
+                        activity.binding.atkKJ20.setBackgroundDrawable(drawable);
+                        activity.binding.atkKJ20.setVisibility(View.VISIBLE);
                         break;
                     case 30:
-                        activity.atkKJ30.setBackgroundDrawable(drawable);
-                        activity.atkKJ30.setVisibility(View.VISIBLE);
+                        activity.binding.atkKJ30.setBackgroundDrawable(drawable);
+                        activity.binding.atkKJ30.setVisibility(View.VISIBLE);
                         break;
                     case 40:
-                        activity.atkKJ40.setBackgroundDrawable(drawable);
-                        activity.atkKJ40.setVisibility(View.VISIBLE);
+                        activity.binding.atkKJ40.setBackgroundDrawable(drawable);
+                        activity.binding.atkKJ40.setVisibility(View.VISIBLE);
                         break;
                     case 1:
-                        activity.atkKJ01.setBackgroundDrawable(drawable);
-                        activity.atkKJ01.setVisibility(View.VISIBLE);
+                        activity.binding.atkKJ01.setBackgroundDrawable(drawable);
+                        activity.binding.atkKJ01.setVisibility(View.VISIBLE);
                         break;
                     case 11:
-                        activity.atkKJ11.setBackgroundDrawable(drawable);
-                        activity.atkKJ11.setVisibility(View.VISIBLE);
+                        activity.binding.atkKJ11.setBackgroundDrawable(drawable);
+                        activity.binding.atkKJ11.setVisibility(View.VISIBLE);
                         break;
                     case 21:
-                        activity.atkKJ21.setBackgroundDrawable(drawable);
-                        activity.atkKJ21.setVisibility(View.VISIBLE);
+                        activity.binding.atkKJ21.setBackgroundDrawable(drawable);
+                        activity.binding.atkKJ21.setVisibility(View.VISIBLE);
                         break;
                     case 31:
-                        activity.atkKJ31.setBackgroundDrawable(drawable);
-                        activity.atkKJ31.setVisibility(View.VISIBLE);
+                        activity.binding.atkKJ31.setBackgroundDrawable(drawable);
+                        activity.binding.atkKJ31.setVisibility(View.VISIBLE);
                         break;
                     case 41:
-                        activity.atkKJ41.setBackgroundDrawable(drawable);
-                        activity.atkKJ41.setVisibility(View.VISIBLE);
+                        activity.binding.atkKJ41.setBackgroundDrawable(drawable);
+                        activity.binding.atkKJ41.setVisibility(View.VISIBLE);
                         break;
                     case 2:
-                        activity.atkKJ02.setBackgroundDrawable(drawable);
-                        activity.atkKJ02.setVisibility(View.VISIBLE);
+                        activity.binding.atkKJ02.setBackgroundDrawable(drawable);
+                        activity.binding.atkKJ02.setVisibility(View.VISIBLE);
                         break;
                     case 12:
-                        activity.atkKJ12.setBackgroundDrawable(drawable);
-                        activity.atkKJ12.setVisibility(View.VISIBLE);
+                        activity.binding.atkKJ12.setBackgroundDrawable(drawable);
+                        activity.binding.atkKJ12.setVisibility(View.VISIBLE);
                         break;
                     case 22:
-                        activity.atkKJ22.setBackgroundDrawable(drawable);
-                        activity.atkKJ22.setVisibility(View.VISIBLE);
+                        activity.binding.atkKJ22.setBackgroundDrawable(drawable);
+                        activity.binding.atkKJ22.setVisibility(View.VISIBLE);
                         break;
                     case 32:
-                        activity.atkKJ32.setBackgroundDrawable(drawable);
-                        activity.atkKJ32.setVisibility(View.VISIBLE);
+                        activity.binding.atkKJ32.setBackgroundDrawable(drawable);
+                        activity.binding.atkKJ32.setVisibility(View.VISIBLE);
                         break;
                     case 42:
-                        activity.atkKJ42.setBackgroundDrawable(drawable);
-                        activity.atkKJ42.setVisibility(View.VISIBLE);
+                        activity.binding.atkKJ42.setBackgroundDrawable(drawable);
+                        activity.binding.atkKJ42.setVisibility(View.VISIBLE);
                         break;
                 }
             }
@@ -172,27 +226,34 @@ public class AtkRules {
     public void rangeSame() {
         List<Integer> listX = new ArrayList<>();
         List<Integer> listY = new ArrayList<>();
-        if ((atkRangeCom != null) && (atkRangeSelf != null)) {
-            for (int i = 0; i < atkRangeCom.length; i++) {
-                for (int j = 0; j < atkRangeSelf.length; j++) {
-                    if (atkRangeCom[i][0] * 10 + atkRangeCom[i][1] == atkRangeSelf[j][0] * 10 + atkRangeSelf[j][1]) {
-                        listX.add(atkRangeCom[i][0]);
-                        listY.add(atkRangeCom[i][1]);
+
+        Log.d("計算共同範圍", String.valueOf(activity.parameter.getAtkRangeCom() != null));
+        Log.d("計算共同範圍", String.valueOf(activity.parameter.getAtkRangeSelf() != null));
+
+        if (activity.parameter.getAtkRangeCom() != null && activity.parameter.getAtkRangeSelf() != null) {
+            for (int i = 0; i < activity.parameter.getAtkRangeCom().length; i++) {
+                for (int j = 0; j < activity.parameter.getAtkRangeSelf().length; j++) {
+                    if (activity.parameter.getAtkRangeCom()[i][0] * 10 + activity.parameter.getAtkRangeCom()[i][1] == activity.parameter.getAtkRangeSelf()[j][0] * 10 + activity.parameter.getAtkRangeSelf()[j][1]) {
+                        listX.add(activity.parameter.getAtkRangeCom()[i][0]);
+                        listY.add(activity.parameter.getAtkRangeCom()[i][1]);
                     }
                 }
             }
-            atkRangeDD = new int[listX.size()][2];
+
+            int[][] atkRangeDD = new int[listX.size()][2];
             for (int i = 0; i < listX.size(); i++) {
                 atkRangeDD[i][0] = listX.get(i);
                 atkRangeDD[i][1] = listY.get(i);
+                Log.d("計算共同範圍", atkRangeDD[i][0] + " , " + atkRangeDD[i][1]);
             }
+            activity.parameter.setAtkRangeDD(atkRangeDD);
 
             if (atkRangeDD != null) {
-                atkJudgmentCommonRange("同個位置", atkRangeDD);
+                atkJudgmentCommonRange("DD", activity.parameter.getAtkRangeDD());
             }
         }
+        initAtkRange();
     }
-
 
     //    "player1" 打到 "player2"
     public void HPHit(final String playerW) {
@@ -227,318 +288,202 @@ public class AtkRules {
         });
     }
 
+    /**
+     * 1.atkRange [1,2,3]
+     */
+    public void atkJudgmentSelf(int[][] atkRange, int hp, int mp) {
 
-    public void atkJudgmentSelf(ArrayList<Integer> atkKindNum, int hp, int mp, String player) {
+        judgment(activity.parameter.getAtkNumS()
+                , atkRange, hp, mp
+                , activity.variable.getPlayer()
+                , "self");
+        /**
+         * 1. 9宮格攻擊範圍 - 攻擊傷害跟魔量 atkRange , hp , mp
+         * 2. 按的號碼 - 自己按的或別人按的
+         * 3. 別人所在的位置 - 用來判斷是否有打到他
+         * 4. 你是player1 還是 player2
+         * 5. SC
+         * */
+    }
+
+    public void atkJudgmentCom(int[][] atkRange, int hp, int mp) {
+        judgment(activity.parameter.getAtkNumC()
+                , atkRange, hp, mp
+                , activity.variable.getOtherPlayer()
+                , "com");
+
+    }
+
+    public void judgment(int atkNum, int[][] atkRange, final int hp, final int mp, final String name, final String SC) {
         /**
          * 1.扣魔力
          * 2.自己是否攻擊成功
-         * 3.
          * */
-        switch (Integer.parseInt(String.valueOf(atkKindNum.get(0)))) {
-            case 0:
+        Log.d("攻擊內容", "HP : " + hp);
+        Log.d("攻擊內容", "MP : " + mp);
+        switch (atkNum) {
+            case STAND:
                 Toast.makeText(context, "自己站著不動", Toast.LENGTH_LONG).show();
                 break;
-            case -1:
-                Toast.makeText(context, "自己使用獨有技能", Toast.LENGTH_LONG).show();
-                break;
             default:
-                int[] XY = {activity.locationXCom, activity.locationYCom};
-                boolean success = false;
-
-
-                for (int[] el : getAtkRange("自己", atkKindNum)) { // 獲取攻擊範圍時順便畫畫
-                    if (XY[0] == el[0] && XY[1] == el[1]) {
-                        success = true;
-                    }
-                }
-
-                if (success) {
-                    if (player.equals("player1")) {
-                        HPHit("player1");
-                    } else {
-                        HPHit("player2");
-                    }
-                    Toast.makeText(context, "攻擊成功!! 扣對方 " + hp + " HP ", Toast.LENGTH_LONG).show();
+                if (SC.equals("self")) {
+                    atkPD(hp, mp, atkRange, name, SC);
                 } else {
-                    Toast.makeText(context, "攻擊失敗.. 消耗 " + mp + " MP ", Toast.LENGTH_LONG).show();
+                    atkPD(hp, mp, atkRange, name, SC);
+                    rangeSame();
                 }
-                rangeSame();//如果攻擊位置重疊 變成其他圖片
                 break;
+        }
+
+
+    }
+
+    /*判定**/
+    private void atkPD(int hp, int mp, int[][] atkRealRange, String name, String SC) {
+        /**是否攻擊成功*/
+        boolean success = false;
+        /**畫出攻擊範圍*/
+        atkJudgmentCommonRange(SC, atkRealRange);
+        int lx = 0;
+        int ly = 0;
+        if (SC.equals("self")) {
+            lx = activity.parameter.getLocationXC();
+            ly = activity.parameter.getLocationYC();
+        } else if (SC.equals("com")) {
+            lx = activity.parameter.getLocationXS();
+            ly = activity.parameter.getLocationYS();
+        }
+
+        /**對手的位置 -包含進- 自己的攻擊位置就判定true */
+        for (int[] el : atkRealRange) {
+            if (lx == el[0] && ly == el[1]) {
+                success = true;
+            }
+        }
+        /**如果成功就進行扣寫判定*/
+        if (success) {
+            HPHit(name);
+            Toast.makeText(context, "攻擊成功!! 扣對方 " + hp + " HP ", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(context, "攻擊失敗.. 消耗 " + mp + " MP ", Toast.LENGTH_LONG).show();
         }
     }
 
-    public void atkJudgmentCom(ArrayList<Integer> atkKindNum, int hp, int mp) {
-        switch (Integer.parseInt(String.valueOf(atkKindNum.get(0)))) {
-            case 0:
-                Toast.makeText(context, "對手站著不動", Toast.LENGTH_LONG).show();
-                break;
-            case -1:
-                Toast.makeText(context, "對手使用獨有技能", Toast.LENGTH_LONG).show();
-                break;
-            default:
-                int[] XY = {activity.locationXSelf, activity.locationYSelf};
-                boolean success = false;
-                for (int[] el : getAtkRange("對手", atkKindNum)) {
-                    if (XY[0] == el[0] && XY[1] == el[1]) {
-                        success = true;
-                    }
-                }
-                if (success) {
-//                activity.controlMPHP(activity.txt_self_hp, -hp);//1.扣自己血量
-                }
-                rangeSame();//如果攻擊位置重疊 變成其他圖片
-                break;
+
+    public ArrayList<Integer> atk9o(ArrayList<Integer> atkRange) {
+        ArrayList<Integer> newAtkRange = new ArrayList<>();
+        int change;
+        for (int i = 0; i < atkRange.size(); i++) {
+            switch (Integer.parseInt(String.valueOf(atkRange.get(i)))) {
+                case 1:
+                    change = 3;
+                    break;
+                case 2:
+                    change = 2;
+                    break;
+                case 3:
+                    change = 1;
+                    break;
+                case 4:
+                    change = 6;
+                    break;
+                case 5:
+                    change = 5;
+                    break;
+                case 6:
+                    change = 4;
+                    break;
+                case 7:
+                    change = 9;
+                    break;
+                case 8:
+                    change = 8;
+                    break;
+                case 9:
+                    change = 7;
+                    break;
+                case 0:
+                    change = 0;
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + Integer.parseInt(String.valueOf(atkRange.get(i))));
+            }
+            newAtkRange.add(change);
         }
+        return newAtkRange;
     }
 
 
     public void initAtkRange() {
-        atkRangeSelf = null;
-        atkRangeCom = null;
-        atkRangeDD = null;
+        activity.parameter.setAtkRangeDD(null);
+        activity.parameter.setAtkRangeCom(null);
+        activity.parameter.setAtkRangeSelf(null);
     }
 
-    public void atkDrawHPMP(ArrayList<Integer> HP, ArrayList<Integer> MP) {
-        activity.HP1.setText(HP.get(0) + "");
-        activity.HP2.setText(HP.get(1) + "");
-        activity.HP3.setText(HP.get(2) + "");
-        activity.HP4.setText(HP.get(3) + "");
-        activity.HP5.setText(HP.get(4) + "");
-        activity.MP1.setText(MP.get(0) + "");
-        activity.MP2.setText(MP.get(1) + "");
-        activity.MP3.setText(MP.get(2) + "");
-        activity.MP4.setText(MP.get(3) + "");
-        activity.MP5.setText(MP.get(4) + "");
+
+    public int[][] atkRealRange(int atkNum, ArrayList<Integer> atkRange, String SC) {
+        int[][] allMap = new int[1][2];
+        allMap[0][0] = -1;
+        allMap[0][1] = -1;
+        switch (atkNum) {
+            case STAND:
+                Toast.makeText(context, "自己站著不動", Toast.LENGTH_LONG).show();
+                allMap[0][0] = 100;
+                allMap[0][1] = 100;
+                return allMap;
+            case UNIQUE:
+                int ii;
+                Boolean b;
+                if (SC.equals("self")) {
+                    ii = activity.variable.getIndex();
+                    b = activity.variable.getUnique();
+                } else {
+                    ii = activity.variable.getIndexE();
+                    b = activity.variable.getUniqueC();
+                }
+                Log.d("獨有技能判定",  tools.roleChange((int) ii)+ " " +b);
+                if (b) {
+                    switch (tools.roleChange((int) ii)) {
+                        case "fs":
+                            /**法師獨有技能*/
+                            allMap = new int[15][2];
+                            for (int i = 0; i < 3; i++) {
+                                allMap[0 + 5 * i][0] = 0;
+                                allMap[0 + 5 * i][1] = i;
+                                allMap[1 + 5 * i][0] = 1;
+                                allMap[1 + 5 * i][1] = i;
+                                allMap[2 + 5 * i][0] = 2;
+                                allMap[2 + 5 * i][1] = i;
+                                allMap[3 + 5 * i][0] = 3;
+                                allMap[3 + 5 * i][1] = i;
+                                allMap[4 + 5 * i][0] = 4;
+                                allMap[4 + 5 * i][1] = i;
+                            }
+                            return allMap;
+                        case "player":
+                            /**普通人獨有技能*/
+                            allMap = new int[1][2];
+                            if(SC.equals("self")) {
+                                allMap[0][0] = activity.variable.getPlayerUXB();
+                                allMap[0][1] = activity.variable.getPlayerUYB();
+                            }else{
+                                allMap[0][0] = activity.variable.getPlayerUX();
+                                allMap[0][1] = activity.variable.getPlayerUY();
+                            }
+                            return allMap;
+                        default:
+                            allMap[0][0] = 101;
+                            allMap[0][1] = 101;
+                            return allMap;
+                    }
+                }
+                allMap[0][0] = 102;
+                allMap[0][1] = 102;
+                return allMap;
+            default:
+                return getAtkRange(SC, atkRange);
+        }
     }
 
-    public void atkDraw(ArrayList<ArrayList<Integer>> atk) {
-        for (int i = 0; i < atk.get(0).size(); i++) {
-            int yc = Integer.parseInt(String.valueOf(atk.get(0).get(i)));
-            switch (yc) {
-                case 1:
-                    activity.line11.setVisibility(View.VISIBLE);
-                    break;
-                case 2:
-                    activity.line12.setVisibility(View.VISIBLE);
-                    break;
-                case 3:
-                    activity.line13.setVisibility(View.VISIBLE);
-                    break;
-                case 4:
-                    activity.line14.setVisibility(View.VISIBLE);
-                    break;
-                case 5:
-                    activity.line15.setVisibility(View.VISIBLE);
-                    break;
-                case 6:
-                    activity.line16.setVisibility(View.VISIBLE);
-                    break;
-                case 7:
-                    activity.line17.setVisibility(View.VISIBLE);
-                    break;
-                case 8:
-                    activity.line18.setVisibility(View.VISIBLE);
-                    break;
-                case 9:
-                    activity.line19.setVisibility(View.VISIBLE);
-                    break;
-            }
-        }
-        for (int i = 0; i < atk.get(1).size(); i++) {
-            int yc = Integer.parseInt(String.valueOf(atk.get(1).get(i)));
-            switch (yc) {
-                case 1:
-                    activity.line21.setVisibility(View.VISIBLE);
-                    break;
-                case 2:
-                    activity.line22.setVisibility(View.VISIBLE);
-                    break;
-                case 3:
-                    activity.line23.setVisibility(View.VISIBLE);
-                    break;
-                case 4:
-                    activity.line24.setVisibility(View.VISIBLE);
-                    break;
-                case 5:
-                    activity.line25.setVisibility(View.VISIBLE);
-                    break;
-                case 6:
-                    activity.line26.setVisibility(View.VISIBLE);
-                    break;
-                case 7:
-                    activity.line27.setVisibility(View.VISIBLE);
-                    break;
-                case 8:
-                    activity.line28.setVisibility(View.VISIBLE);
-                    break;
-                case 9:
-                    activity.line29.setVisibility(View.VISIBLE);
-                    break;
-            }
-        }
-        for (int i = 0; i < atk.get(2).size(); i++) {
-            int yc = Integer.parseInt(String.valueOf(atk.get(2).get(i)));
-            switch (yc) {
-                case 1:
-                    activity.line31.setVisibility(View.VISIBLE);
-                    break;
-                case 2:
-                    activity.line32.setVisibility(View.VISIBLE);
-                    break;
-                case 3:
-                    activity.line33.setVisibility(View.VISIBLE);
-                    break;
-                case 4:
-                    activity.line34.setVisibility(View.VISIBLE);
-                    break;
-                case 5:
-                    activity.line35.setVisibility(View.VISIBLE);
-                    break;
-                case 6:
-                    activity.line36.setVisibility(View.VISIBLE);
-                    break;
-                case 7:
-                    activity.line37.setVisibility(View.VISIBLE);
-                    break;
-                case 8:
-                    activity.line38.setVisibility(View.VISIBLE);
-                    break;
-                case 9:
-                    activity.line39.setVisibility(View.VISIBLE);
-                    break;
-            }
-        }
-        for (int i = 0; i < atk.get(3).size(); i++) {
-            int yc = Integer.parseInt(String.valueOf(atk.get(3).get(i)));
-            switch (yc) {
-                case 1:
-                    activity.line41.setVisibility(View.VISIBLE);
-                    break;
-                case 2:
-                    activity.line42.setVisibility(View.VISIBLE);
-                    break;
-                case 3:
-                    activity.line43.setVisibility(View.VISIBLE);
-                    break;
-                case 4:
-                    activity.line44.setVisibility(View.VISIBLE);
-                    break;
-                case 5:
-                    activity.line45.setVisibility(View.VISIBLE);
-                    break;
-                case 6:
-                    activity.line46.setVisibility(View.VISIBLE);
-                    break;
-                case 7:
-                    activity.line47.setVisibility(View.VISIBLE);
-                    break;
-                case 8:
-                    activity.line48.setVisibility(View.VISIBLE);
-                    break;
-                case 9:
-                    activity.line49.setVisibility(View.VISIBLE);
-                    break;
-            }
-        }
-//        for (int i = 0; i < atk.get(4).size(); i++) {
-//            int yc = Integer.parseInt(String.valueOf(atk.get(4).get(i)));
-//            switch (yc) {
-//                case 1:
-//                    activity.line51.setVisibility(View.VISIBLE);
-//                    break;
-//                case 2:
-//                    activity.line52.setVisibility(View.VISIBLE);
-//                    break;
-//                case 3:
-//                    activity.line53.setVisibility(View.VISIBLE);
-//                    break;
-//                case 4:
-//                    activity.line54.setVisibility(View.VISIBLE);
-//                    break;
-//                case 5:
-//                    activity.line55.setVisibility(View.VISIBLE);
-//                    break;
-//                case 6:
-//                    activity.line56.setVisibility(View.VISIBLE);
-//                    break;
-//                case 7:
-//                    activity.line57.setVisibility(View.VISIBLE);
-//                    break;
-//                case 8:
-//                    activity.line58.setVisibility(View.VISIBLE);
-//                    break;
-//                case 9:
-//                    activity.line59.setVisibility(View.VISIBLE);
-//                    break;
-//            }
-//        }
-    }
-
-//    public int[][] pointfs() {
-//        int[][] pointfs = new int[27][2];
-//
-//        for (int i = 0; i < 9; i++) {
-//            pointfs[i][0] = -4 + i;
-//            pointfs[i][1] = -1;
-//        }
-//        for (int i = 0; i < 9; i++) {
-//            pointfs[9 + i][0] = -4 + i;
-//            pointfs[9 + i][1] = 0;
-//        }
-//        for (int i = 0; i < 9; i++) {
-//            pointfs[9 * 2 + i][0] = -4 + i;
-//            pointfs[9 * 2 + i][1] = 1;
-//        }
-//        return pointfs;
-//    }
-
-
-    public static int[][] pointJB(ArrayList<Integer> atk0) {
-
-
-        int[][] pointHere = new int[atk0.size()][2];
-        for (int i = 0; i < atk0.size(); i++) {
-            int x = i;
-            switch (Integer.parseInt(String.valueOf(atk0.get(i)))) {
-                case 1:
-                    pointHere[x][0] = -1;
-                    pointHere[x][1] = 1;
-                    break;
-                case 2:
-                    pointHere[x][0] = 0;
-                    pointHere[x][1] = 1;
-                    break;
-                case 3:
-                    pointHere[x][0] = 1;
-                    pointHere[x][1] = 1;
-                    break;
-                case 4:
-                    pointHere[x][0] = -1;
-                    pointHere[x][1] = 0;
-                    break;
-                case 5:
-                    pointHere[x][0] = 0;
-                    pointHere[x][1] = 0;
-                    break;
-                case 6:
-                    pointHere[x][0] = 1;
-                    pointHere[x][1] = 0;
-                    break;
-                case 7:
-                    pointHere[x][0] = -1;
-                    pointHere[x][1] = -1;
-                    break;
-                case 8:
-                    pointHere[x][0] = 0;
-                    pointHere[x][1] = -1;
-                    break;
-                case 9:
-                    pointHere[x][0] = 1;
-                    pointHere[x][1] = -1;
-                    break;
-            }
-        }
-        return pointHere;
-    }
 
 }
