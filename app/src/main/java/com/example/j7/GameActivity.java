@@ -2,11 +2,17 @@ package com.example.j7;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -87,7 +93,7 @@ public class GameActivity extends AppCompatActivity {
 
         fullRoom = FirebaseDatabase.getInstance().getReference("rooms").child(variable.getRoomKey());//FirebaseDatabase
         /** 5 */
-        locationX = new View[]{binding.lineX0, binding.lineX1, binding.lineX2, binding.lineX3, binding.lineX4};
+        locationX = new View[]{binding.lineX0, binding.lineX1, binding.lineX2, binding.lineX3, binding.lineX4, binding.lineX5};
         locationY = new View[]{binding.lineY0, binding.lineY1, binding.lineY2};
 
 
@@ -125,6 +131,12 @@ public class GameActivity extends AppCompatActivity {
                 }
                 binding.includeMove.button5.upHP.setText(variable.getUpHPInt() + "");
                 binding.includeMove.button6.upMP.setText(variable.getUpMPInt() + "");
+
+
+                variable.setSHP(Integer.parseInt(String.valueOf(snapshot.child(variable.getPlayer()).child("HP").getValue())));
+                variable.setSMP(Integer.parseInt(String.valueOf(snapshot.child(variable.getPlayer()).child("MP").getValue())));
+                variable.setCHP(Integer.parseInt(String.valueOf(snapshot.child(variable.getOtherPlayer()).child("HP").getValue())));
+                variable.setCMP(Integer.parseInt(String.valueOf(snapshot.child(variable.getOtherPlayer()).child("MP").getValue())));
             }
 
             @Override
@@ -146,6 +158,13 @@ public class GameActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        fullRoom.addValueEventListener(upListener);//監聽
+        fullRoom.child("fourStatus").addValueEventListener(statusListener);//監聽
+
+//        Log.d("重繪", String.valueOf(parameter.getLocationXS()));
+//        Log.d("重繪", String.valueOf(parameter.getLocationYS()));
+//        Log.d("重繪", String.valueOf(parameter.getLocationXC()));
+//        Log.d("重繪", String.valueOf(parameter.getLocationYC()));
         /**
          * 1.確認地板上的火焰消失
          * 2.攻擊的最後兩招為 - 獨有技能
@@ -153,7 +172,7 @@ public class GameActivity extends AppCompatActivity {
          * 4.上面的數據做監聽 - upListener
          * 5.準備戰鬥階段監聽 - fourStatus
          * */
-        fireVisible();//創建遊戲
+        fireVisible();//創建遊戲時取消所有火焰
         openBtnAtk();
         switch (tools.roleChange(variable.getIndex())) {
             case "j4":
@@ -171,8 +190,11 @@ public class GameActivity extends AppCompatActivity {
         }
         binding.includeAtk.includeAtk6.buttonAtk6.setText("站著");
 
-        fullRoom.addValueEventListener(upListener);//監聽
-        fullRoom.child("fourStatus").addValueEventListener(statusListener);//監聽
+
+//        moveRules.moveJudgmentSelf(2, 2);
+//        moveRules.moveJudgmentCom(2, 2);
+
+
     }
 
 
@@ -182,6 +204,112 @@ public class GameActivity extends AppCompatActivity {
             if (snapshot.getValue() == null)
                 return;
 
+            /**自己被扣血*/
+            if (Integer.parseInt(binding.include.txtSelfHp.getText().toString()) - Integer.parseInt(snapshot.child(variable.getPlayer()).child("HP").getValue().toString()) > 0) {
+                Animation am = new AlphaAnimation(1.0f, 0.0f);
+                am.setDuration(600);
+                am.setRepeatCount(2);
+                binding.imagePlayer.startAnimation(am);
+            }
+
+            /**自己被+血*/
+            if (Integer.parseInt(binding.include.txtSelfHp.getText().toString()) - Integer.parseInt(snapshot.child(variable.getPlayer()).child("HP").getValue().toString()) < 0) {
+                Animation am = new AlphaAnimation(1.0f, 0.0f);
+                am.setDuration(200);
+                am.setRepeatCount(2);
+                binding.include.role1hp.startAnimation(am);
+            }
+
+            /**對手被扣血*/
+            if (Integer.parseInt(binding.include.txtComHp.getText().toString()) - Integer.parseInt(snapshot.child(variable.getOtherPlayer()).child("HP").getValue().toString()) > 0) {
+                Animation am = new AlphaAnimation(1.0f, 0.0f);
+                am.setDuration(600);
+                am.setRepeatCount(2);
+                binding.imageCom.startAnimation(am);
+            }
+
+            /**對手被+血*/
+            if (Integer.parseInt(binding.include.txtComHp.getText().toString()) - Integer.parseInt(snapshot.child(variable.getOtherPlayer()).child("HP").getValue().toString()) < 0) {
+                Animation am = new AlphaAnimation(1.0f, 0.0f);
+                am.setDuration(200);
+                am.setRepeatCount(2);
+                binding.include.role2hp.startAnimation(am);
+            }
+
+            /**自己被+魔*/
+            if (Integer.parseInt(binding.include.txtSelfMp.getText().toString()) - Integer.parseInt(snapshot.child(variable.getPlayer()).child("MP").getValue().toString()) < 0) {
+                Animation am = new AlphaAnimation(1.0f, 0.0f);
+                am.setDuration(200);
+                am.setRepeatCount(2);
+                binding.include.role1mp.startAnimation(am);
+            }
+
+            /**對手被+魔*/
+            if (Integer.parseInt(binding.include.txtComMp.getText().toString()) - Integer.parseInt(snapshot.child(variable.getOtherPlayer()).child("MP").getValue().toString()) < 0) {
+                Animation am = new AlphaAnimation(1.0f, 0.0f);
+                am.setDuration(200);
+                am.setRepeatCount(2);
+                binding.include.role2mp.startAnimation(am);
+            }
+
+
+            if (Integer.parseInt(snapshot.child(variable.getPlayer()).child("HP").getValue().toString()) > variable.getSHP()) {
+                fullRoom.child(variable.getPlayer()).child("HP").setValue(variable.getSHP());
+            }
+
+            if (Integer.parseInt(snapshot.child(variable.getPlayer()).child("MP").getValue().toString()) > variable.getSMP()) {
+                fullRoom.child(variable.getPlayer()).child("MP").setValue(variable.getSMP());
+            }
+
+            if (Integer.parseInt(snapshot.child(variable.getOtherPlayer()).child("HP").getValue().toString()) > variable.getCHP()) {
+                fullRoom.child(variable.getOtherPlayerName()).child("HP").setValue(variable.getCHP());
+            }
+
+            if (Integer.parseInt(snapshot.child(variable.getOtherPlayer()).child("MP").getValue().toString()) > variable.getCMP()) {
+                fullRoom.child(variable.getOtherPlayerName()).child("MP").setValue(variable.getCMP());
+            }
+//
+            /**滿血的話就是粗體*/
+//            if (Integer.parseInt(snapshot.child(variable.getPlayer()).child("HP").getValue().toString()) == variable.getSHP()) {
+//                binding.include.txtSelfHp.setTypeface(Typeface.DEFAULT_BOLD);
+////                binding.include.txtSelfHp.setTextColor(Color.parseColor("#4D0000"));
+//            } else {
+//                binding.include.txtSelfHp.setTypeface(Typeface.MONOSPACE);
+////                binding.include.txtSelfHp.setTextColor(Color.parseColor("#FF0000"));
+////                binding.include.txtSelfHp.setTextColor(Color.parseColor("#000000"));
+//            }
+////
+//            if (Integer.parseInt(snapshot.child(variable.getPlayer()).child("MP").getValue().toString()) == variable.getSMP()) {
+//                binding.include.txtSelfMp.setTypeface(Typeface.DEFAULT_BOLD);
+////                binding.include.txtSelfMp.setTextColor(Color.parseColor("#000093"));
+//            } else {
+//                binding.include.txtSelfMp.setTypeface(Typeface.MONOSPACE);
+////                binding.include.txtSelfMp.setTextColor(Color.parseColor("#000000"));
+//            }
+//
+//            if (Integer.parseInt(snapshot.child(variable.getOtherPlayer()).child("HP").getValue().toString()) == variable.getCHP()) {
+//                binding.include.txtComHp.setTypeface(Typeface.DEFAULT_BOLD);
+////                binding.include.txtComHp.setTextColor(Color.parseColor("#4D0000"));
+//            } else {
+//                binding.include.txtComHp.setTypeface(Typeface.MONOSPACE);
+////                binding.include.txtComHp.setTextColor(Color.parseColor("#000000"));
+//            }
+//
+//            if (Integer.parseInt(snapshot.child(variable.getOtherPlayer()).child("MP").getValue().toString()) == variable.getCMP()) {
+//                binding.include.txtComMp.setTypeface(Typeface.DEFAULT_BOLD);
+////                binding.include.txtComMp.setTextColor(Color.parseColor("#000093"));
+//            } else {
+//                binding.include.txtComMp.setTypeface(Typeface.MONOSPACE);
+////                binding.include.txtComMp.setTextColor(Color.parseColor("#000000"));
+//            }
+
+//            float sb = Integer.parseInt(snapshot.child(variable.getPlayer()).child("HP").getValue().toString()) / Integer.parseInt(binding.include.txtSelfHp.getText().toString());
+//            Animation sbA = new ScaleAnimation(0.0f, sb, 0.0f, sb);
+//            binding.imagePlayer.startAnimation(sbA);
+//
+//            float cb = Integer.parseInt(snapshot.child(variable.getOtherPlayer()).child("HP").getValue().toString()) / Integer.parseInt(binding.include.txtComHp.getText().toString());
+//            Animation cbA = new ScaleAnimation(0.0f, cb, 0.0f, cb);
+//            binding.imagePlayer.startAnimation(cbA);
 
             binding.include.txtSelfHp.setText(snapshot.child(variable.getPlayer()).child("HP").getValue().toString());
             binding.include.txtSelfMp.setText(snapshot.child(variable.getPlayer()).child("MP").getValue().toString());
@@ -194,13 +322,14 @@ public class GameActivity extends AppCompatActivity {
             long x2 = (long) snapshot.child(variable.getOtherPlayer()).child("X").getValue();
             long y2 = (long) snapshot.child(variable.getOtherPlayer()).child("Y").getValue();
 
-
             moveRules.moveJudgmentSelf((int) x1, (int) y1);
             moveRules.moveJudgmentCom((int) x2, (int) y2);
 
 
-            int selfMP = Integer.parseInt(String.valueOf(snapshot.child(variable.getPlayer()).child("MP").getValue()));
+            //將動畫參數設定到圖片並開始執行動畫
 
+
+            int selfMP = Integer.parseInt(String.valueOf(snapshot.child(variable.getPlayer()).child("MP").getValue()));
             MPLimit(selfMP, Integer.parseInt(String.valueOf(variable.getFinalMP().get(0))), binding.includeAtk.includeAtk1.buttonAtk1);
             MPLimit(selfMP, Integer.parseInt(String.valueOf(variable.getFinalMP().get(1))), binding.includeAtk.includeAtk2.buttonAtk2);
             MPLimit(selfMP, Integer.parseInt(String.valueOf(variable.getFinalMP().get(2))), binding.includeAtk.includeAtk3.buttonAtk3);
@@ -209,6 +338,7 @@ public class GameActivity extends AppCompatActivity {
 
             int selfHP = Integer.parseInt(String.valueOf(snapshot.child(variable.getPlayer()).child("HP").getValue()));
             int comHP = Integer.parseInt(String.valueOf(snapshot.child(variable.getOtherPlayer()).child("HP").getValue()));
+
             gameEnd(selfHP, comHP);
         }
 
@@ -542,13 +672,15 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * 回合結束觸發
-     * 1.增加雙發完家的MP以及HP
-     * 2.判斷攻擊技能是否可以使用
-     * 3.判斷遊戲是否結束
-     * 4.把攻擊範圍初始化
-     */
+/**
+ * 回合結束觸發
+ * 1.增加雙發完家的MP以及HP
+ * 2.判斷攻擊技能是否可以使用
+ * 3.判斷遊戲是否結束
+ * 4.把攻擊範圍初始化
+ * <p>
+ * 退出遊戲
+ */
 
 
     /**
@@ -869,8 +1001,8 @@ public class GameActivity extends AppCompatActivity {
                             Log.d("劍士獨有技能", String.valueOf(HP));
 
                             if (tools.roleChange(variable.getIndex()).equals("j4") && variable.getUnique() && HP != 0) {
-                                Log.d("獨有技能", "劍士發動");
-                                HP = HP * 2;
+                                Log.d("獨有技能", "自己劍士發動");
+                                HP = HP + 2;
                                 fullRoom.child(variable.getPlayer()).child("Next").child("atkHP").setValue(HP);
                                 variable.setUnique(false);
                             }
@@ -898,21 +1030,28 @@ public class GameActivity extends AppCompatActivity {
                             ArrayList<Integer> atkR = (ArrayList<Integer>) snapshot.child("Next").child("atkR").getValue();
 
                             Log.d("atkR", String.valueOf(atkR));
+                            Log.d("劍士獨有技能", String.valueOf(tools.roleChange(variable.getIndexE()).equals("j4")));
+                            Log.d("劍士獨有技能", String.valueOf(variable.getUniqueC()));
+                            Log.d("劍士獨有技能", String.valueOf(HP));
+
+
                             int[][] atkRealRange = atkRules.atkRealRange(parameter.getAtkNumC(), atkRules.atk9o(atkR), "com");
+                            for (int i = 0; i < atkRealRange.length; i++) {
+                                Log.d("對手的攻擊範圍", atkRealRange[i][0] + " , " + atkRealRange[i][1]);
+                            }
+
                             parameter.setAtkRangeCom(atkRealRange);
 
+
+
                             if (tools.roleChange(variable.getIndexE()).equals("j4") && variable.getUniqueC() && HP != 0) {
-                                Log.d("獨有技能", "劍士發動");
-                                HP = HP * 2;
+                                Log.d("獨有技能", "對手劍士發動");
+                                HP = HP + 2;
                                 fullRoom.child(variable.getOtherPlayer()).child("Next").child("atkHP").setValue(HP);
                                 variable.setUnique(false);
                             }
 
-                            for (int i = 0; i < atkRealRange.length; i++) {
-                                Log.d("對手的攻擊範圍", atkRealRange[i][0] + " , " + atkRealRange[i][1]);
-                            }
                             atkRules.atkJudgmentCom(atkRealRange, (int) HP, (int) MP);
-
 
 
 

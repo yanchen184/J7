@@ -51,36 +51,50 @@ public class FourCardChange extends AppCompatActivity {
         setContentView(R.layout.activity_four_card_change);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_four_card_change);
 
-
-//        backpack = FirebaseDatabase.getInstance().getReference("users").child(userId).child("role");
         record = FirebaseDatabase.getInstance().getReference("users").child(userId).child("record");
-
-        record.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                role = Integer.parseInt(String.valueOf(snapshot.getValue()));
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
 
         recyclerView = findViewById(R.id.recycler);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 6));//橫向
 
-        backpackRoleChange("j4");
-        binding.j4.setBackgroundColor(Color.parseColor("#00000000"));
-        binding.fs.setBackgroundColor(Color.parseColor("#e0000000"));
-        binding.player.setBackgroundColor(Color.parseColor("#e0000000"));
-        binding.b74.setBackgroundColor(Color.parseColor("#e0000000"));
-        binding.j4.setTextColor(Color.parseColor("#2b0501"));
-        binding.fs.setTextColor(Color.parseColor("#faf3f2"));
-        binding.player.setTextColor(Color.parseColor("#faf3f2"));
-        binding.b74.setTextColor(Color.parseColor("#faf3f2"));
+        initC();
+
+        /**更改 rocord 值*/
+        record.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                role = Integer.parseInt(String.valueOf(snapshot.getValue()));
+                String rocords = tools.roleChange(role);
+                backpackRoleChange(rocords);
+                switch (rocords) {
+                    case "j4":
+                        record.setValue(0);
+                        binding.j4.setBackgroundColor(Color.parseColor("#00000000"));
+                        binding.j4.setTextColor(Color.parseColor("#2b0501"));
+                        break;
+                    case "fs":
+                        record.setValue(1);
+                        binding.fs.setBackgroundColor(Color.parseColor("#00000000"));
+                        binding.fs.setTextColor(Color.parseColor("#2b0501"));
+                        break;
+                    case "player":
+                        record.setValue(2);
+                        binding.player.setBackgroundColor(Color.parseColor("#00000000"));
+                        binding.player.setTextColor(Color.parseColor("#2b0501"));
+                        break;
+                    case "b74":
+                        record.setValue(3);
+                        binding.b74.setBackgroundColor(Color.parseColor("#00000000"));
+                        binding.b74.setTextColor(Color.parseColor("#2b0501"));
+                        break;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
 
         /***/
         FUser = FirebaseDatabase.getInstance().getReference("users").child(TSUserId);
@@ -197,61 +211,48 @@ public class FourCardChange extends AppCompatActivity {
     }
 
 
-    public void j4Add(View v) {
-        record.setValue(0);
-        backpackRoleChange(tools.roleChange(index));
-        binding.j4.setBackgroundColor(Color.parseColor("#00000000"));
+    public void initC() {
+        binding.j4.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.fs.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.player.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.b74.setBackgroundColor(Color.parseColor("#e0000000"));
-        binding.j4.setTextColor(Color.parseColor("#2b0501"));
+        binding.j4.setTextColor(Color.parseColor("#faf3f2"));
         binding.fs.setTextColor(Color.parseColor("#faf3f2"));
         binding.player.setTextColor(Color.parseColor("#faf3f2"));
         binding.b74.setTextColor(Color.parseColor("#faf3f2"));
-//        je.setText("劍士");
+    }
+
+    public void j4Add(View v) {
+        record.setValue(0);
+        backpackRoleChange(tools.roleChange(index));
+        initC();
+        binding.j4.setBackgroundColor(Color.parseColor("#00000000"));
+        binding.j4.setTextColor(Color.parseColor("#2b0501"));
     }
 
 
     public void fsAdd(View v) {
         record.setValue(1);
         backpackRoleChange(tools.roleChange(index));
-        binding.j4.setBackgroundColor(Color.parseColor("#e0000000"));
+        initC();
         binding.fs.setBackgroundColor(Color.parseColor("#00000000"));
-        binding.player.setBackgroundColor(Color.parseColor("#e0000000"));
-        binding.b74.setBackgroundColor(Color.parseColor("#e0000000"));
-        binding.j4.setTextColor(Color.parseColor("#faf3f2"));
         binding.fs.setTextColor(Color.parseColor("#2b0501"));
-        binding.player.setTextColor(Color.parseColor("#faf3f2"));
-        binding.b74.setTextColor(Color.parseColor("#faf3f2"));
-//        je.setText("法師");
     }
 
     public void playerAdd(View v) {
         record.setValue(2);
         backpackRoleChange(tools.roleChange(index));
-        binding.j4.setBackgroundColor(Color.parseColor("#e0000000"));
-        binding.fs.setBackgroundColor(Color.parseColor("#e0000000"));
+        initC();
         binding.player.setBackgroundColor(Color.parseColor("#00000000"));
-        binding.b74.setBackgroundColor(Color.parseColor("#e0000000"));
-        binding.j4.setTextColor(Color.parseColor("#faf3f2"));
-        binding.fs.setTextColor(Color.parseColor("#faf3f2"));
         binding.player.setTextColor(Color.parseColor("#2b0501"));
-        binding.b74.setTextColor(Color.parseColor("#faf3f2"));
-//        je.setText("普通人");
     }
 
     public void b74Add(View v) {
         record.setValue(3);
         backpackRoleChange(tools.roleChange(index));
-        binding.j4.setBackgroundColor(Color.parseColor("#e0000000"));
-        binding.fs.setBackgroundColor(Color.parseColor("#e0000000"));
-        binding.player.setBackgroundColor(Color.parseColor("#e0000000"));
+        initC();
         binding.b74.setBackgroundColor(Color.parseColor("#00000000"));
-        binding.j4.setTextColor(Color.parseColor("#faf3f2"));
-        binding.fs.setTextColor(Color.parseColor("#faf3f2"));
-        binding.player.setTextColor(Color.parseColor("#faf3f2"));
         binding.b74.setTextColor(Color.parseColor("#2b0501"));
-//        je.setText("騎士");
     }
 
 
@@ -344,7 +345,6 @@ public class FourCardChange extends AppCompatActivity {
 //                            Toast.makeText(view.getContext(),
 //                                    "取消選擇 :  " + clickInt, Toast.LENGTH_SHORT).show();
                         }
-
 
 
                         if (recordButton != 0) {
@@ -547,7 +547,7 @@ public class FourCardChange extends AppCompatActivity {
 
                 DatabaseReference backpack = FirebaseDatabase.getInstance().getReference("users").child(userId).child("role").child(tools.roleChange(index)).child("backpack");
                 backpack.child("HP").setValue(hp);
-                backpack.child("MP").setValue(hp);
+                backpack.child("MP").setValue(mp);
             }
 
             @Override

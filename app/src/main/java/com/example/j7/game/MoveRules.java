@@ -59,14 +59,14 @@ public class MoveRules {
         }
         activity.parameter.setLocationXC(x);
         activity.parameter.setLocationYC(y);
-        activity.binding.imageCom.layout(activity.locationX[x].getLeft() + 30 + 50, activity.locationY[y].getTop() - 200, activity.locationX[x].getLeft() + 100 + 30 + 50, activity.locationY[y].getBottom());
+        activity.binding.imageCom.layout(activity.locationX[x].getLeft() + 60, activity.locationY[y].getTop() - 200, activity.locationX[x + 1].getLeft() + 100, activity.locationY[y].getBottom());
     }
 
     public void moveJudgmentSelf(int x, int y) {
         /**重新繪製位置*/
         activity.parameter.setLocationXS(x);
         activity.parameter.setLocationYS(y);
-        activity.binding.imagePlayer.layout(activity.locationX[x].getLeft() + 30, activity.locationY[y].getTop() - 200, activity.locationX[x].getLeft() + 100 + 30, activity.locationY[y].getBottom());
+        activity.binding.imagePlayer.layout(activity.locationX[x].getLeft() -100, activity.locationY[y].getTop() - 200, activity.locationX[x + 1].getLeft()-60, activity.locationY[y].getBottom());
     }
 
 

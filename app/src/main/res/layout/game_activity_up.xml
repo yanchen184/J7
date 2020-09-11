@@ -46,13 +46,11 @@
             android:id="@+id/textView8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="20dp"
             android:text="MP："
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            app:layout_constraintStart_toEndOf="@+id/txt_self_hp"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@+id/role1hp"
+            app:layout_constraintTop_toTopOf="@+id/txt_self_name" />
 
         <TextView
             android:id="@+id/txt_self_mp"
@@ -63,6 +61,48 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintStart_toEndOf="@+id/textView8"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/role1hp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/rolehp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/textView1"
+            app:layout_constraintStart_toEndOf="@+id/txt_self_hp"
+            app:layout_constraintTop_toTopOf="@+id/textView1" />
+
+        <ImageView
+            android:id="@+id/role1mp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/rolemp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/textView8"
+            app:layout_constraintStart_toEndOf="@+id/txt_self_mp"
+            app:layout_constraintTop_toTopOf="@+id/textView8" />
+
+
+        <ImageView
+            android:id="@+id/role2hp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/rolehp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/textView11"
+            app:layout_constraintStart_toEndOf="@+id/txt_com_hp"
+            app:layout_constraintTop_toTopOf="@+id/textView11" />
+
+
+        <ImageView
+            android:id="@+id/role2mp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/rolemp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/textView13"
+            app:layout_constraintStart_toEndOf="@+id/txt_com_mp"
+            app:layout_constraintTop_toTopOf="@+id/textView13" />
 
         <TextView
             android:id="@+id/roomNum"
@@ -92,8 +132,7 @@
             android:layout_width="20dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="36dp"
             android:text="10"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintEnd_toStartOf="@+id/textView13"
@@ -114,8 +153,7 @@
             android:layout_width="20dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="36dp"
             android:text="10"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintEnd_toStartOf="@+id/txt_com_name"

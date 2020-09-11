@@ -6,11 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
+
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:baselineAligned="false">
+        android:baselineAligned="false"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
 
         <fragment
             android:id="@+id/fragment1"
@@ -28,20 +30,17 @@
 
     </LinearLayout>
 
-
     <EditText
         android:id="@+id/ed_userid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="216dp"
         android:ems="10"
         android:gravity="center"
         android:inputType="textPersonName"
         android:text="yc"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.499"
+        app:layout_constraintEnd_toEndOf="@+id/textView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/guideline21" />
 
     <EditText
         android:id="@+id/ed_passwd"
@@ -73,22 +72,23 @@
         android:text="Yanchen的第一款J7game"
         android:textSize="40dp"
         android:typeface="monospace"
-        app:layout_constraintBottom_toTopOf="@+id/ed_userid"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/ed_userid" />
 
     <Button
         android:id="@+id/sign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="註冊"
         android:onClick="sign"
+        android:text="註冊"
         app:layout_constraintEnd_toEndOf="@+id/ed_passwd"
         app:layout_constraintTop_toTopOf="@+id/button" />
 
-
-
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.31" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

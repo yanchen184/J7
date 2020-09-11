@@ -52,6 +52,13 @@
                     android:onClick="onRandom"
                     android:text="隨機匹配" />
             </LinearLayout>
+            <Button
+                android:id="@+id/onSolo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onSolo"
+                android:text="單人冒險" />
         </LinearLayout>
     </RelativeLayout>
 </layout>

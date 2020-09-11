@@ -1,8 +1,8 @@
 package com.example.j7;
 
 public class Parameter {
-    int upHPB74 = 6;
-    int upHPOther = 4;
+    int upHPB74 = 3;
+    int upHPOther = 2;
     int upMPFs = 5;
     int upMPOther = 3;
 

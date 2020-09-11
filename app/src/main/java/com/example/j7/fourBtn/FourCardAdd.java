@@ -56,6 +56,10 @@ public class FourCardAdd extends AppCompatActivity {
         binding.fs.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.player.setBackgroundColor(Color.parseColor("#e0000000"));
         binding.b74.setBackgroundColor(Color.parseColor("#e0000000"));
+        binding.j4.setTextColor(Color.parseColor("#faf3f2"));
+        binding.fs.setTextColor(Color.parseColor("#faf3f2"));
+        binding.player.setTextColor(Color.parseColor("#faf3f2"));
+        binding.b74.setTextColor(Color.parseColor("#faf3f2"));
 
         /**更改 rocord 值*/
         record.addValueEventListener(new ValueEventListener() {
@@ -64,18 +68,22 @@ public class FourCardAdd extends AppCompatActivity {
                 long x = (long) snapshot.getValue();
                 rocord = tools.roleChange((int) x);
                 je.setText(tools.roleChangeName(rocord));
-                switch (rocord){
-                    case  "j4":
+                switch (rocord) {
+                    case "j4":
                         binding.j4.setBackgroundColor(Color.parseColor("#00000000"));
+                        binding.j4.setTextColor(Color.parseColor("#2b0501"));
                         break;
-                    case  "fs":
+                    case "fs":
                         binding.fs.setBackgroundColor(Color.parseColor("#00000000"));
+                        binding.fs.setTextColor(Color.parseColor("#2b0501"));
                         break;
-                    case  "player":
+                    case "player":
                         binding.player.setBackgroundColor(Color.parseColor("#00000000"));
+                        binding.player.setTextColor(Color.parseColor("#2b0501"));
                         break;
-                    case  "b74":
+                    case "b74":
                         binding.b74.setBackgroundColor(Color.parseColor("#00000000"));
+                        binding.b74.setTextColor(Color.parseColor("#2b0501"));
                         break;
                 }
             }
@@ -321,14 +329,65 @@ public class FourCardAdd extends AppCompatActivity {
         }
     }
 
+    int randomHPCount;
+    int randomAtkRCount;
+
+    public void atkRAndHp(int max, int low) {
+        do {
+            randomHPCount = (int) (Math.random() * 20) + 1;//產生1-10
+            randomAtkRCount = (int) (Math.random() * 9) + 1;//產生1-9
+        } while (randomHPCount * randomAtkRCount > low && max > randomHPCount * randomAtkRCount);
+    }
+
     public void countSkillIntensity() {
-        setRandomHP((int) (Math.random() * 10) + 1);//產生1-10
-        setRandomMP((int) (Math.random() * 10) + 1);//產生1-10
-        int randomAtkRCount = (int) (Math.random() * 9) + 1;//產生1-9
-        randomAtkR = new ArrayList<>();
-        for (int j = 0; j < randomAtkRCount; j++) {
-            randomAtkR.add((int) (Math.random() * 9)+1);
+
+        int p = (int) (Math.random() * 1000) + 1;
+
+        if (p > 100) {//F
+            atkRAndHp(10, 0);
+            setRandomMP((int) (Math.random() * 7) + 4);//產生1-10
+        } else if (p > 200) {//D
+            atkRAndHp(20, 10);
+            setRandomMP((int) (Math.random() * 6) + 5);//產生1-10
+        } else if (p > 300) {//C
+            atkRAndHp(30, 20);
+            setRandomMP((int) (Math.random() * 5) + 6);//產生1-10
+        } else if (p > 550) {//B
+            atkRAndHp(40, 30);
+            setRandomMP((int) (Math.random() * 4) + 7);//產生1-10
+        } else if (p > 800) {//A
+            atkRAndHp(50, 40);
+            setRandomMP((int) (Math.random() * 4) + 7);//產生1-10
+        } else if (p > 950) {//S
+            atkRAndHp(60, 50);
+            setRandomMP((int) (Math.random() * 3) + 8);//產生1-10
+        } else if (p > 980) {//SS
+            atkRAndHp(90, 60);
+            setRandomMP((int) (Math.random() * 2) + 9);//產生1-10
+        } else if (p > 995) {//SSS
+            atkRAndHp(2000, 90);
+            setRandomMP((int) (Math.random() * 5) + 6);//產生1-10
         }
+
+        setRandomHP(randomHPCount);
+
+        /**生成攻擊格子*/
+        int[] arr = new int[randomAtkRCount];
+        for (int i = 0; i < randomAtkRCount; i++) {
+            arr[i] = (int) (Math.random() * 9) + 1;
+            for (int j = 0; j < i; j++) {
+                if (arr[j] == arr[i]) {
+                    i--;
+                    break;
+                }
+            }
+        }
+        randomAtkR = new ArrayList<>();
+        for (int k = 0; k < arr.length; k++) {
+            randomAtkR.add(arr[k]);
+        }
+
+
         /**去重後排序*/
         randomAtkR = new ArrayList<>(new HashSet<>(randomAtkR));
         Collections.sort(randomAtkR);

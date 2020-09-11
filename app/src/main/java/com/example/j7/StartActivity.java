@@ -324,7 +324,7 @@ public class StartActivity extends AppCompatActivity {
                         , line21, line22, line23, line24, line25, line26, line27, line28, line29
                         , line31, line32, line33, line34, line35, line36, line37, line38, line39
                         , line41, line42, line43, line44, line45, line46, line47, line48, line49);
-                introduction.setText("攻擊範圍較小,傷害極高,回血較快 \n 特殊技能 : 續力..下次攻擊傷害為雙倍");
+                introduction.setText("攻擊格子數低有機率爆擊 \n 特殊技能 : 續力..下次攻擊傷害+2 (可以一直蓄著但不累加)");
                 break;
             case "fs":
                 buttonAtk5.setText("末日");
@@ -334,7 +334,7 @@ public class StartActivity extends AppCompatActivity {
                         , line21, line22, line23, line24, line25, line26, line27, line28, line29
                         , line31, line32, line33, line34, line35, line36, line37, line38, line39
                         , line41, line42, line43, line44, line45, line46, line47, line48, line49);
-                introduction.setText("攻擊範圍較大,傷害較低,回魔為一般人1.5倍 \n 特殊技能 : 末日..全地圖傷害");
+                introduction.setText("擁有15滴魔,單回合回復魔量為5 \n 特殊技能 : 末日..全地圖無差別傷害");
             break;
             case "player":
                 buttonAtk5.setText("定點攻擊");
@@ -344,7 +344,7 @@ public class StartActivity extends AppCompatActivity {
                         , line21, line22, line23, line24, line25, line26, line27, line28, line29
                         , line31, line32, line33, line34, line35, line36, line37, line38, line39
                         , line41, line42, line43, line44, line45, line46, line47, line48, line49);
-                introduction.setText("就是普通人 \n 特殊技能 : 定點攻擊..攻擊對手玩家腳底下的那個位置");
+                introduction.setText("就是普通人 \n 特殊技能 : 定點攻擊..無視距離攻擊對手當前位置");
                 break;
             case "b74":
                 buttonAtk5.setText("隔檔");
@@ -354,7 +354,7 @@ public class StartActivity extends AppCompatActivity {
                         , line21, line22, line23, line24, line25, line26, line27, line28, line29
                         , line31, line32, line33, line34, line35, line36, line37, line38, line39
                         , line41, line42, line43, line44, line45, line46, line47, line48, line49);
-                introduction.setText("擁有雙倍的厚實血量,回血為一般人1.5倍 \n 特殊技能 : 隔檔...可以隔檔攻擊");
+                introduction.setText("擁有20滴血,且回血為6 \n 特殊技能 : 隔檔...可以隔檔本次攻擊");
                 break;
         }
 
@@ -830,6 +830,11 @@ public class StartActivity extends AppCompatActivity {
         binding.roleChoose.horse.setFocusable(true);
         binding.roleChoose.horse.setSelected(true);
         binding.roleChoose.horse.setVisibility(View.VISIBLE);
+    }
+
+
+    public void onSolo(View v) {   // 單機遊戲
+        queue.getQueue(this).friendsJoin();
     }
 
     public void cancelC(View v) {

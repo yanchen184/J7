@@ -194,9 +194,9 @@
             android:layout_height="340dp"
             android:background="#000000"
             android:padding="150dp"
+            app:layout_constraintBottom_toBottomOf="@+id/atkKJ00"
             app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="16dp" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <View
             android:id="@+id/lineX1"
@@ -205,8 +205,8 @@
             android:layout_above="@+id/twobtn"
             android:background="#000000"
             android:padding="150dp"
-            app:layout_constraintStart_toStartOf="@+id/guideline7"
-            tools:layout_editor_absoluteY="16dp" />
+            app:layout_constraintBottom_toBottomOf="@+id/atkKJ00"
+            app:layout_constraintStart_toStartOf="@+id/guideline7" />
 
         <View
             android:id="@+id/lineX2"
@@ -215,8 +215,8 @@
             android:layout_above="@+id/twobtn"
             android:background="#000000"
             android:padding="150dp"
-            app:layout_constraintStart_toStartOf="@+id/guideline8"
-            tools:layout_editor_absoluteY="16dp" />
+            app:layout_constraintBottom_toBottomOf="@+id/atkKJ20"
+            app:layout_constraintStart_toStartOf="@+id/guideline8" />
 
         <View
             android:id="@+id/lineX3"
@@ -225,8 +225,8 @@
             android:layout_above="@+id/twobtn"
             android:background="#000000"
             android:padding="150dp"
-            app:layout_constraintStart_toStartOf="@+id/guideline10"
-            tools:layout_editor_absoluteY="16dp" />
+            app:layout_constraintBottom_toTopOf="@+id/guideline4"
+            app:layout_constraintStart_toStartOf="@+id/guideline10" />
 
 
         <View
@@ -237,8 +237,17 @@
             android:background="#000000"
             android:padding="150dp"
             app:layout_constraintStart_toStartOf="@+id/guideline9"
-            tools:layout_editor_absoluteY="35dp" />
+            app:layout_constraintTop_toTopOf="@+id/atkKJ32" />
 
+        <View
+            android:id="@+id/lineX5"
+            android:layout_width="2dp"
+            android:layout_height="340dp"
+            android:layout_above="@+id/twobtn"
+            android:background="#000000"
+            android:padding="150dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:layout_editor_absoluteY="35dp" />
 
         <ImageView
             android:id="@+id/image_player"
@@ -250,6 +259,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/cloth1" />
+
 
         <ImageView
             android:id="@+id/image_com"

@@ -5,18 +5,25 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/j4"
-        android:label="yanchen"
+        android:label="戰旗-j7"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".fourBtn.FourCardChange"
+        <activity
+            android:name=".Solo.SoloMap"
             android:screenOrientation="landscape"></activity>
-        <activity android:name=".fourBtn.FourCardUpgrade"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".fourBtn.FourCardAdd"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".fourBtn.FourRoleAdd"
-            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".fourBtn.FourCardChange"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".fourBtn.FourCardUpgrade"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".fourBtn.FourCardAdd"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".fourBtn.FourRoleAdd"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="landscape" />
@@ -25,10 +32,11 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".StartActivity"
-            android:screenOrientation="landscape"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

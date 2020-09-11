@@ -425,6 +425,7 @@ public class AtkRules {
         int[][] allMap = new int[1][2];
         allMap[0][0] = -1;
         allMap[0][1] = -1;
+        Log.d("atkNum", String.valueOf(atkNum));
         switch (atkNum) {
             case STAND:
                 Toast.makeText(context, "自己站著不動", Toast.LENGTH_LONG).show();

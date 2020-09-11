@@ -41,6 +41,46 @@ public class Variable {
     int playerUXB;
     int playerUYB;
 
+    /**
+     * 大家的上限魔量跟血量
+     */
+    int SHP;
+    int SMP;
+    int CHP;
+    int CMP;
+
+    public int getSHP() {
+        return SHP;
+    }
+
+    public void setSHP(int SHP) {
+        this.SHP = SHP;
+    }
+
+    public int getSMP() {
+        return SMP;
+    }
+
+    public void setSMP(int SMP) {
+        this.SMP = SMP;
+    }
+
+    public int getCHP() {
+        return CHP;
+    }
+
+    public void setCHP(int CHP) {
+        this.CHP = CHP;
+    }
+
+    public int getCMP() {
+        return CMP;
+    }
+
+    public void setCMP(int CMP) {
+        this.CMP = CMP;
+    }
+
     public int getPlayerUXB() {
         return playerUXB;
     }
