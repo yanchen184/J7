@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.j7.R;
+import com.example.j7.Solo.SoloMap;
 import com.example.j7.StartActivity;
 import com.example.j7.tools.Tools;
 import com.google.firebase.database.DataSnapshot;
@@ -29,6 +30,7 @@ import static com.example.j7.tools.Name.STATUS_JOINED;
 
 public class Queue {
     private StartActivity activity;
+    private SoloMap activitySolo;
     private Context context;
     public DatabaseReference FRoom = FirebaseDatabase.getInstance().getReference("rooms");
     public DatabaseReference WRoom = FirebaseDatabase.getInstance().getReference("waitRoom");
@@ -36,6 +38,11 @@ public class Queue {
 
     public Queue(Context context) {
         this.activity = (StartActivity) context;
+        this.context = context;
+    }
+
+    public Queue(Context context, int x) {
+        this.activitySolo = (SoloMap) context;
         this.context = context;
     }
 
@@ -195,7 +202,45 @@ public class Queue {
         //3
         FRoom.child(activity.roomKey).child(player12).child("name").setValue(userId); // 創房者為player1 同時也是 userId
         // 4
-        addMPHPIntoRoom(activity.player);
+        activity.FUser.child("role").child(tools.roleChange(activity.index)).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                snapshot.child("SHP").getValue();
+                snapshot.child("SMP").getValue();
+                FRoom.child(activity.roomKey).child(activity.player).child("HP").setValue(snapshot.child("SHP").getValue());
+                FRoom.child(activity.roomKey).child(activity.player).child("MP").setValue(snapshot.child("SMP").getValue());
+                FRoom.child(activity.roomKey).child(activity.player).child("game").child("gameAtkR").setValue((ArrayList<ArrayList<Integer>>) snapshot.child("atkR").getValue());
+                FRoom.child(activity.roomKey).child(activity.player).child("game").child("gameHP").setValue((ArrayList<Integer>) snapshot.child("HP").getValue());
+                FRoom.child(activity.roomKey).child(activity.player).child("game").child("gameMP").setValue((ArrayList<Integer>) snapshot.child("MP").getValue());
+                /** 使用的角色 - 初始血量 - 補血魔 - 初始位置 */
+                FRoom.child(activity.roomKey).child(activity.player).child("Index").setValue(activity.index);
+                FRoom.child(activity.roomKey).child(activity.player).child("HPUP").setValue(0);
+                FRoom.child(activity.roomKey).child(activity.player).child("MPUP").setValue(0);
+                FRoom.child(activity.roomKey).child(activity.player).child("X").setValue(0);
+                FRoom.child(activity.roomKey).child(activity.player).child("Y").setValue(1);
+                /**行動後的位置 - 補血魔 - 攻擊內容 之後都是記錄於此 */
+                ArrayList<Integer> yc = new ArrayList<>();
+                yc.add(0);
+                FRoom.child(activity.roomKey).child(activity.player).child("Next").child("locationXSelf").setValue(0);
+                FRoom.child(activity.roomKey).child(activity.player).child("Next").child("locationYSelf").setValue(1);
+                FRoom.child(activity.roomKey).child(activity.player).child("Next").child("HPUP").setValue(0);
+                FRoom.child(activity.roomKey).child(activity.player).child("Next").child("MPUP").setValue(0);
+                FRoom.child(activity.roomKey).child(activity.player).child("Next").child("atkR").setValue(yc);
+                FRoom.child(activity.roomKey).child(activity.player).child("Next").child("atkHP").setValue(0);
+                FRoom.child(activity.roomKey).child(activity.player).child("Next").child("atkMP").setValue(0);
+                /**使用 狀態值-獨有技能*/
+                FRoom.child(activity.roomKey).child("fourStatus").child("player11").setValue(false);
+                FRoom.child(activity.roomKey).child("fourStatus").child("player12").setValue(0);
+                FRoom.child(activity.roomKey).child("fourStatus").child("player21").setValue(false);
+                FRoom.child(activity.roomKey).child("fourStatus").child("player22").setValue(0);
+                FRoom.child(activity.roomKey).child(activity.player).child("unique").setValue(false);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
         //5
         FRoom
                 .child(activity.roomKey)
@@ -208,7 +253,68 @@ public class Queue {
         activity.FUser.child("role").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                addHPMP(snapshot, player);
+//                addHPMP(snapshot, player);
+
+                /** 使用的角色 - 初始血量 - 補血魔 - 初始位置 */
+                FRoom.child(activity.roomKey).child(player).child("Index").setValue(activity.index);
+                FRoom.child(activity.roomKey).child(player).child("HP").setValue(snapshot.child(tools.roleChange(activity.index)).child("SHP").getValue());
+                FRoom.child(activity.roomKey).child(player).child("MP").setValue(snapshot.child(tools.roleChange(activity.index)).child("SMP").getValue());
+                FRoom.child(activity.roomKey).child(player).child("HPUP").setValue(0);
+                FRoom.child(activity.roomKey).child(player).child("MPUP").setValue(0);
+                FRoom.child(activity.roomKey).child(player).child("X").setValue(0);
+                FRoom.child(activity.roomKey).child(player).child("Y").setValue(1);
+                /**行動後的位置 - 補血魔 - 攻擊內容 之後都是記錄於此 */
+                FRoom.child(activity.roomKey).child(player).child("Next").child("locationXSelf").setValue(0);
+                FRoom.child(activity.roomKey).child(player).child("Next").child("locationYSelf").setValue(1);
+                FRoom.child(activity.roomKey).child(player).child("Next").child("HPUP").setValue(0);
+                FRoom.child(activity.roomKey).child(player).child("Next").child("MPUP").setValue(0);
+                ArrayList<Integer> yc = new ArrayList<>();
+                yc.add(0);
+                FRoom.child(activity.roomKey).child(player).child("Next").child("atkR").setValue(yc);
+                FRoom.child(activity.roomKey).child(player).child("Next").child("atkHP").setValue(0);
+                FRoom.child(activity.roomKey).child(player).child("Next").child("atkMP").setValue(0);
+
+
+                /**填入自己的招式**/
+                switch (player) {
+                    case "player1":
+                        FirebaseDatabase.getInstance().getReference("users").child(userId).child("role").child(tools.roleChange(activity.index)).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                FRoom.child(activity.roomKey).child("player1").child("game").child("gameAtkR").setValue((ArrayList<ArrayList<Integer>>) snapshot.child("atkR").getValue());
+                                FRoom.child(activity.roomKey).child("player1").child("game").child("gameHP").setValue((ArrayList<Integer>) snapshot.child("HP").getValue());
+                                FRoom.child(activity.roomKey).child("player1").child("game").child("gameMP").setValue((ArrayList<Integer>) snapshot.child("MP").getValue());
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                            }
+                        });
+                        break;
+                    case "player2":
+                        FirebaseDatabase.getInstance().getReference("users").child(userId).child("role").child(tools.roleChange(activity.index)).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                FRoom.child(activity.roomKey).child("player2").child("game").child("gameAtkR").setValue((ArrayList<ArrayList<Integer>>) snapshot.child("atkR").getValue());
+                                FRoom.child(activity.roomKey).child("player2").child("game").child("gameHP").setValue((ArrayList<Integer>) snapshot.child("HP").getValue());
+                                FRoom.child(activity.roomKey).child("player2").child("game").child("gameMP").setValue((ArrayList<Integer>) snapshot.child("MP").getValue());
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                            }
+                        });
+                        break;
+                    /**填入完畢**/
+                }
+                /**使用 狀態值-獨有技能*/
+                FRoom.child(activity.roomKey).child("fourStatus").child("player11").setValue(false);
+                FRoom.child(activity.roomKey).child("fourStatus").child("player12").setValue(0);
+                FRoom.child(activity.roomKey).child("fourStatus").child("player21").setValue(false);
+                FRoom.child(activity.roomKey).child("fourStatus").child("player22").setValue(0);
+                FRoom.child(activity.roomKey).child(player).child("unique").setValue(false);
+
+
             }
 
             @Override
@@ -254,34 +360,7 @@ public class Queue {
 
     public void addHPMP(@NonNull DataSnapshot snapshot, String player) {
 
-        /** 使用的角色 - 初始血量 - 補血魔 - 初始位置 */
-        FRoom.child(activity.roomKey).child(player).child("Index").setValue(activity.index);
-        FRoom.child(activity.roomKey).child(player).child("HP").setValue(snapshot.child(tools.roleChange(activity.index)).child("SHP").getValue());
-        FRoom.child(activity.roomKey).child(player).child("MP").setValue(snapshot.child(tools.roleChange(activity.index)).child("SMP").getValue());
-        FRoom.child(activity.roomKey).child(player).child("HPUP").setValue(0);
-        FRoom.child(activity.roomKey).child(player).child("MPUP").setValue(0);
-        FRoom.child(activity.roomKey).child(player).child("X").setValue(0);
-        FRoom.child(activity.roomKey).child(player).child("Y").setValue(1);
 
-
-        /**行動後的位置 - 補血魔 - 攻擊內容 之後都是記錄於此 */
-        FRoom.child(activity.roomKey).child(player).child("Next").child("locationXSelf").setValue(0);
-        FRoom.child(activity.roomKey).child(player).child("Next").child("locationYSelf").setValue(1);
-        FRoom.child(activity.roomKey).child(player).child("Next").child("HPUP").setValue(0);
-        FRoom.child(activity.roomKey).child(player).child("Next").child("MPUP").setValue(0);
-        ArrayList<Integer> yc = new ArrayList<>();
-        yc.add(0);
-        FRoom.child(activity.roomKey).child(player).child("Next").child("atkR").setValue(yc);
-        FRoom.child(activity.roomKey).child(player).child("Next").child("atkHP").setValue(0);
-        FRoom.child(activity.roomKey).child(player).child("Next").child("atkMP").setValue(0);
-
-        /**使用 狀態值-獨有技能*/
-
-        FRoom.child(activity.roomKey).child("fourStatus").child("player11").setValue(false);
-        FRoom.child(activity.roomKey).child("fourStatus").child("player12").setValue(0);
-        FRoom.child(activity.roomKey).child("fourStatus").child("player21").setValue(false);
-        FRoom.child(activity.roomKey).child("fourStatus").child("player22").setValue(0);
-        FRoom.child(activity.roomKey).child(player).child("unique").setValue(false);
     }
 }
 

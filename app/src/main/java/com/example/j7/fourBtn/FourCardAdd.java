@@ -341,30 +341,44 @@ public class FourCardAdd extends AppCompatActivity {
 
     public void countSkillIntensity() {
 
-        int p = (int) (Math.random() * 1000) + 1;
+        float p = (float) Math.random();
+        float[] yc1 = {0.1f, 0.1f, 0.2f, 0.3f, 0.2f, 0.05f, 0.048f, 0.0012f, 0.0008f};
+        float[] yc = {0f,0f,0f,0f,0f,0f,0f,0f,0f};
+        for (int i = 0; i < yc1.length; i++) {
+            for (int j = 0; j <= i; j++) {
+                yc[i] = yc[i] + yc1[j];
+                yc[i] = ((float)Math.round(yc[i]*10000))/ 10000;
+            }
+//            System.out.println(yc[i]);
+        }
 
-        if (p > 100) {//F
+        Log.d("p", String.valueOf(p));
+
+        if (p > yc[0]) {//F
             atkRAndHp(10, 0);
             setRandomMP((int) (Math.random() * 7) + 4);//產生1-10
-        } else if (p > 200) {//D
+        } else if (p > yc[1]) {//E
             atkRAndHp(20, 10);
             setRandomMP((int) (Math.random() * 6) + 5);//產生1-10
-        } else if (p > 300) {//C
+        } else if (p > yc[2]) {//D
+            atkRAndHp(20, 10);
+            setRandomMP((int) (Math.random() * 6) + 5);//產生1-10
+        } else if (p > yc[3]) {//C
             atkRAndHp(30, 20);
             setRandomMP((int) (Math.random() * 5) + 6);//產生1-10
-        } else if (p > 550) {//B
+        } else if (p > yc[4]) {//B
             atkRAndHp(40, 30);
             setRandomMP((int) (Math.random() * 4) + 7);//產生1-10
-        } else if (p > 800) {//A
+        } else if (p > yc[5]) {//A
             atkRAndHp(50, 40);
             setRandomMP((int) (Math.random() * 4) + 7);//產生1-10
-        } else if (p > 950) {//S
+        } else if (p > yc[6]) {//S
             atkRAndHp(60, 50);
             setRandomMP((int) (Math.random() * 3) + 8);//產生1-10
-        } else if (p > 980) {//SS
+        } else if (p > yc[7]) {//SS
             atkRAndHp(90, 60);
             setRandomMP((int) (Math.random() * 2) + 9);//產生1-10
-        } else if (p > 995) {//SSS
+        } else if (p > yc[8]) {//SSS
             atkRAndHp(2000, 90);
             setRandomMP((int) (Math.random() * 5) + 6);//產生1-10
         }
@@ -404,20 +418,22 @@ public class FourCardAdd extends AppCompatActivity {
 
     public String judgingSkillIntensity(int randomHP, int randomMP, ArrayList<Integer> randomAtkR) {
         String abcd = null;
-        int j = randomHP * (10 - randomMP) * randomAtkR.size();
-        if (j <= 15) {//0 - 10%
+        int j = randomHP * randomAtkR.size();
+        if (j < 10) {//0 - 10%
             abcd = "F";
-        } else if (j <= 32) {//10 - 25%
+        } else if (j < 20) {//10 - 25%
             abcd = "D";
-        } else if (j < 75) {//25 - 50 %
+        } else if (j < 30) {//25 - 50 %
             abcd = "C";
-        } else if (j < 160) {//50 - 75%
+        } else if (j < 40) {//50 - 75%
             abcd = "B";
-        } else if (j < 270) {//75 - 90%
+        } else if (j < 50) {//75 - 90%
             abcd = "A";
-        } else if (j < 350) {//90 - 95%
+        } else if (j < 60) {//90 - 95%
             abcd = "S";
-        } else if (j < 10000) {//95 - 100%
+        } else if (j < 90) {//95 - 100%
+            abcd = "SSS";
+        } else {//95 - 100%
             abcd = "SSS";
         }
 

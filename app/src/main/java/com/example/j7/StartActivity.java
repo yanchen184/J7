@@ -23,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import com.example.j7.Solo.SoloMap;
 import com.example.j7.databinding.ActivityMainBinding;
 import com.example.j7.databinding.User;
 import com.example.j7.fourBtn.FourCardAdd;
@@ -335,7 +336,7 @@ public class StartActivity extends AppCompatActivity {
                         , line31, line32, line33, line34, line35, line36, line37, line38, line39
                         , line41, line42, line43, line44, line45, line46, line47, line48, line49);
                 introduction.setText("擁有15滴魔,單回合回復魔量為5 \n 特殊技能 : 末日..全地圖無差別傷害");
-            break;
+                break;
             case "player":
                 buttonAtk5.setText("定點攻擊");
                 role.setText("普通人");
@@ -428,7 +429,7 @@ public class StartActivity extends AppCompatActivity {
         MP5.setText(MP.get(4) + "");
     }
 
-    public void atkDrawHPMP(ArrayList<Integer> HP, ArrayList<Integer> MP,TextView HP1,TextView HP2,TextView HP3,TextView HP4,TextView HP5,TextView MP1,TextView MP2,TextView MP3,TextView MP4,TextView MP5) {
+    public void atkDrawHPMP(ArrayList<Integer> HP, ArrayList<Integer> MP, TextView HP1, TextView HP2, TextView HP3, TextView HP4, TextView HP5, TextView MP1, TextView MP2, TextView MP3, TextView MP4, TextView MP5) {
         HP1.setText(HP.get(0) + "");
         HP2.setText(HP.get(1) + "");
         HP3.setText(HP.get(2) + "");
@@ -834,7 +835,16 @@ public class StartActivity extends AppCompatActivity {
 
 
     public void onSolo(View v) {   // 單機遊戲
-        queue.getQueue(this).friendsJoin();
+        Intent it = new Intent(this, SoloMap.class);
+        it.putExtra("index", index);
+        it.putExtra("finalHP", finalHP);
+        it.putExtra("finalMP", finalMP);
+        Bundle mBundle = new Bundle();
+        mBundle.putSerializable("list", finalAtlR);
+        it.putExtras(mBundle);
+        startActivity(it);
+
+//        queue.getQueue(this).friendsJoin();
     }
 
     public void cancelC(View v) {
@@ -850,10 +860,9 @@ public class StartActivity extends AppCompatActivity {
         binding.roleChoose.horse.setSelected(false);
         binding.roleChoose.horse.setVisibility(View.INVISIBLE);
         FirebaseDatabase.getInstance().getReference("waitRoom").removeValue();
-
         cancelConnect();
-
     }
+
     public void atkDrawForC(ArrayList<ArrayList<Integer>> atk
             , View line11, View line12, View line13, View line14, View line15, View line16, View line17, View line18, View line19
             , View line21, View line22, View line23, View line24, View line25, View line26, View line27, View line28, View line29
@@ -989,9 +998,6 @@ public class StartActivity extends AppCompatActivity {
             }
         }
     }
-
-
-
 
 
 }

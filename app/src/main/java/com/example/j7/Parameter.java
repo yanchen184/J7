@@ -25,6 +25,39 @@ public class Parameter {
     int atkNumS;
     int atkNumC;
 
+
+    public int getUpHPB74() {
+        return upHPB74;
+    }
+
+    public void setUpHPB74(int upHPB74) {
+        this.upHPB74 = upHPB74;
+    }
+
+    public int getUpHPOther() {
+        return upHPOther;
+    }
+
+    public void setUpHPOther(int upHPOther) {
+        this.upHPOther = upHPOther;
+    }
+
+    public int getUpMPFs() {
+        return upMPFs;
+    }
+
+    public void setUpMPFs(int upMPFs) {
+        this.upMPFs = upMPFs;
+    }
+
+    public int getUpMPOther() {
+        return upMPOther;
+    }
+
+    public void setUpMPOther(int upMPOther) {
+        this.upMPOther = upMPOther;
+    }
+
     public int getAtkNumS() {
         return atkNumS;
     }
