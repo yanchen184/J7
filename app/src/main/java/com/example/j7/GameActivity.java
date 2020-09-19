@@ -15,6 +15,7 @@ import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -360,7 +361,7 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-
+    int boss1AtkNum;
     private ValueEventListener statusListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -371,7 +372,13 @@ public class GameActivity extends AppCompatActivity {
             int x12 = Integer.parseInt(String.valueOf(snapshot.child("player12").getValue()));
             int x22 = Integer.parseInt(String.valueOf(snapshot.child("player22").getValue()));
 
-
+            if (variable.getOtherPlayerName() != null) {
+                if (variable.getOtherPlayerName().equals("Boss1")) {
+                    boss1AtkNum = (int) (Math.random() * 3 + 1);
+                    fullRoom.child("fourStatus").child("player22").setValue(boss1AtkNum);
+                    fullRoom.child("fourStatus").child("player21").setValue(true);
+                }
+            }
             if (variable.getOtherPlayer().equals("player2")) {
                 parameter.setAtkNumC(x22);
             } else {
@@ -474,6 +481,10 @@ public class GameActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 //                        Log.d("TAG", String.valueOf((ArrayList<ArrayList<Integer>>) snapshot.getValue()));
+                        variable.setFinalAtlRC((ArrayList<ArrayList<Integer>>) snapshot.child("gameAtkR").getValue());
+                        variable.setFinalHPC((ArrayList<Integer>) snapshot.child("gameHP").getValue());
+                        variable.setFinalMPC((ArrayList<Integer>) snapshot.child("gameMP").getValue());
+
                         binding.includeAtkE.includeAtk1.buttonAtk1.setBackgroundColor(Color.parseColor("#00000000"));
                         binding.includeAtkE.includeAtk2.buttonAtk2.setBackgroundColor(Color.parseColor("#00000000"));
                         binding.includeAtkE.includeAtk3.buttonAtk3.setBackgroundColor(Color.parseColor("#00000000"));
@@ -503,7 +514,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void insertAtkS() {
         /**填入自己的招式**/
-        fullRoom.child(variable.getOtherPlayer()).child("game").addListenerForSingleValueEvent(new ValueEventListener() {
+        fullRoom.child(variable.getPlayer()).child("game").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 variable.setFinalAtlR((ArrayList<ArrayList<Integer>>) snapshot.child("gameAtkR").getValue());
@@ -874,9 +885,6 @@ public class GameActivity extends AppCompatActivity {
                 variable.setPlayerUXB(x2);
                 variable.setPlayerUYB(y2);
 
-                Log.d("TAG", variable.getPlayerUX() + " , " + variable.getPlayerUY());
-                Log.d("TAG", variable.getPlayerUXB() + " , " + variable.getPlayerUYB());
-
                 for (int i = 0; i < turn; i++) {
                     Message msg = new Message();
                     Bundle bundle = new Bundle();
@@ -905,6 +913,7 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
+    Boolean[] startArray = {true, true, true, true};
 
     private MyHandler handler = new MyHandler();
 
@@ -914,150 +923,193 @@ public class GameActivity extends AppCompatActivity {
             super.handleMessage(msg);
             int start = msg.getData().getInt("NUM");
 
-            Log.d("戰鬥階段", String.valueOf(start));
+            if (startArray[start]) {
+                /**防呆*/
+                startArray[start] = false;
+                if (startArray[0] == false && startArray[2] == false && startArray[3] == false) {
+                    startArray[0] = true;
+                    startArray[2] = true;
+                    startArray[3] = true;
+                }
 
-            switch (start) {
-                case 0:
-                    fullRoom.child(variable.getPlayer()).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            /**提取自己應該要在的位置 - Next*/
-                            long xl = (long) snapshot.child("Next").child("locationXSelf").getValue();
-                            long yl = (long) snapshot.child("Next").child("locationYSelf").getValue();
-                            /**變成自己真正的位置 - XY*/
-                            fullRoom.child(variable.getPlayer()).child("X").setValue((int) xl);
-                            fullRoom.child(variable.getPlayer()).child("Y").setValue((int) yl);
+                Log.d("戰鬥防呆", startArray[0] + " " + startArray[2] + " " + startArray[3]);
+                Log.d("戰鬥階段", String.valueOf(start));
 
-                            Log.d("第一戰鬥階段", "自己移動到" + xl + " , " + yl);
+                switch (start) {
+                    case 0:
+                        fullRoom.child(variable.getPlayer()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                            /**提取自己應該要增加的血量跟魔量 - Next*/
-                            long HPUP = (long) snapshot.child("Next").child("HPUP").getValue();
-                            long MPUP = (long) snapshot.child("Next").child("MPUP").getValue();
-                            /**提取自己的血量跟魔量*/
-                            long HP = (long) snapshot.child("HP").getValue();
-                            long MP = (long) snapshot.child("MP").getValue();
-                            /**如果有需要回血或回魔力的話 就會在這邊增加*/
-                            if ((int) HPUP > 0) {
-                                Log.d("第一戰鬥階段", "回復血量 : " + HPUP);
-                                fullRoom.child(variable.getPlayer()).child("HP").setValue((int) HPUP + (int) HP);
+
+                                Log.d("局數", String.valueOf(variable.getMatch()));
+                                if (variable.getOtherPlayerName().equals("Boss1")) {
+                                    if (variable.getMatch() == 1 || variable.getMatch() == 2) {
+                                        moveRules.computer(1, 0);
+                                    } else {
+                                        int xy = (int) (Math.random() * 2 + 1);
+                                        int x = 0;
+                                        int y = 0;
+                                        switch (xy) {
+                                            case 1:
+                                                int[] xx = {-1, 1};
+                                                x = xx[(int) (Math.random() * 2)];
+                                                break;
+                                            case 2:
+                                                int[] yy = {-1, 1};
+                                                y = yy[(int) (Math.random() * 2)];
+                                                break;
+                                        }
+                                        moveRules.computer(x, y);
+                                    }
+
+                                    fullRoom.child(variable.getOtherPlayer()).child("Next").child("atkHP").setValue(variable.getFinalHPC().get(boss1AtkNum - 1));
+                                    fullRoom.child(variable.getOtherPlayer()).child("Next").child("atkMP").setValue(variable.getFinalMPC().get(boss1AtkNum - 1));
+                                    fullRoom.child(variable.getOtherPlayer()).child("Next").child("atkR").setValue(variable.getFinalAtlRC().get(boss1AtkNum - 1));
+                                }
+
+
+                                /**提取自己應該要在的位置 - Next*/
+                                long xl = (long) snapshot.child("Next").child("locationXSelf").getValue();
+                                long yl = (long) snapshot.child("Next").child("locationYSelf").getValue();
+                                /**變成自己真正的位置 - XY*/
+                                fullRoom.child(variable.getPlayer()).child("X").setValue((int) xl);
+                                fullRoom.child(variable.getPlayer()).child("Y").setValue((int) yl);
+
+                                Log.d("第一戰鬥階段", "自己移動到" + xl + " , " + yl);
+
+                                /**提取自己應該要增加的血量跟魔量 - Next*/
+                                long HPUP = (long) snapshot.child("Next").child("HPUP").getValue();
+                                long MPUP = (long) snapshot.child("Next").child("MPUP").getValue();
+                                /**提取自己的血量跟魔量*/
+                                long HP = (long) snapshot.child("HP").getValue();
+                                long MP = (long) snapshot.child("MP").getValue();
+                                /**如果有需要回血或回魔力的話 就會在這邊增加*/
+                                if ((int) HPUP > 0) {
+                                    Log.d("第一戰鬥階段", "回復血量 : " + HPUP);
+                                    fullRoom.child(variable.getPlayer()).child("HP").setValue((int) HPUP + (int) HP);
+                                }
+                                if ((int) MPUP > 0) {
+                                    Log.d("第一戰鬥階段", "回復魔力 : " + MPUP);
+                                    fullRoom.child(variable.getPlayer()).child("MP").setValue((int) MPUP + (int) MP);
+                                }
+                                /**回血量跟魔量後 將Next歸零*/
+                                fullRoom.child(variable.getPlayer()).child("Next").child("HPUP").setValue(0);
+                                fullRoom.child(variable.getPlayer()).child("Next").child("MPUP").setValue(0);
                             }
-                            if ((int) MPUP > 0) {
-                                Log.d("第一戰鬥階段", "回復魔力 : " + MPUP);
-                                fullRoom.child(variable.getPlayer()).child("MP").setValue((int) MPUP + (int) MP);
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
                             }
-                            /**回血量跟魔量後 將Next歸零*/
-                            fullRoom.child(variable.getPlayer()).child("Next").child("HPUP").setValue(0);
-                            fullRoom.child(variable.getPlayer()).child("Next").child("MPUP").setValue(0);
+                        });
+
+                        /** 如果你是騎士且你有開啟獨有技能 對手的Next - atkHP 直接歸零*/
+                        if (tools.roleChange((int) variable.getIndex()).equals("b74") && variable.getUnique()) {
+                            Log.d("獨有技能", "騎士發動");
+                            /**傷害歸0*/
+                            fullRoom.child(variable.getOtherPlayer()).child("Next").child("atkHP").setValue(0);
+                            /**消耗獨有技能*/
+                            variable.setUnique(false);
+                            fullRoom.child(variable.getPlayer()).child("unique").setValue(false);
                         }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                        }
-                    });
-
-                    /** 如果你是騎士且你有開啟獨有技能 對手的Next - atkHP 直接歸零*/
-                    if (tools.roleChange((int) variable.getIndex()).equals("b74") && variable.getUnique()) {
-                        Log.d("獨有技能", "騎士發動");
-                        /**傷害歸0*/
-                        fullRoom.child(variable.getOtherPlayer()).child("Next").child("atkHP").setValue(0);
-                        /**消耗獨有技能*/
-                        variable.setUnique(false);
-                        fullRoom.child(variable.getPlayer()).child("unique").setValue(false);
-                    }
-
-                    break;
-                case 2:
-                    fullRoom.child(variable.getPlayer()).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        break;
+                    case 2:
+                        fullRoom.child(variable.getPlayer()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
 
-                            int HP = Integer.parseInt(String.valueOf(snapshot.child("Next").child("atkHP").getValue()));
-                            int MP = Integer.parseInt(String.valueOf(snapshot.child("Next").child("atkMP").getValue()));
-                            ArrayList<Integer> atkR = (ArrayList<Integer>) snapshot.child("Next").child("atkR").getValue();
-                            if (tools.roleChange(variable.getIndexE()).equals("j4")) {
-                                Log.d("劍士獨有技能", String.valueOf(variable.getUnique()));
-                                Log.d("劍士獨有技能", String.valueOf(HP));
+                                int HP = Integer.parseInt(String.valueOf(snapshot.child("Next").child("atkHP").getValue()));
+                                int MP = Integer.parseInt(String.valueOf(snapshot.child("Next").child("atkMP").getValue()));
+                                ArrayList<Integer> atkR = (ArrayList<Integer>) snapshot.child("Next").child("atkR").getValue();
+                                if (tools.roleChange(variable.getIndexE()).equals("j4")) {
+                                    Log.d("劍士獨有技能", String.valueOf(variable.getUnique()));
+                                    Log.d("劍士獨有技能", String.valueOf(HP));
+                                }
+
+                                if (tools.roleChange(variable.getIndex()).equals("j4") && variable.getUnique() && HP != 0) {
+                                    Log.d("獨有技能", "自己劍士發動");
+                                    HP = HP + 2;
+                                    fullRoom.child(variable.getPlayer()).child("Next").child("atkHP").setValue(HP);
+                                    variable.setUnique(false);
+                                }
+
+                                int[][] atkRealRange = atkRules.atkRealRange(parameter.getAtkNumS(), atkR, "self");
+                                parameter.setAtkRangeSelf(atkRealRange);
+                                for (int i = 0; i < atkRealRange.length; i++) {
+                                    Log.d("自己的攻擊範圍", atkRealRange[i][0] + " , " + atkRealRange[i][1]);
+                                }
+                                atkRules.atkJudgmentSelf(atkRealRange, (int) HP, (int) MP);
                             }
 
-                            if (tools.roleChange(variable.getIndex()).equals("j4") && variable.getUnique() && HP != 0) {
-                                Log.d("獨有技能", "自己劍士發動");
-                                HP = HP + 2;
-                                fullRoom.child(variable.getPlayer()).child("Next").child("atkHP").setValue(HP);
-                                variable.setUnique(false);
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                        break;
+                    case 3:
+                        fullRoom.child(variable.getOtherPlayer()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                int HP = Integer.parseInt(String.valueOf(snapshot.child("Next").child("atkHP").getValue()));
+                                int MP = Integer.parseInt(String.valueOf(snapshot.child("Next").child("atkMP").getValue()));
+                                ArrayList<Integer> atkR = (ArrayList<Integer>) snapshot.child("Next").child("atkR").getValue();
+
+
+                                Log.d("atkR", String.valueOf(atkR));
+
+                                if (tools.roleChange(variable.getIndexE()).equals("j4")) {
+                                    Log.d("劍士獨有技能", String.valueOf(variable.getUniqueC()));
+                                    Log.d("劍士獨有技能", String.valueOf(HP));
+                                }
+
+                                int[][] atkRealRange = atkRules.atkRealRange(parameter.getAtkNumC(), atkRules.atk9o(atkR), "com");
+                                for (int i = 0; i < atkRealRange.length; i++) {
+                                    Log.d("對手的攻擊範圍", atkRealRange[i][0] + " , " + atkRealRange[i][1]);
+                                }
+
+                                parameter.setAtkRangeCom(atkRealRange);
+
+
+                                if (tools.roleChange(variable.getIndexE()).equals("j4") && variable.getUniqueC() && HP != 0) {
+                                    Log.d("獨有技能", "對手劍士發動");
+                                    HP = HP + 2;
+                                    fullRoom.child(variable.getOtherPlayer()).child("Next").child("atkHP").setValue(HP);
+                                    variable.setUnique(false);
+                                }
+
+                                atkRules.atkJudgmentCom(atkRealRange, (int) HP, (int) MP);
+
+
+                                /**初始化*/
+                                fullRoom.child("fourStatus").child("player11").setValue(false);
+                                fullRoom.child("fourStatus").child("player21").setValue(false);
+                                fullRoom.child("fourStatus").child("player12").setValue(0);
+                                fullRoom.child("fourStatus").child("player22").setValue(0);
+                                variable.setMatch(variable.getMatch() + 1);
+//                            fullRoom.child("fourStatus").child("player22").setValue(variable.getMatch());
+                                MPUse();
+                                openMoveBtn();
+
+                                if (tools.roleChange((int) variable.getIndex()).equals("b74") || tools.roleChange((int) variable.getIndex()).equals("fs")) {
+                                    fullRoom.child(variable.getPlayer()).child("unique").setValue(false);
+                                    variable.setUnique(false);
+                                    fullRoom.child(variable.getOtherPlayer()).child("unique").setValue(false);
+                                    variable.setUniqueC(false);
+                                }
+                                Log.d("戰鬥階段", "結束");
                             }
 
-                            int[][] atkRealRange = atkRules.atkRealRange(parameter.getAtkNumS(), atkR, "self");
-                            parameter.setAtkRangeSelf(atkRealRange);
-                            for (int i = 0; i < atkRealRange.length; i++) {
-                                Log.d("自己的攻擊範圍", atkRealRange[i][0] + " , " + atkRealRange[i][1]);
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
                             }
-                            atkRules.atkJudgmentSelf(atkRealRange, (int) HP, (int) MP);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-                    break;
-                case 3:
-                    fullRoom.child(variable.getOtherPlayer()).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            int HP = Integer.parseInt(String.valueOf(snapshot.child("Next").child("atkHP").getValue()));
-                            int MP = Integer.parseInt(String.valueOf(snapshot.child("Next").child("atkMP").getValue()));
-                            ArrayList<Integer> atkR = (ArrayList<Integer>) snapshot.child("Next").child("atkR").getValue();
-
-                            Log.d("atkR", String.valueOf(atkR));
-
-                            if (tools.roleChange(variable.getIndexE()).equals("j4")) {
-                                Log.d("劍士獨有技能", String.valueOf(variable.getUniqueC()));
-                                Log.d("劍士獨有技能", String.valueOf(HP));
-                            }
-
-                            int[][] atkRealRange = atkRules.atkRealRange(parameter.getAtkNumC(), atkRules.atk9o(atkR), "com");
-                            for (int i = 0; i < atkRealRange.length; i++) {
-                                Log.d("對手的攻擊範圍", atkRealRange[i][0] + " , " + atkRealRange[i][1]);
-                            }
-
-                            parameter.setAtkRangeCom(atkRealRange);
+                        });
 
 
-                            if (tools.roleChange(variable.getIndexE()).equals("j4") && variable.getUniqueC() && HP != 0) {
-                                Log.d("獨有技能", "對手劍士發動");
-                                HP = HP + 2;
-                                fullRoom.child(variable.getOtherPlayer()).child("Next").child("atkHP").setValue(HP);
-                                variable.setUnique(false);
-                            }
-
-                            atkRules.atkJudgmentCom(atkRealRange, (int) HP, (int) MP);
-
-
-                            /**初始化*/
-                            fullRoom.child("fourStatus").child("player11").setValue(false);
-                            fullRoom.child("fourStatus").child("player21").setValue(false);
-                            fullRoom.child("fourStatus").child("player12").setValue(0);
-                            fullRoom.child("fourStatus").child("player22").setValue(0);
-                            MPUse();
-                            openMoveBtn();
-
-                            if (tools.roleChange((int) variable.getIndex()).equals("b74") || tools.roleChange((int) variable.getIndex()).equals("fs")) {
-                                fullRoom.child(variable.getPlayer()).child("unique").setValue(false);
-                                variable.setUnique(false);
-                                fullRoom.child(variable.getOtherPlayer()).child("unique").setValue(false);
-                                variable.setUniqueC(false);
-                            }
-                            Log.d("戰鬥階段", "結束");
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                        }
-                    });
-
-
-                    break;
+                        break;
+                }
             }
         }
 

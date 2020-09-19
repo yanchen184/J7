@@ -42,6 +42,9 @@ public class Tools {
             case 3:
                 je = "b74";
                 break;
+            case 4:
+                je = "boss1";
+                break;
         }
         return je;
     }
@@ -81,6 +84,9 @@ public class Tools {
                 break;
             case 3:
                 je = R.drawable.b74;
+                break;
+            case 4:
+                je = R.drawable.boss1;
                 break;
         }
         return je;

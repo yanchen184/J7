@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline23"
         app:layout_constraintStart_toStartOf="@+id/guideline22"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/b74" />
+        app:srcCompat="@drawable/boss1" />
 
     <ImageView
         android:id="@+id/left"

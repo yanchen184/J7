@@ -106,12 +106,12 @@ public class SoloMap extends AppCompatActivity {
 
 
         FRoom.child(roomKey).child(player).child("name").setValue(userId); // 創房者為player1 同時也是 userId
-        FRoom.child(roomKey).child("player2").child("name").setValue("Boss"); // 創房者為player1 同時也是 userId
+        FRoom.child(roomKey).child("player2").child("name").setValue("Boss1"); // 創房者為player1 同時也是 userId
         /*****************************/
 
         /** 使用的角色 - 初始血量 - 補血魔 - 初始位置 */
-        FRoom.child(roomKey).child("player2").child("Index").setValue(variable.getIndex());
-        FRoom.child(roomKey).child("player2").child("HP").setValue(100);
+        FRoom.child(roomKey).child("player2").child("Index").setValue(4);
+        FRoom.child(roomKey).child("player2").child("HP").setValue(50);
         FRoom.child(roomKey).child("player2").child("MP").setValue(100);
 
         int[][] b74Atk = {{4, 5, 6}, {2, 5, 8}, {5, 6}, {1, 3, 4, 6, 7, 9}, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
@@ -151,7 +151,7 @@ public class SoloMap extends AppCompatActivity {
         FRoom.child(roomKey).child("fourStatus").child("player12").setValue(0);
         FRoom.child(roomKey).child("fourStatus").child("player21").setValue(false);
         FRoom.child(roomKey).child("fourStatus").child("player22").setValue(0);
-
+//        FRoom.child(roomKey).child("fourStatus").child("match").setValue(0);
 
         Intent it = new Intent(this, GameActivity.class);
         it.putExtra("player", "player1");

@@ -297,12 +297,16 @@ public class FourCardAdd extends AppCompatActivity {
                         atkRBackpack.add(yc);
 
                     } else {
+//                        Log.d("ADDCARD", "onDataChange: " + HPBackpack);
+//                        Log.d("ADDCARD", "onDataChange: " + MPBackpack);
+//                        Log.d("ADDCARD", "onDataChange: " + atkRBackpack);
                         HPBackpack.add(getRandomHP());
                         MPBackpack.add(getRandomMP());
+                        Log.d("AddCard", String.valueOf(atkRBackpack));
+                        Log.d("AddCard", String.valueOf(getRandomAtkR()));
+
                         atkRBackpack.add(getRandomAtkR());
-                        Log.d("TAG", "onDataChange: " + HPBackpack);
-                        Log.d("TAG", "onDataChange: " + MPBackpack);
-                        Log.d("TAG", "onDataChange: " + atkRBackpack);
+
 
 //                        HPBackpack.set(c, getRandomHP());
 //                        MPBackpack.set(c, getRandomMP());
@@ -332,56 +336,78 @@ public class FourCardAdd extends AppCompatActivity {
     int randomHPCount;
     int randomAtkRCount;
 
-    public void atkRAndHp(int max, int low) {
+    public void atkRAndHp(int m) {
         do {
             randomHPCount = (int) (Math.random() * 20) + 1;//產生1-10
             randomAtkRCount = (int) (Math.random() * 9) + 1;//產生1-9
-        } while (randomHPCount * randomAtkRCount > low && max > randomHPCount * randomAtkRCount);
+            Log.d("上限", String.valueOf(mm[m] > randomHPCount * randomAtkRCount));
+            Log.d("下限", String.valueOf(randomHPCount * randomAtkRCount > mm[m - 1]));
+        } while (randomHPCount * randomAtkRCount > mm[m - 1] && mm[m] > randomHPCount * randomAtkRCount);
+
+        Log.d("上限與下限", mm[m] + " " + mm[m - 1]);
+
+        Log.d("AddCard", String.valueOf(randomHPCount));
+        Log.d("AddCard", String.valueOf(randomAtkRCount));
+        Log.d("AddCard", String.valueOf(randomHPCount * randomAtkRCount));
     }
+
+    int[] mm = {0, 10, 12, 16, 20, 25, 30, 50, 60, 100};
 
     public void countSkillIntensity() {
 
         float p = (float) Math.random();
         float[] yc1 = {0.1f, 0.1f, 0.2f, 0.3f, 0.2f, 0.05f, 0.048f, 0.0012f, 0.0008f};
-        float[] yc = {0f,0f,0f,0f,0f,0f,0f,0f,0f};
+        float[] yc = {0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f};
         for (int i = 0; i < yc1.length; i++) {
             for (int j = 0; j <= i; j++) {
                 yc[i] = yc[i] + yc1[j];
-                yc[i] = ((float)Math.round(yc[i]*10000))/ 10000;
+                yc[i] = ((float) Math.round(yc[i] * 10000)) / 10000;
             }
 //            System.out.println(yc[i]);
         }
 
+
         Log.d("p", String.valueOf(p));
 
-        if (p > yc[0]) {//F
-            atkRAndHp(10, 0);
-            setRandomMP((int) (Math.random() * 7) + 4);//產生1-10
-        } else if (p > yc[1]) {//E
-            atkRAndHp(20, 10);
-            setRandomMP((int) (Math.random() * 6) + 5);//產生1-10
-        } else if (p > yc[2]) {//D
-            atkRAndHp(20, 10);
-            setRandomMP((int) (Math.random() * 6) + 5);//產生1-10
-        } else if (p > yc[3]) {//C
-            atkRAndHp(30, 20);
+        if (p > yc[8]) {//SSS
+            atkRAndHp(9);
             setRandomMP((int) (Math.random() * 5) + 6);//產生1-10
-        } else if (p > yc[4]) {//B
-            atkRAndHp(40, 30);
-            setRandomMP((int) (Math.random() * 4) + 7);//產生1-10
-        } else if (p > yc[5]) {//A
-            atkRAndHp(50, 40);
-            setRandomMP((int) (Math.random() * 4) + 7);//產生1-10
-        } else if (p > yc[6]) {//S
-            atkRAndHp(60, 50);
-            setRandomMP((int) (Math.random() * 3) + 8);//產生1-10
+            Log.d("卡片等級", "SSS");
         } else if (p > yc[7]) {//SS
-            atkRAndHp(90, 60);
+            atkRAndHp(8);
             setRandomMP((int) (Math.random() * 2) + 9);//產生1-10
-        } else if (p > yc[8]) {//SSS
-            atkRAndHp(2000, 90);
+            Log.d("卡片等級", "SS");
+        } else if (p > yc[6]) {//S
+            atkRAndHp(7);
+            setRandomMP((int) (Math.random() * 3) + 8);//產生1-10
+            Log.d("卡片等級", "S");
+        } else if (p > yc[5]) {//A
+            atkRAndHp(6);
+            setRandomMP((int) (Math.random() * 4) + 7);//產生1-10
+            Log.d("卡片等級", "A");
+        } else if (p > yc[4]) {//B
+            atkRAndHp(5);
+            setRandomMP((int) (Math.random() * 4) + 7);//產生1-10
+            Log.d("卡片等級", "B");
+        } else if (p > yc[3]) {//C
+            atkRAndHp(4);
             setRandomMP((int) (Math.random() * 5) + 6);//產生1-10
+            Log.d("卡片等級", "C");
+        } else if (p > yc[2]) {//D
+            atkRAndHp(3);
+            setRandomMP((int) (Math.random() * 6) + 5);//產生1-10
+            Log.d("卡片等級", "D");
+        } else if (p > yc[1]) {//E
+            atkRAndHp(2);
+            setRandomMP((int) (Math.random() * 6) + 5);//產生1-10
+            Log.d("卡片等級", "E");
+        } else if (p > yc[0]) {//F
+            atkRAndHp(1);
+            setRandomMP((int) (Math.random() * 7) + 4);//產生1-10
+            Log.d("卡片等級", "F");
         }
+
+
 
         setRandomHP(randomHPCount);
 
@@ -397,10 +423,12 @@ public class FourCardAdd extends AppCompatActivity {
             }
         }
         randomAtkR = new ArrayList<>();
+//        randomAtkR = new ArrayList<>();
         for (int k = 0; k < arr.length; k++) {
             randomAtkR.add(arr[k]);
         }
-
+        Log.d("AddCard", String.valueOf(randomAtkR));
+        setRandomAtkR(randomAtkR);
 
         /**去重後排序*/
         randomAtkR = new ArrayList<>(new HashSet<>(randomAtkR));

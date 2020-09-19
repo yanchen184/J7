@@ -14,12 +14,16 @@ public class Variable {
     ArrayList<Integer> finalHP;//自己所有招式所有傷害
     ArrayList<Integer> finalMP;//自己所有招式所有魔力
     ArrayList<ArrayList<Integer>> finalAtlR;//自己所有招式所有攻擊範圍
+
+    ArrayList<Integer> finalHPC;//對手所有招式所有傷害
+    ArrayList<Integer> finalMPC;//對手所有招式所有魔力
+    ArrayList<ArrayList<Integer>> finalAtlRC;//對手所有招式所有攻擊範圍
+
     String player; //自己是player幾? player1 or player2
     String otherPlayer; //對手是player幾? player1 or player2
 
 
     Boolean unique = false; //自己是否開啟了獨有技能
-
     Boolean uniqueC = false;//對手是否開啟了獨有技能
 
 
@@ -48,6 +52,40 @@ public class Variable {
     int SMP;
     int CHP;
     int CMP;
+
+    int match = 1; // 回合數
+
+    public int getMatch() {
+        return match;
+    }
+
+    public void setMatch(int match) {
+        this.match = match;
+    }
+
+    public ArrayList<Integer> getFinalHPC() {
+        return finalHPC;
+    }
+
+    public void setFinalHPC(ArrayList<Integer> finalHPC) {
+        this.finalHPC = finalHPC;
+    }
+
+    public ArrayList<Integer> getFinalMPC() {
+        return finalMPC;
+    }
+
+    public void setFinalMPC(ArrayList<Integer> finalMPC) {
+        this.finalMPC = finalMPC;
+    }
+
+    public ArrayList<ArrayList<Integer>> getFinalAtlRC() {
+        return finalAtlRC;
+    }
+
+    public void setFinalAtlRC(ArrayList<ArrayList<Integer>> finalAtlRC) {
+        this.finalAtlRC = finalAtlRC;
+    }
 
     public int getSHP() {
         return SHP;
