@@ -40,11 +40,11 @@ public class Boss1 {
                     /**提取自己的血量跟魔量*/
                     long HP = (long) snapshot.child("HP").getValue();
                     /**如果有需要回血或回魔力的話 就會在這邊增加*/
-                    Log.d("機器人第一戰鬥階段", "回復血量 : " + activity.parameter.HPUPBoss);
-                    if ((int) activity.parameter.HPUPBoss + (int) HP > activity.variable.getCHP()) {
+                    Log.d("機器人第一戰鬥階段", "回復血量 : " + activity.parameter.HPUPBoss1);
+                    if ((int) activity.parameter.HPUPBoss1 + (int) HP > activity.variable.getCHP()) {
                         activity.fullRoom.child(activity.variable.getOtherPlayer()).child("HP").setValue(activity.variable.getCHP());
                     } else {
-                        activity.fullRoom.child(activity.variable.getOtherPlayer()).child("HP").setValue((int) activity.parameter.HPUPBoss + (int) HP);
+                        activity.fullRoom.child(activity.variable.getOtherPlayer()).child("HP").setValue((int) activity.parameter.HPUPBoss1 + (int) HP);
                     }
                     /**回血量跟魔量後 將Next歸零*/
                     activity.fullRoom.child(activity.variable.getOtherPlayer()).child("Next").child("HPUP").setValue(0);
@@ -63,11 +63,11 @@ public class Boss1 {
                     /**提取自己的血量跟魔量*/
                     long MP = (long) snapshot.child("MP").getValue();
                     /**如果有需要回血或回魔力的話 就會在這邊增加*/
-                    Log.d("機器人第一戰鬥階段", "回復魔力 : " + activity.parameter.MPUPBoss);
-                    if ((int) activity.parameter.MPUPBoss + (int) MP > activity.variable.getCMP()) {
+                    Log.d("機器人第一戰鬥階段", "回復魔力 : " + activity.parameter.MPUPBoss1);
+                    if ((int) activity.parameter.MPUPBoss1 + (int) MP > activity.variable.getCMP()) {
                         activity.fullRoom.child(activity.variable.getOtherPlayer()).child("MP").setValue(activity.variable.getCMP());
                     } else {
-                        activity.fullRoom.child(activity.variable.getOtherPlayer()).child("MP").setValue((int) activity.parameter.MPUPBoss + (int) MP);
+                        activity.fullRoom.child(activity.variable.getOtherPlayer()).child("MP").setValue((int) activity.parameter.MPUPBoss1 + (int) MP);
                     }
                     /**回血量跟魔量後 將Next歸零*/
                     activity.fullRoom.child(activity.variable.getOtherPlayer()).child("Next").child("HPUP").setValue(0);
