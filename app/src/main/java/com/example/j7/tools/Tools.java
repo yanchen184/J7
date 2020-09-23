@@ -45,6 +45,18 @@ public class Tools {
             case 4:
                 je = "boss1";
                 break;
+            case 5:
+                je = "boss0";
+                break;
+            case 6:
+                je = "boss2";
+                break;
+            case 7:
+                je = "boss3";
+                break;
+            case 8:
+                je = "boss4";
+                break;
         }
         return je;
     }

@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Boss : 謹慎的樹人\n\n獎勵內容 :素材 3 個"
+            android:text="Boss : 謹慎的樹人\n選擇:簡單\n獎勵內容 :素材 3 個"
             android:textSize="15dp"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/imageView"

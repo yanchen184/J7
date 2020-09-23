@@ -48,7 +48,9 @@ public class SoloMap extends AppCompatActivity {
 
     ActivitySoloMapBinding binding;
     List<Drawable> drawableList = new ArrayList<Drawable>();//存放圖片
+    String[] level = {"簡單", "一般", "困難", "煉獄"};
     final int[] levelNum = {1};
+    final int[] levelString = {1};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +64,6 @@ public class SoloMap extends AppCompatActivity {
         variable.setIndex(it.getIntExtra("index", 0));
 
 
-        String[] level = {"簡單", "一般", "困難", "煉獄"};
         ArrayAdapter<String> lunchList = new ArrayAdapter<>(SoloMap.this,
                 android.R.layout.simple_spinner_dropdown_item,
                 level);
@@ -72,6 +73,7 @@ public class SoloMap extends AppCompatActivity {
         binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                levelString[0] = position;
                 switch (position) {
                     case 0:
                     case 1:
@@ -128,23 +130,23 @@ public class SoloMap extends AppCompatActivity {
         switch (index % drawableList.size()) {
             case 0:
                 sg = 1;
-                binding.includeA.textView.setText("Boss : 勇往直前的戰士\n\n獎勵內容 :素材 " + sg + " 個");
+                binding.includeA.textView.setText("Boss : 勇往直前的戰士\n選擇:" + level[levelString[0]] + "\n獎勵內容 :素材 " + sg * levelNum[0] + " 個");
                 break;
             case 1:
                 sg = 3;
-                binding.includeA.textView.setText("Boss : 謹慎的樹人\n\n獎勵內容 :素材 " + sg + " 個");
+                binding.includeA.textView.setText("Boss : 謹慎的樹人\n選擇:" + level[levelString[0]] + "\n獎勵內容 :素材 " + sg * levelNum[0] + " 個");
                 break;
             case 2:
                 sg = 5;
-                binding.includeA.textView.setText("Boss : 愛咬人的玄武\n\n獎勵內容 :素材 " + sg + " 個");
+                binding.includeA.textView.setText("Boss : 愛咬人的玄武\n選擇:" + level[levelString[0]] + "\n獎勵內容 :素材 " + sg * levelNum[0] + " 個");
                 break;
             case 3:
                 sg = 20;
-                binding.includeA.textView.setText("Boss : 苦痛的骷顱頭\n\n獎勵內容 :素材 " + sg + "  個");
+                binding.includeA.textView.setText("Boss : 苦痛的骷顱頭\n選擇:" + level[levelString[0]] + "\n獎勵內容 :素材 " + sg * levelNum[0] + "  個");
                 break;
             case 4:
                 sg = 50;
-                binding.includeA.textView.setText("Boss : 古代巨龍\n\n獎勵內容 :素材 " + sg + " 個");
+                binding.includeA.textView.setText("Boss : 古代巨龍\n選擇:" + level[levelString[0]] + "\n獎勵內容 :素材 " + sg * levelNum[0] + " 個");
                 break;
         }
 
