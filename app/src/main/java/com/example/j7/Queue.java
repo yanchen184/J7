@@ -325,6 +325,7 @@ public class Queue {
 
 
     public ValueEventListener statusListener = new ValueEventListener() {
+
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
             if (snapshot.getValue() == null)
@@ -346,6 +347,7 @@ public class Queue {
                     Bundle mBundle = new Bundle();
                     mBundle.putSerializable("list", activity.finalAtlR);
                     it.putExtras(mBundle);
+//                    it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                     activity.startActivity(it);
                     break;
             }

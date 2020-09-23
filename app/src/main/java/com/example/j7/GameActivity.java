@@ -376,8 +376,7 @@ public class GameActivity extends AppCompatActivity {
 
 
             if (variable.getOtherPlayerName() != null && variable.getFinalMPC() != null) {
-                if (variable.getOtherPlayerName().equals("Boss1")) {
-
+                if (variable.getOtherPlayerName().substring(0,4).equals("Boss")) {
                     if (yc) {
                         int j = 0;
                         do {
@@ -436,7 +435,8 @@ public class GameActivity extends AppCompatActivity {
             binding.initGame.setVisibility(View.VISIBLE);
             binding.initGame.setText("獲得勝利！");
             lockMoveBtn();
-            getGain(10);
+//            getGain(10);
+            getGain(variable.getGain());
             Log.d("獎勵", String.valueOf(10));
 
         }
@@ -480,6 +480,7 @@ public class GameActivity extends AppCompatActivity {
         Intent it = getIntent();
         variable.setRoomKey(it.getStringExtra("roomKey"));
         variable.setIndex(it.getIntExtra("index", 0));
+        variable.setGain(it.getIntExtra("gain", 10));
 
         /**正上方的房間號碼*/
         binding.include.roomNum.setText(variable.getRoomKey().substring(0, 4));
@@ -974,7 +975,23 @@ public class GameActivity extends AppCompatActivity {
 
 
                                 Log.d("局數", String.valueOf(variable.getMatch()));
-                                boss1.moveAndAtk(boss1AtkNum);
+                                if (variable.getOtherPlayerName().equals("Boss0")) {
+                                    boss1.boss0MoveAndAtk(boss1AtkNum);//小兵
+                                }
+                                if (variable.getOtherPlayerName().equals("Boss1")) {
+                                    boss1.boss1MoveAndAtk(boss1AtkNum);//樹人
+                                }
+                                if (variable.getOtherPlayerName().equals("Boss2")) {
+                                    boss1.boss0MoveAndAtk(boss1AtkNum);//烏龜
+                                }
+                                if (variable.getOtherPlayerName().equals("Boss3")) {
+                                    boss1.boss1MoveAndAtk(boss1AtkNum);//骷顱
+                                }
+                                if (variable.getOtherPlayerName().equals("Boss4")) {
+                                    boss1.boss0MoveAndAtk(boss1AtkNum);//龍王
+                                }
+
+
 
 
                                 /**提取自己應該要在的位置 - Next*/

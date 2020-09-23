@@ -26,9 +26,9 @@ public class Parameter {
     int atkNumC;
 
     /*****      Boss 0      *****/
-    public int[][] Boss0Atk = {{4, 5, 6}, {2, 5, 8}, {5, 6}, {1, 3, 4, 6, 7, 9}, {1, 2, 3, 4, 5, 6, 7, 8, 9}, {0}};
-    public int[] Boss0HP = {4, 4, 5, 2, 0, 0};
-    public int[] Boss0MP = {3, 3, 3, 6, 2, 0};
+    public int[][] Boss0Atk = {{2, 4, 5, 6, 8}, {2, 5, 8}, {3, 5, 6, 9}, {1, 3, 4, 6, 7, 9}, {1, 2, 3, 4, 5, 6, 7, 8, 9}, {0}};
+    public int[] Boss0HP = {4, 6, 5, 2, 0, 0};
+    public int[] Boss0MP = {5, 4, 3, 6, 2, 0};
     public int HPUPBoss0 = 3;
     public int MPUPBoss0 = 5;
     public int HP0 = 20;
@@ -43,8 +43,8 @@ public class Parameter {
     public int MP1 = 20;
 
     /*****      Boss 2      *****/
-    public int[][] Boss2Atk = {{4, 5, 6}, {2, 5, 8}, {5, 6}, {1, 3, 4, 6, 7, 9}, {1, 2, 3, 4, 5, 6, 7, 8, 9}, {0}};
-    public int[] Boss2HP = {4, 4, 5, 2, 0, 0};
+    public int[][] Boss2Atk = {{4, 5, 6}, {2, 5, 8}, {2, 4, 5, 6, 8}, {1, 3, 5, 7, 9}, {1, 2, 3, 4, 5, 6, 7, 8, 9}, {0}};
+    public int[] Boss2HP = {3, 3, 4, 2, 0, 0};
     public int[] Boss2MP = {3, 3, 3, 6, 2, 0};
     public int HPUPBoss2 = 3;
     public int MPUPBoss2 = 5;
@@ -52,13 +52,13 @@ public class Parameter {
     public int MP2 = 50;
 
     /*****      Boss 3      *****/
-    public int[][] Boss3Atk = {{4, 5, 6}, {2, 5, 8}, {5, 6}, {1, 3, 4, 6, 7, 9}, {1, 2, 3, 4, 5, 6, 7, 8, 9}, {0}};
-    public int[] Boss3HP = {4, 4, 5, 2, 0, 0};
-    public int[] Boss3MP = {3, 3, 3, 6, 2, 0};
+    public int[][] Boss3Atk = {{4, 5, 6}, {1, 2, 3, 4, 5, 6, 7, 8, 9}, {5, 6}, {1, 3, 4, 6}, {1, 2, 3, 4, 5, 6, 7, 8, 9}, {0}};
+    public int[] Boss3HP = {6, 5, 10, 7, 0, 0};
+    public int[] Boss3MP = {4, 8, 5, 6, 2, 0};
     public int HPUPBoss3 = 3;
     public int MPUPBoss3 = 5;
-    public int HP3 = 100;
-    public int MP3 = 100;
+    public int HP3 = 50;
+    public int MP3 = 40;
 
     /*****      Boss 4      *****/
     public int[][] Boss4Atk = {{1, 2, 3, 4, 5, 6, 7, 8, 9}, {1, 2, 3, 4, 6, 7, 8, 9}, {2, 4, 5, 6, 8}, {1, 2, 3, 4, 7, 9}, {1, 2, 3, 4, 5, 6, 7, 8, 9}, {0}};

@@ -57,8 +57,18 @@ public class Variable {
 
     Boolean jg = true; //追擊狀態
 
+    /**
+     * 應該要獲得的點數
+     */
+    int gain = 10;
 
+    public int getGain() {
+        return gain;
+    }
 
+    public void setGain(int gain) {
+        this.gain = gain;
+    }
 
     public Boolean getJg() {
         return jg;

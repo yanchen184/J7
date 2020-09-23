@@ -86,7 +86,7 @@ public class SoloMap extends AppCompatActivity {
                         levelNum[0] = position + 7;
                         break;
                 }
-
+                words();
             }
 
             @Override
@@ -129,24 +129,24 @@ public class SoloMap extends AppCompatActivity {
     public void words() {
         switch (index % drawableList.size()) {
             case 0:
-                sg = 1;
-                binding.includeA.textView.setText("Boss : 勇往直前的戰士\n選擇:" + level[levelString[0]] + "\n獎勵內容 :素材 " + sg * levelNum[0] + " 個");
+                sg = 1 * levelNum[0];
+                binding.includeA.textView.setText("Boss : 勇往直前的戰士\n選擇:" + level[levelString[0]] + "\n獎勵內容 :素材 " + sg + " 個");
                 break;
             case 1:
-                sg = 3;
-                binding.includeA.textView.setText("Boss : 謹慎的樹人\n選擇:" + level[levelString[0]] + "\n獎勵內容 :素材 " + sg * levelNum[0] + " 個");
+                sg = 3 * levelNum[0];
+                binding.includeA.textView.setText("Boss : 謹慎的樹人\n選擇:" + level[levelString[0]] + "\n獎勵內容 :素材 " + sg + " 個");
                 break;
             case 2:
-                sg = 5;
-                binding.includeA.textView.setText("Boss : 愛咬人的玄武\n選擇:" + level[levelString[0]] + "\n獎勵內容 :素材 " + sg * levelNum[0] + " 個");
+                sg = 5 * levelNum[0];
+                binding.includeA.textView.setText("Boss : 愛咬人的玄武\n選擇:" + level[levelString[0]] + "\n獎勵內容 :素材 " + sg + " 個");
                 break;
             case 3:
-                sg = 20;
-                binding.includeA.textView.setText("Boss : 苦痛的骷顱頭\n選擇:" + level[levelString[0]] + "\n獎勵內容 :素材 " + sg * levelNum[0] + "  個");
+                sg = 20 * levelNum[0];
+                binding.includeA.textView.setText("Boss : 苦痛的骷顱頭\n選擇:" + level[levelString[0]] + "\n獎勵內容 :素材 " + sg + "  個");
                 break;
             case 4:
-                sg = 50;
-                binding.includeA.textView.setText("Boss : 古代巨龍\n選擇:" + level[levelString[0]] + "\n獎勵內容 :素材 " + sg * levelNum[0] + " 個");
+                sg = 50 * levelNum[0];
+                binding.includeA.textView.setText("Boss : 古代巨龍\n選擇:" + level[levelString[0]] + "\n獎勵內容 :素材 " + sg + " 個");
                 break;
         }
 
@@ -255,7 +255,7 @@ public class SoloMap extends AppCompatActivity {
 
 
         FRoom.child(roomKey).child(player).child("name").setValue(userId); // 創房者為player1 同時也是 userId
-        FRoom.child(roomKey).child("player2").child("name").setValue("Boss1"); // 創房者為player1 同時也是 userId
+
         /*****************************/
 
         /** 使用的角色 - 初始血量 - 補血魔 - 初始位置 */
@@ -264,6 +264,7 @@ public class SoloMap extends AppCompatActivity {
         switch (index) {
             case 0:
                 indexP = 5;
+                FRoom.child(roomKey).child("player2").child("name").setValue("Boss0"); // 創房者為player1 同時也是 userId
                 FRoom.child(roomKey).child("player2").child("HP").setValue(parameter.HP0 * levelNum[0]);
                 FRoom.child(roomKey).child("player2").child("MP").setValue(parameter.MP0 * levelNum[0]);
                 bossAtk = new ArrayList<>();
@@ -278,6 +279,7 @@ public class SoloMap extends AppCompatActivity {
                 break;
             case 1:
                 indexP = 4;
+                FRoom.child(roomKey).child("player2").child("name").setValue("Boss1"); // 創房者為player1 同時也是 userId
                 FRoom.child(roomKey).child("player2").child("HP").setValue(parameter.HP1 * levelNum[0]);
                 FRoom.child(roomKey).child("player2").child("MP").setValue(parameter.MP1 * levelNum[0]);
                 bossAtk = new ArrayList<>();
@@ -292,6 +294,7 @@ public class SoloMap extends AppCompatActivity {
                 break;
             case 2:
                 indexP = 6;
+                FRoom.child(roomKey).child("player2").child("name").setValue("Boss2"); // 創房者為player1 同時也是 userId
                 FRoom.child(roomKey).child("player2").child("HP").setValue(parameter.HP2 * levelNum[0]);
                 FRoom.child(roomKey).child("player2").child("MP").setValue(parameter.MP2 * levelNum[0]);
                 bossAtk = new ArrayList<>();
@@ -306,6 +309,7 @@ public class SoloMap extends AppCompatActivity {
                 break;
             case 3:
                 indexP = 7;
+                FRoom.child(roomKey).child("player2").child("name").setValue("Boss3"); // 創房者為player1 同時也是 userId
                 FRoom.child(roomKey).child("player2").child("HP").setValue(parameter.HP3 * levelNum[0]);
                 FRoom.child(roomKey).child("player2").child("MP").setValue(parameter.MP3 * levelNum[0]);
                 bossAtk = new ArrayList<>();
@@ -320,6 +324,7 @@ public class SoloMap extends AppCompatActivity {
                 break;
             case 4:
                 indexP = 8;
+                FRoom.child(roomKey).child("player2").child("name").setValue("Boss4"); // 創房者為player1 同時也是 userId
                 FRoom.child(roomKey).child("player2").child("HP").setValue(parameter.HP4 * levelNum[0]);
                 FRoom.child(roomKey).child("player2").child("MP").setValue(parameter.MP4 * levelNum[0]);
                 bossAtk = new ArrayList<>();
@@ -365,7 +370,9 @@ public class SoloMap extends AppCompatActivity {
         it.putExtra("player", "player1");
         it.putExtra("index", variable.getIndex());
         it.putExtra("roomKey", roomKey);
-
+        it.putExtra("gain", sg);
+        it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        it.setClass(SoloMap.this,GameActivity.class);
 
 //        it.putExtra("finalHP", activity.finalHP);
 //        it.putExtra("finalMP", activity.finalMP);

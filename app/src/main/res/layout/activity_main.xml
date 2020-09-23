@@ -31,7 +31,8 @@
             android:layout_gravity="left"
             android:layout_margin="@dimen/fab_margin"
             android:alpha="0.3"
-            app:srcCompat="@android:drawable/ic_dialog_email" />
+            android:onClick="about"
+            app:srcCompat="@drawable/move_left" />
 
 
 
