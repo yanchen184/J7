@@ -24,6 +24,7 @@ import androidx.databinding.DataBindingUtil;
 
 import com.example.j7.databinding.GameActivityMainBinding;
 import com.example.j7.game.AtkRules;
+import com.example.j7.game.Boss1;
 import com.example.j7.game.MoveRules;
 import com.example.j7.tools.Tools;
 import com.google.firebase.database.DataSnapshot;
@@ -49,7 +50,7 @@ public class GameActivity extends AppCompatActivity {
     public Tools tools = new Tools();
     public Variable variable = new Variable();
     public Parameter parameter = new Parameter();
-
+    Boss1 boss1 = new Boss1(this);
 
     public View[] locationX;
     public View[] locationY;
@@ -362,6 +363,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     int boss1AtkNum;
+    Boolean yc = true;
     private ValueEventListener statusListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -372,13 +374,40 @@ public class GameActivity extends AppCompatActivity {
             int x12 = Integer.parseInt(String.valueOf(snapshot.child("player12").getValue()));
             int x22 = Integer.parseInt(String.valueOf(snapshot.child("player22").getValue()));
 
-            if (variable.getOtherPlayerName() != null) {
+
+            if (variable.getOtherPlayerName() != null && variable.getFinalMPC() != null) {
                 if (variable.getOtherPlayerName().equals("Boss1")) {
-                    boss1AtkNum = (int) (Math.random() * 3 + 1);
-                    fullRoom.child("fourStatus").child("player22").setValue(boss1AtkNum);
-                    fullRoom.child("fourStatus").child("player21").setValue(true);
+
+                    if (yc) {
+                        int j = 0;
+                        do {
+                            boss1AtkNum = (int) (Math.random() * 3 + 1);
+                            Log.d("機器人決定使用", String.valueOf(boss1AtkNum));
+                            j++;
+                            if (j > 10) {
+                                boss1AtkNum = 6;
+                                Log.d("沒有魔力啦 ", String.valueOf(boss1AtkNum));
+                                break;
+                            }
+                        } while (Integer.parseInt(String.valueOf(variable.getFinalMPC().get(boss1AtkNum))) > Integer.parseInt(binding.include.txtComHp.getText().toString()));
+
+
+                        int agmd = Math.abs(parameter.getLocationXC() - parameter.getLocationXS()) + Math.abs(parameter.getLocationYC() - parameter.getLocationYS());
+                        if (agmd >= 3 || Math.abs(parameter.getLocationXC() - parameter.getLocationXS()) >= 2 || Math.abs(parameter.getLocationYC() - parameter.getLocationYS()) >= 2) {
+                            boss1AtkNum = 6;
+                            Log.d("距離太遠 ", String.valueOf(boss1AtkNum));
+                        }
+
+                        Log.d("機器人最終決定使用", String.valueOf(boss1AtkNum));
+
+                        fullRoom.child("fourStatus").child("player22").setValue(boss1AtkNum);
+                        fullRoom.child("fourStatus").child("player21").setValue(true);
+                        yc = false;
+                    }
                 }
+
             }
+
             if (variable.getOtherPlayer().equals("player2")) {
                 parameter.setAtkNumC(x22);
             } else {
@@ -387,6 +416,7 @@ public class GameActivity extends AppCompatActivity {
 
             if (x11 && x21 && x12 != 0 && x22 != 0) {
                 receiveMessage();
+                yc = true;
             }
         }
 
@@ -477,14 +507,14 @@ public class GameActivity extends AppCompatActivity {
                 Log.d("TAG", "敵人名稱為 : " + variable.getOtherPlayerName());
                 Log.d("TAG", "敵人角色為 : " + tools.roleChange(variable.getIndexE()));
 
-                fullRoom.child(variable.getPlayer()).child("game").addListenerForSingleValueEvent(new ValueEventListener() {
+                fullRoom.child(variable.getOtherPlayer()).child("game").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 //                        Log.d("TAG", String.valueOf((ArrayList<ArrayList<Integer>>) snapshot.getValue()));
                         variable.setFinalAtlRC((ArrayList<ArrayList<Integer>>) snapshot.child("gameAtkR").getValue());
                         variable.setFinalHPC((ArrayList<Integer>) snapshot.child("gameHP").getValue());
                         variable.setFinalMPC((ArrayList<Integer>) snapshot.child("gameMP").getValue());
-
+//                        Log.d("setFinalHPC", String.valueOf(variable.getFinalHPC()));
                         binding.includeAtkE.includeAtk1.buttonAtk1.setBackgroundColor(Color.parseColor("#00000000"));
                         binding.includeAtkE.includeAtk2.buttonAtk2.setBackgroundColor(Color.parseColor("#00000000"));
                         binding.includeAtkE.includeAtk3.buttonAtk3.setBackgroundColor(Color.parseColor("#00000000"));
@@ -899,7 +929,7 @@ public class GameActivity extends AppCompatActivity {
                             handler.sendMessageDelayed(msg, 3000);
                             break;
                         case 3:
-                            handler.sendMessageDelayed(msg, 3150);
+                            handler.sendMessageDelayed(msg, 4000);
                             break;
                     }
                 }
@@ -914,6 +944,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     Boolean[] startArray = {true, true, true, true};
+
 
     private MyHandler handler = new MyHandler();
 
@@ -943,30 +974,7 @@ public class GameActivity extends AppCompatActivity {
 
 
                                 Log.d("局數", String.valueOf(variable.getMatch()));
-                                if (variable.getOtherPlayerName().equals("Boss1")) {
-                                    if (variable.getMatch() == 1 || variable.getMatch() == 2) {
-                                        moveRules.computer(1, 0);
-                                    } else {
-                                        int xy = (int) (Math.random() * 2 + 1);
-                                        int x = 0;
-                                        int y = 0;
-                                        switch (xy) {
-                                            case 1:
-                                                int[] xx = {-1, 1};
-                                                x = xx[(int) (Math.random() * 2)];
-                                                break;
-                                            case 2:
-                                                int[] yy = {-1, 1};
-                                                y = yy[(int) (Math.random() * 2)];
-                                                break;
-                                        }
-                                        moveRules.computer(x, y);
-                                    }
-
-                                    fullRoom.child(variable.getOtherPlayer()).child("Next").child("atkHP").setValue(variable.getFinalHPC().get(boss1AtkNum - 1));
-                                    fullRoom.child(variable.getOtherPlayer()).child("Next").child("atkMP").setValue(variable.getFinalMPC().get(boss1AtkNum - 1));
-                                    fullRoom.child(variable.getOtherPlayer()).child("Next").child("atkR").setValue(variable.getFinalAtlRC().get(boss1AtkNum - 1));
-                                }
+                                boss1.moveAndAtk(boss1AtkNum);
 
 
                                 /**提取自己應該要在的位置 - Next*/
@@ -1012,6 +1020,7 @@ public class GameActivity extends AppCompatActivity {
                             variable.setUnique(false);
                             fullRoom.child(variable.getPlayer()).child("unique").setValue(false);
                         }
+
 
                         break;
                     case 2:
@@ -1114,6 +1123,7 @@ public class GameActivity extends AppCompatActivity {
         }
 
     }
+
 
 //    public boolean fsUnique = false;
 //

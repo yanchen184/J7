@@ -55,6 +55,19 @@ public class Variable {
 
     int match = 1; // 回合數
 
+    Boolean jg = true; //追擊狀態
+
+
+
+
+    public Boolean getJg() {
+        return jg;
+    }
+
+    public void setJg(Boolean jg) {
+        this.jg = jg;
+    }
+
     public int getMatch() {
         return match;
     }

@@ -1,80 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Solo.SoloMap">
 
-    <ImageView
-        android:id="@+id/middle"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline23"
-        app:layout_constraintStart_toStartOf="@+id/guideline22"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/boss1" />
+    >
 
-    <ImageView
-        android:id="@+id/left"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline22"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/middle"
-        app:srcCompat="@drawable/b74" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/right"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline23"
-        app:layout_constraintTop_toTopOf="@+id/middle"
-        app:srcCompat="@drawable/b74" />
+        <ImageView
+            android:id="@+id/middle"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline23"
+            app:layout_constraintStart_toStartOf="@+id/guideline22"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/boss1" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline22"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.33" />
+        <ImageView
+            android:id="@+id/left"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/middle"
+            app:srcCompat="@drawable/bosss" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline23"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.66" />
+        <ImageView
+            android:id="@+id/right"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline23"
+            app:layout_constraintTop_toTopOf="@+id/middle"
+            app:srcCompat="@drawable/bosstortoise" />
 
-    <Button
-        android:id="@+id/bm"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:text="選擇"
-        android:textSize="30dp"
-        android:onClick="choose"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline23"
-        app:layout_constraintStart_toStartOf="@+id/guideline22"
-        app:layout_constraintTop_toBottomOf="@+id/middle" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.33" />
 
-    <Button
-        android:id="@+id/bl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="左滑"
-        app:layout_constraintEnd_toStartOf="@+id/guideline22"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/bm" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline23"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.66" />
 
-    <Button
-        android:id="@+id/br"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="右滑"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline23"
-        app:layout_constraintTop_toTopOf="@+id/bm" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/bm"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:onClick="choose"
+            android:text="選擇"
+            android:textSize="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline23"
+            app:layout_constraintStart_toStartOf="@+id/guideline22"
+            app:layout_constraintTop_toBottomOf="@+id/middle" />
+
+        <Button
+            android:id="@+id/bl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="左滑"
+            android:onClick="bl"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/bm" />
+
+        <Button
+            android:id="@+id/br"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="右滑"
+            android:onClick="br"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline23"
+            app:layout_constraintTop_toTopOf="@+id/bm" />
+
+        <Button
+            android:id="@+id/award"
+            android:layout_width="60dp"
+            android:layout_height="34dp"
+            android:background="@drawable/btn_2"
+            android:onClick="award"
+            android:text="獎勵"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="@+id/bm"
+            app:layout_constraintEnd_toStartOf="@+id/guideline23" />
+
+        <include
+            android:id="@+id/includeA"
+            layout="@layout/activity_solo_award"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintBottom_toTopOf="@+id/award"
+            app:layout_constraintEnd_toStartOf="@+id/guideline23"
+            app:layout_constraintStart_toStartOf="@+id/guideline23"
+            app:layout_constraintTop_toTopOf="parent"></include>
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/middle"
+            app:layout_constraintEnd_toStartOf="@+id/guideline23"
+            app:layout_constraintStart_toStartOf="@+id/guideline22"
+            app:layout_constraintTop_toTopOf="parent"></Spinner>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

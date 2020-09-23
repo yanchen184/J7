@@ -86,7 +86,19 @@ public class Tools {
                 je = R.drawable.b74;
                 break;
             case 4:
-                je = R.drawable.boss1;
+                je = R.drawable.boss1;//樹人
+                break;
+            case 5:
+                je = R.drawable.bosss;//雜兵
+                break;
+            case 6:
+                je = R.drawable.bosstortoise;//烏龜
+                break;
+            case 7:
+                je = R.drawable.bosklpng;//咕魯
+                break;
+            case 8:
+                je = R.drawable.bossd;//巨龍
                 break;
         }
         return je;
