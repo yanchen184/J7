@@ -212,5 +212,18 @@
             app:layout_constraintBottom_toTopOf="@+id/award"
             app:layout_constraintEnd_toStartOf="@+id/award"></include>
 
+
+        <EditText
+            android:id="@+id/ed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLength="3"
+            android:gravity="center"
+            android:inputType="number"
+            app:layout_constraintBottom_toBottomOf="@+id/buttonDown"
+            app:layout_constraintEnd_toStartOf="@+id/buttonUp"
+            app:layout_constraintStart_toEndOf="@+id/buttonDown" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

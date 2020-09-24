@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="userName"
             type="String" />
+
         <variable
             name="level"
             type="String" />
@@ -174,6 +176,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
+            android:enabled="false"
             android:onClick="roleAdd"
             android:text="抽角色"
             app:layout_constraintBottom_toTopOf="@+id/lineX2"
@@ -196,6 +199,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
+            android:enabled="false"
             android:onClick="cardUpgrade"
             android:text="升級卡片"
             app:layout_constraintEnd_toStartOf="@+id/guideline19"
@@ -252,10 +256,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="版本號 : 1.0.6 機器人AI智能測試版"
+            android:text="版本號 : 1.0.7 機器人AI智能測試版"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"></TextView>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

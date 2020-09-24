@@ -30,7 +30,6 @@ import static com.example.j7.tools.Name.STATUS_JOINED;
 
 public class Queue {
     private StartActivity activity;
-    private SoloMap activitySolo;
     private Context context;
     public DatabaseReference FRoom = FirebaseDatabase.getInstance().getReference("rooms");
     public DatabaseReference WRoom = FirebaseDatabase.getInstance().getReference("waitRoom");
@@ -41,10 +40,7 @@ public class Queue {
         this.context = context;
     }
 
-    public Queue(Context context, int x) {
-        this.activitySolo = (SoloMap) context;
-        this.context = context;
-    }
+
 
     public static Queue getQueue(Context context) {
         return new Queue(context);
@@ -347,7 +343,8 @@ public class Queue {
                     Bundle mBundle = new Bundle();
                     mBundle.putSerializable("list", activity.finalAtlR);
                     it.putExtras(mBundle);
-//                    it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                    it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                    it.setClass(context,GameActivity.class);
                     activity.startActivity(it);
                     break;
             }

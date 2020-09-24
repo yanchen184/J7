@@ -6,10 +6,13 @@ import androidx.databinding.DataBindingUtil;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.j7.R;
@@ -35,7 +38,7 @@ public class FourCardAdd extends AppCompatActivity {
     View atkR, HPMP;
     public View line11, line12, line13, line14, line15, line16, line17, line18, line19;
     int power;//素材量
-    int maxBackpack = 7;//背包上限值
+    int maxBackpack = 12;//背包上限值
     Button buttonAtk1, shop;
     public DatabaseReference level, backpack, record;
     Tools tools = new Tools();
@@ -123,7 +126,34 @@ public class FourCardAdd extends AppCompatActivity {
                 return false;
             }
         });
+
+        binding.ed.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                /**如果素材量比較多就沒有問題*/
+                if (!String.valueOf(editable).equals("")) {
+                    if (power >= Integer.parseInt(String.valueOf(editable))) {
+                        use = Integer.parseInt(String.valueOf(editable));
+                    } else {
+                        use = power;
+                    }
+                    binding.shop.setText("花費 " + use + " 素材");
+                    common();
+                }
+            }
+        });
     }
+
 
     public void findView() {
 
@@ -373,15 +403,15 @@ public class FourCardAdd extends AppCompatActivity {
         if (use < 5) {
             yc1 = new float[]{0.1f, 0.1f, 0.2f, 0.3f, 0.2f, 0.05f, 0.048f, 0.0012f, 0.0008f};
         } else if (use < 10) {
-            yc1 = new float[]{0.05f, 0.15f, 0.15f, 0.35f, 0.1f, 0.15f, 0.048f, 0.0012f, 0.0008f};
+            yc1 = new float[]{0f, 0.2f, 0.2f, 0.2f, 0.1f, 0.1f, 0.1f, 0.1f, 0};
         } else if (use < 20) {
-            yc1 = new float[]{0f, 0f, 0f, 0f, 0f, 0f, 0f, 0.5f, 0.5f};
-        } else if (use < 30) {
-            yc1 = new float[]{0.1f, 0.1f, 0.2f, 0.3f, 0.2f, 0.05f, 0.048f, 0.0012f, 0.0008f};
-        } else if (use < 50) {
-            yc1 = new float[]{0.1f, 0.1f, 0.2f, 0.3f, 0.2f, 0.05f, 0.048f, 0.0012f, 0.0008f};
+            yc1 = new float[]{0f, 0.1f, 0.1f, 0.2f, 0.2f, 0.2f, 0.1f, 0.05f, 0.05f};
+        } else if (use < 40) {
+            yc1 = new float[]{0f, 0f, 0f, 0f, 0.4f, 0.2f, 0.2f, 0.2f, 0f};
+        } else if (use < 80) {
+            yc1 = new float[]{0f, 0f, 0f, 0f, 0f, 0.4f, 0.2f, 0.2f, 0.2f};
         } else {
-            yc1 = new float[]{0f, 0f, 0f, 0f, 0f, 0f, 0f, 0.5f, 0.5f};
+            yc1 = new float[]{0f, 0f, 0f, 0f, 0f, 0f, 0.1f, 0.2f, 0.7f};
         }
         detail();
     }
@@ -438,27 +468,27 @@ public class FourCardAdd extends AppCompatActivity {
             Log.d("卡片等級", "S");
         } else if (p > yc[5]) {//A
             atkRAndHp(6, 12);
-            setRandomMP((int) (Math.random() * 4) + 7);//產生1-10
+            setRandomMP((int) (Math.random() * 5) + 6);//產生1-10
             Log.d("卡片等級", "A");
         } else if (p > yc[4]) {//B
             atkRAndHp(5, 10);
-            setRandomMP((int) (Math.random() * 4) + 7);//產生1-10
+            setRandomMP((int) (Math.random() * 8) + 3);//產生1-10
             Log.d("卡片等級", "B");
         } else if (p > yc[3]) {//C
             atkRAndHp(4, 8);
-            setRandomMP((int) (Math.random() * 5) + 6);//產生1-10
+            setRandomMP((int) (Math.random() * 9) + 2);//產生1-10
             Log.d("卡片等級", "C");
         } else if (p > yc[2]) {//D
             atkRAndHp(3, 7);
-            setRandomMP((int) (Math.random() * 3) + 8);//產生1-10
+            setRandomMP((int) (Math.random() * 8) + 3);//產生1-10
             Log.d("卡片等級", "D");
         } else if (p > yc[1]) {//E
             atkRAndHp(2, 6);
-            setRandomMP((int) (Math.random() * 4) + 7);//產生1-10
+            setRandomMP((int) (Math.random() * 9) + 2);//產生1-10
             Log.d("卡片等級", "E");
         } else if (p > yc[0]) {//F
             atkRAndHp(1, 7);
-            setRandomMP((int) (Math.random() * 2) + 10);//產生1-10
+            setRandomMP((int) (Math.random() * 5) + 6);//產生1-10
             Log.d("卡片等級", "F");
         }
 
@@ -585,6 +615,7 @@ public class FourCardAdd extends AppCompatActivity {
         }
     }
 
+    //    int[] useJ = {1,5,10,20,50,100}
     public void up(View v) {
         use++;
         common();

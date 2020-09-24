@@ -240,8 +240,15 @@ public class StartActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "點此登出", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Snackbar.make(view, "彥chen 出品", Snackbar.LENGTH_LONG)
+                        .setAction("關於我", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent it = new Intent(StartActivity.this, AboutActivity.class);
+                                startActivity(it);
+//                                Toast.makeText(StartActivity.this,"你点击了action",Toast.LENGTH_SHORT).show();
+                            }
+                        }).show();
             }
         });
 
