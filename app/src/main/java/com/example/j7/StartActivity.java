@@ -999,5 +999,9 @@ public class StartActivity extends AppCompatActivity {
         }
     }
 
+    public void about(View v) {
+        Intent it = new Intent(this, AboutActivity.class);
+        startActivity(it);
+    }
 
 }
