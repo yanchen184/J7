@@ -323,7 +323,7 @@ public class AtkRules {
         Log.d("攻擊內容", "MP : " + mp);
         switch (atkNum) {
             case STAND:
-                Toast.makeText(context, "自己站著不動", Toast.LENGTH_LONG).show();
+//                Toast.makeText(context, "自己站著不動", Toast.LENGTH_LONG).show();
                 break;
             default:
                 if (SC.equals("self")) {
@@ -363,9 +363,9 @@ public class AtkRules {
         /**如果成功就進行扣寫判定*/
         if (success) {
             HPHit(name);
-            Toast.makeText(context, "攻擊成功!! 扣對方 " + hp + " HP ", Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "攻擊成功!! 扣對方 " + hp + " HP ", Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(context, "攻擊失敗.. 消耗 " + mp + " MP ", Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "攻擊失敗.. 消耗 " + mp + " MP ", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -428,7 +428,7 @@ public class AtkRules {
         Log.d("atkNum", String.valueOf(atkNum));
         switch (atkNum) {
             case STAND:
-                Toast.makeText(context, "自己站著不動", Toast.LENGTH_LONG).show();
+//                Toast.makeText(context, "自己站著不動", Toast.LENGTH_LONG).show();
                 allMap[0][0] = 100;
                 allMap[0][1] = 100;
                 return allMap;

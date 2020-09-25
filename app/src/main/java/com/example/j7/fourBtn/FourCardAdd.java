@@ -51,7 +51,7 @@ public class FourCardAdd extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_four_card_add);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_four_card_add);
-
+        binding.ed.setText("1");
         findView();
         level = FirebaseDatabase.getInstance().getReference("users").child(userId).child("level");
         record = FirebaseDatabase.getInstance().getReference("users").child(userId).child("record");
@@ -246,7 +246,7 @@ public class FourCardAdd extends AppCompatActivity {
         je.setText("騎士");
     }
 
-
+    int c;
     private ValueEventListener re = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -257,16 +257,17 @@ public class FourCardAdd extends AppCompatActivity {
             /**背包有格子才能按*/
             ArrayList<Integer> x = (ArrayList<Integer>) snapshot.child("role").child(rocord).child("backpack").child("HP").getValue();
 
-            int c = x == null ? 0 : x.size();
+            c = x == null ? 0 : x.size();
             System.out.println("剩餘背包格子數量 : " + (maxBackpack - c));
 
-            if (power <= 0 || (maxBackpack - c) <= 0) {
+            if (power <= 0 || (maxBackpack - c) <= 0 || power < use) {
                 shop.setEnabled(false);
             } else {
                 shop.setEnabled(true);
             }
 
             sg2.setText("目前剩下 " + power + " 素材,背包還有 " + (maxBackpack - c) + " / " + maxBackpack + " 格空間");
+
         }
 
         @Override
@@ -400,15 +401,21 @@ public class FourCardAdd extends AppCompatActivity {
     String detail;
 
     public void useUp() {
-        if (use < 5) {
-            yc1 = new float[]{0.1f, 0.1f, 0.2f, 0.3f, 0.2f, 0.05f, 0.048f, 0.0012f, 0.0008f};
+        if (use < 2) {
+            yc1 = new float[]{0.1f, 0.1f, 0.2f, 0.3f, 0.2f, 0.05f, 0.048f, 0.002f, 0f};
+        } else if (use < 3) {
+            yc1 = new float[]{0.08f, 0.12f, 0.18f, 0.32f, 0.18f, 0.07f, 0.048f, 0.002f, 0f};
+        } else if (use < 4) {
+            yc1 = new float[]{0.08f - 0.02f, 0.12f + 0.02f, 0.18f - 0.02f, 0.32f + 0.02f, 0.18f - 0.02f, 0.07f + 0.02f, 0.048f, 0.002f, 0f};
+        } else if (use < 5) {
+            yc1 = new float[]{0.08f - 0.04f, 0.12f + 0.04f, 0.18f - 0.04f, 0.32f + 0.04f, 0.18f - 0.04f, 0.07f + 0.04f, 0.048f, 0.002f, 0f};
         } else if (use < 10) {
-            yc1 = new float[]{0f, 0.2f, 0.2f, 0.2f, 0.1f, 0.1f, 0.1f, 0.1f, 0};
+            yc1 = new float[]{0f, 0.2f, 0.2f, 0.2f, 0.1f, 0.1f, 0.1f, 0.05f, 0.05f};
         } else if (use < 20) {
-            yc1 = new float[]{0f, 0.1f, 0.1f, 0.2f, 0.2f, 0.2f, 0.1f, 0.05f, 0.05f};
+            yc1 = new float[]{0f, 0.1f, 0.1f, 0.2f, 0.2f, 0.2f, 0.1f, 0.03f, 0.07f};
         } else if (use < 40) {
-            yc1 = new float[]{0f, 0f, 0f, 0f, 0.4f, 0.2f, 0.2f, 0.2f, 0f};
-        } else if (use < 80) {
+            yc1 = new float[]{0f, 0f, 0f, 0.4f, 0.2f, 0.2f, 0.1f, 0.01f, 0.09f};
+        } else if (use < 60) {
             yc1 = new float[]{0f, 0f, 0f, 0f, 0f, 0.4f, 0.2f, 0.2f, 0.2f};
         } else {
             yc1 = new float[]{0f, 0f, 0f, 0f, 0f, 0f, 0.1f, 0.2f, 0.7f};
@@ -442,7 +449,9 @@ public class FourCardAdd extends AppCompatActivity {
         Log.d("total", String.valueOf(total));
 
         float[] yc = {0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f};
+        Log.d("yc", String.valueOf(yc.length));
         for (int i = 0; i < yc1.length; i++) {
+            Log.d("yc1", String.valueOf(yc1[i]));
             for (int j = 0; j <= i; j++) {
 
                 yc[i] = yc[i] + yc1[j];
@@ -613,20 +622,27 @@ public class FourCardAdd extends AppCompatActivity {
         if (use == power) {
             binding.buttonUp.setEnabled(false);
         }
+        useUp();
+        if (power <= 0 || (maxBackpack - c) <= 0 || power < use) {
+            shop.setEnabled(false);
+        } else {
+            shop.setEnabled(true);
+        }
+
     }
 
     //    int[] useJ = {1,5,10,20,50,100}
     public void up(View v) {
         use++;
         common();
-        useUp();
         binding.shop.setText("花費 " + use + " 素材");
+        binding.ed.setText(use+"");
     }
 
     public void down(View v) {
         use--;
         common();
-        useUp();
         binding.shop.setText("花費 " + use + " 素材");
+        binding.ed.setText(use+"");
     }
 }

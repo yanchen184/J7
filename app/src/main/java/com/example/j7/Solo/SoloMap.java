@@ -371,8 +371,8 @@ public class SoloMap extends AppCompatActivity {
         it.putExtra("index", variable.getIndex());
         it.putExtra("roomKey", roomKey);
         it.putExtra("gain", sg);
-        it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-        it.setClass(SoloMap.this,GameActivity.class);
+        it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        it.setClass(SoloMap.this, GameActivity.class);
 
 //        it.putExtra("finalHP", activity.finalHP);
 //        it.putExtra("finalMP", activity.finalMP);
@@ -388,5 +388,9 @@ public class SoloMap extends AppCompatActivity {
             x.add(data[i]);
         }
         return x;
+    }
+
+    public void btn_b(View v) {
+        finish();
     }
 }

@@ -67,8 +67,8 @@
             android:id="@+id/bl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="左滑"
             android:onClick="bl"
+            android:text="左滑"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/bm" />
@@ -77,8 +77,8 @@
             android:id="@+id/br"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="右滑"
             android:onClick="br"
+            android:text="右滑"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline23"
             app:layout_constraintTop_toTopOf="@+id/bm" />
@@ -113,6 +113,18 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline23"
             app:layout_constraintStart_toStartOf="@+id/guideline22"
             app:layout_constraintTop_toTopOf="parent"></Spinner>
+
+        <Button
+            android:id="@+id/btn_b"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:onClick="btn_b"
+            android:text="返回"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></Button>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
